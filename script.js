@@ -18,6 +18,7 @@ function aggiornaUI() {
     ul.appendChild(li);
   });
   document.getElementById("totaleCarrello").textContent = totale.toFixed(2);
+  aggiornaPulsanti();
 }
 
 function caricaDati() {
@@ -83,7 +84,25 @@ function mostraClienti() {
     btn.textContent = "Acquisisci Cliente";
     const disabled = carrello.find(e => e.id === c.id);
     if (disabled) btn.disabled = true;
+    
+    const annullaBtn = document.createElement("button");
+    annullaBtn.className = "btn rosso";
+    annullaBtn.textContent = "Annulla";
+    annullaBtn.style.marginLeft = "10px";
+    if (!disabled) annullaBtn.disabled = true;
+    annullaBtn.onclick = () => {
+      const i = carrello.findIndex(e => e.id === c.id);
+      if (i !== -1) {
+        const creditiRecuperati = Math.ceil(c.prezzo / 40);
+        crediti += creditiRecuperati;
+        carrello.splice(i, 1);
+        aggiornaUI();
+        mostraClienti();
+      }
+    };
+
     btn.onclick = () => {
+
       const creditiNecessari = Math.ceil(c.prezzo / 40);
       if (crediti < creditiNecessari) {
         alert("Crediti insufficienti!");
@@ -96,6 +115,11 @@ function mostraClienti() {
     };
     div.innerHTML = `<strong>${c.categoria}</strong><br>📍 ${c.regione}, ${c.citta} | 💬 ${c.tipo} | 💶 €${c.budget}<br>Prezzo Acquisto: €${c.prezzo}<br>`;
     div.appendChild(btn);
+    const btnGroup = document.createElement("div");
+    btnGroup.className = "dual-btns";
+    btnGroup.appendChild(btn);
+    btnGroup.appendChild(annullaBtn);
+    div.appendChild(btnGroup);
     container.appendChild(div);
   });
 }
@@ -126,3 +150,17 @@ document.getElementById("ricaricaBtn").onclick = () =>
 
 caricaDati();
 aggiornaUI();
+
+
+function aggiornaPulsanti() {
+  const btn = document.getElementById("annullaOrdine");
+  btn.style.display = carrello.length > 0 ? "inline-block" : "none";
+}
+function annullaOrdine() {
+  carrello.forEach(c => {
+    crediti += Math.ceil(c.prezzo / 40);
+  });
+  carrello = [];
+  aggiornaUI();
+  mostraClienti();
+}
