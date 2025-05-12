@@ -1,65 +1,102 @@
-/* Base global */
+/* Base */
 * {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  margin: 0; padding: 0;
 }
 body {
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background: #f0f2f5;
   color: #333;
-  line-height: 1.5;
   padding: 20px;
+  line-height: 1.5;
 }
 
-/* Universal button styling for large, rounded buttons */
-button {
-  display: inline-block;
-  padding: 18px 30px !important;
-  border: none;
-  border-radius: 36px !important; /* fully rounded */
-  font-size: 1.2em !important;
-  font-weight: bold;
-  color: #fff !important;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-/* Specific button variants */
-button#acquisisci, button.acquisisci {
-  background-color: #28a745 !important; /* green */
-}
-button#contratto, button.contratto {
-  background-color: #17a2b8 !important; /* cyan */
-}
-button#annulla, button.annulla {
-  background-color: #dc3545 !important; /* red */
-}
-button#acquisito, button.acquisito {
-  background-color: #6c757d !important; /* gray */
-  cursor: not-allowed;
-}
-
-/* Header styling */
+/* Header */
 .header {
-  background: #ffffff;
+  background: #fff;
   border-radius: 12px;
   padding: 20px;
-  text-align: center;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  text-align: center;
   margin-bottom: 20px;
 }
-.header button {
-  /* larger header button */
-  padding: 18px 30px !important;
-  border-radius: 36px !important;
+.header h1 {
+  font-size: 2.2em;
+  margin-bottom: 8px;
+}
+.header .crediti {
+  display: flex; gap: 12px; align-items: center; justify-content: center;
+}
+.header .crediti button {
+  padding: 14px 24px; border-radius: 36px; font-size: 1.1em;
+  background: #007bff; color: #fff; border: none; cursor: pointer;
 }
 
-/* Filters */
+/* Filtri */
 .filtri { margin-bottom: 20px; }
-.filter-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.filter select { padding: 14px; border-radius: 12px; font-size: 1em; }
+.filter-row {
+  display: flex; gap: 10px; margin-bottom: 12px;
+}
+.filter {
+  flex: 1; display: flex; flex-direction: column;
+}
+.filter label { margin-bottom: 6px; color: #555; font-size: 1em; }
+.filter select {
+  padding: 14px; border: 1px solid #ccc; border-radius: 12px;
+  font-size: 1em; background: #fff; width: 100%;
+}
 
 /* Carrello */
-.carrello { padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-.carrello li { padding: 10px 0; border-bottom: 1px solid #eee; }
+.carrello {
+  background: #fff; border-radius: 12px; padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;
+}
+.carrello h2 { font-size: 1.6em; margin-bottom: 12px; }
+.carrello ul { list-style: none; margin-bottom: 14px; }
+.carrello li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid #eee;
+}
+.carrello li:last-child { border-bottom: none; }
+.carrello .totale { font-weight: bold; font-size: 1.2em; }
+
+/* Client Cards */
+main#clientiContainer {
+  display: flex; flex-direction: column;
+}
+.cliente {
+  background: #fff; border-radius: 12px; padding: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;
+}
+.cliente h3 { font-size: 1.4em; margin-bottom: 12px; }
+.cliente p { margin-bottom: 10px; }
+
+/* Actions */
+.actions {
+  display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;
+}
+.actions button {
+  flex: 1; padding: 16px; font-size: 1.1em; border: none;
+  border-radius: 36px; color: #fff; cursor: pointer;
+}
+
+/* Variants */
+button.acquisisci { background: #28a745; }
+button.appuntamento { background: #218838; }
+button.contratto { background: #17a2b8; }
+button.annulla { background: #dc3545; }
+button.acquisito { background: #6c757d; cursor: not-allowed; }
+
+/* Contratto Form */
+.contratto-form {
+  margin-top: 16px; padding: 16px; background: #f9f9f9;
+  border-radius: 12px; border: 1px solid #ddd;
+}
+.contratto-form input, .contratto-form textarea {
+  width: 100%; padding: 10px; margin-bottom: 10px;
+  border: 1px solid #ccc; border-radius: 8px;
+}
+.contratto-form button {
+  padding: 14px; width: 100%; border-radius: 24px;
+  background: #17a2b8; color: #fff; border: none; font-size: 1em;
+}
