@@ -1,33 +1,42 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TrovaClienti - Funziona</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="app">
-    <h1>IlTrovaClienti</h1>
-    <div id="crediti">Crediti disponibili: <span id="credito">8</span> (equivalente: €<span id="euro">320</span>)</div>
-
-    <div id="filters">
-      <select id="regioneFilter"><option value="">Tutte le Regioni</option></select>
-      <select id="cittaFilter"><option value="">Tutte le Città</option></select>
-      <select id="categoriaFilter"><option value="">Tutte le Categorie</option></select>
-      <select id="tipoFilter"><option value="">Tutti i Tipi</option></select>
+    <h1>TrovaClienti</h1>
+    <div class="crediti-box">
+      <span><strong>Crediti:</strong> <span id="crediti">8</span></span>
+      <button id="ricaricaBtn">Ricarica Crediti</button>
     </div>
-
+    <div id="carrello-box">
+      <h2>🛒 Carrello</h2>
+      <p><strong>Totale:</strong> €<span id="totaleCarrello">0</span></p>
+      <ul id="carrello"></ul>
+    </div>
+    <div id="filters">
+      <select id="regioneFilter"><option value="">Tu</option></select>
+      <select id="cittaFilter"><option value="">Tu</option></select>
+      <select id="categoriaFilter"><option value="">Tu</option></select>
+      <select id="tipoFilter"><option value="">Tu</option></select>
+    </div>
     <div id="clienti-container">Caricamento clienti...</div>
-    <button id="mostra-altri">Mostra altri clienti</button>
-
-    <h2>🛒 Carrello</h2>
-    <ul id="carrello"></ul>
   </div>
 
-  <footer>
-    <p><a href="#">Disclaimer</a> | <a href="#">Privacy</a> | <a href="#">Supporto</a></p>
-  </footer>
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Simula ricarica crediti</h3>
+      <button onclick="ricarica(8)">💳 Carta (+8 crediti)</button>
+      <button onclick="ricarica(8)">🅿️ PayPal (+8 crediti)</button>
+      <button onclick="ricarica(8)">🏦 Bonifico (+8 crediti)</button>
+      <br /><br />
+      <button onclick="chiudiModal()">Chiudi</button>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
