@@ -15,14 +15,14 @@ body {
 /* Header */
 .header {
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 16px;
   text-align: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 }
 .header h1 {
-  font-size: 1.8em;
+  font-size: 2em;
   margin-bottom: 8px;
 }
 .header .crediti {
@@ -30,12 +30,13 @@ body {
   justify-content: center;
   align-items: center;
   gap: 12px;
-  font-size: 1em;
+  font-size: 1.1em;
 }
 .header button {
   background: #007bff;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 12px 20px;
+  border-radius: 24px; /* more rounded */
+  font-size: 1em;
 }
 
 /* Filtri */
@@ -58,9 +59,9 @@ body {
   color: #555;
 }
 .filter select {
-  padding: 10px;
+  padding: 12px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 12px;
   font-size: 1em;
   background: #fff;
 }
@@ -68,9 +69,9 @@ body {
 /* Carrello */
 .carrello {
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 }
 .carrello h2 {
@@ -103,13 +104,13 @@ main#clientiContainer {
 }
 .cliente {
   background: #ffffff;
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 16px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 .cliente h3 {
-  font-size: 1.2em;
+  font-size: 1.3em;
   margin-bottom: 10px;
 }
 .cliente p {
@@ -125,23 +126,23 @@ main#clientiContainer {
 }
 .actions button {
   flex: 1;
-  padding: 12px;
+  padding: 14px 0;
   border: none;
-  border-radius: 6px;
-  font-size: 0.95em;
+  border-radius: 24px; /* fully rounded */
+  font-size: 1.1em;
   color: #fff;
   cursor: pointer;
 }
 
 /* Button variants */
 button.acquisisci {
-  background-color: #28a745;
+  background-color: #28a745; /* verde */
 }
 button.contratto {
-  background-color: #17a2b8;
+  background-color: #17a2b8; /* azzurro */
 }
 button.annulla {
-  background-color: #dc3545;
+  background-color: #dc3545; /* rosso */
 }
 button.acquisito {
   background-color: #6c757d;
