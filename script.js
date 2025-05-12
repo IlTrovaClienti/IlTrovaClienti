@@ -59,7 +59,7 @@ function mostraClienti() {
     (!tipo || c[4] === tipo)
   ).slice(0, visibili);
 
-  filtrati.forEach((c, i) => {
+  filtrati.forEach(c => {
     const div = document.createElement("div");
     div.className = "client-item";
     const id = c.join("-");
@@ -94,28 +94,24 @@ function mostraClienti() {
       if (crediti < prezzoCredito) return alert("Crediti insufficienti!");
       crediti -= prezzoCredito;
       aggiornaCredito();
-      aggiungiAlCarrello(id, c, euroPrezzo);
+      aggiungiAlCarrello(id, c, prezzoCredito);
       localStorage.setItem(id, "acquisito");
       btn.textContent = "Acquisito";
       btn.disabled = true;
     };
-
-    if (tipoLead === "contratto") {
-      btn.textContent = "Solo per interni";
-    }
 
     div.appendChild(btn);
     container.appendChild(div);
   });
 }
 
-function aggiungiAlCarrello(id, cliente, prezzo) {
+function aggiungiAlCarrello(id, cliente, creditiSpesi) {
   const li = document.createElement("li");
-  li.innerHTML = `${cliente[0]} – €${prezzo}`;
+  li.innerHTML = `${cliente[0]} – ${creditiSpesi} credito(i) – €${creditiSpesi * 40}`;
   const rimuovi = document.createElement("button");
   rimuovi.textContent = "Rimuovi";
   rimuovi.onclick = () => {
-    crediti += prezzo === 80 ? 2 : 1;
+    crediti += creditiSpesi;
     aggiornaCredito();
     localStorage.removeItem(id);
     li.remove();
