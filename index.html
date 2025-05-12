@@ -2,29 +2,30 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TrovaClienti - Funziona</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TrovaClienti</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="app">
+  <div class="container">
     <h1>TrovaClienti</h1>
-    <div class="crediti-box">
-      <span><strong>Crediti:</strong> <span id="crediti">8</span></span>
-      <button id="ricaricaBtn">Ricarica Crediti</button>
+    <div class="header">
+      <div><strong>Crediti:</strong> <span id="crediti">8</span> (<span id="euro">€320</span>)</div>
+      <button id="ricaricaBtn">💳 Ricarica Crediti</button>
     </div>
-    <div id="carrello-box">
-      <h2>🛒 Carrello</h2>
-      <p><strong>Totale:</strong> €<span id="totaleCarrello">0</span></p>
-      <ul id="carrello"></ul>
+
+    <div class="filters">
+      <select id="regioneFilter"><option value="">Tutte le Regioni</option></select>
+      <select id="cittaFilter"><option value="">Tutte le Città</option></select>
+      <select id="categoriaFilter"><option value="">Tutte le Categorie</option></select>
+      <select id="tipoFilter"><option value="">Tutti i Tipi</option></select>
     </div>
-    <div id="filters">
-      <select id="regioneFilter"><option value="">Tu</option></select>
-      <select id="cittaFilter"><option value="">Tu</option></select>
-      <select id="categoriaFilter"><option value="">Tu</option></select>
-      <select id="tipoFilter"><option value="">Tu</option></select>
-    </div>
+
     <div id="clienti-container">Caricamento clienti...</div>
+
+    <h2>🛒 Carrello</h2>
+    <ul id="carrello"></ul>
+    <p><strong>Totale Carrello:</strong> €<span id="totaleCarrello">0</span></p>
   </div>
 
   <div id="modal" class="modal hidden">
@@ -33,7 +34,7 @@
       <button onclick="ricarica(8)">💳 Carta (+8 crediti)</button>
       <button onclick="ricarica(8)">🅿️ PayPal (+8 crediti)</button>
       <button onclick="ricarica(8)">🏦 Bonifico (+8 crediti)</button>
-      <br /><br />
+      <br><br>
       <button onclick="chiudiModal()">Chiudi</button>
     </div>
   </div>
