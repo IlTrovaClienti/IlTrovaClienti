@@ -12,7 +12,35 @@ body {
   padding: 20px;
 }
 
-/* Header */
+/* Universal button styling for large, rounded buttons */
+button {
+  display: inline-block;
+  padding: 18px 30px !important;
+  border: none;
+  border-radius: 36px !important; /* fully rounded */
+  font-size: 1.2em !important;
+  font-weight: bold;
+  color: #fff !important;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Specific button variants */
+button#acquisisci, button.acquisisci {
+  background-color: #28a745 !important; /* green */
+}
+button#contratto, button.contratto {
+  background-color: #17a2b8 !important; /* cyan */
+}
+button#annulla, button.annulla {
+  background-color: #dc3545 !important; /* red */
+}
+button#acquisito, button.acquisito {
+  background-color: #6c757d !important; /* gray */
+  cursor: not-allowed;
+}
+
+/* Header styling */
 .header {
   background: #ffffff;
   border-radius: 12px;
@@ -21,136 +49,17 @@ body {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   margin-bottom: 20px;
 }
-.header h1 {
-  font-size: 2.2em;
-  margin-bottom: 10px;
-}
-.header .crediti {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.2em;
-}
 .header button {
-  background: #007bff;
-  padding: 14px 24px;
-  border-radius: 32px; /* fully rounded */
-  font-size: 1.1em;
+  /* larger header button */
+  padding: 18px 30px !important;
+  border-radius: 36px !important;
 }
 
-/* Filtri */
-.filtri {
-  margin-bottom: 20px;
-}
-.filter-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-.filter {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-.filter label {
-  margin-bottom: 6px;
-  font-size: 1em;
-  color: #555;
-}
-.filter select {
-  padding: 14px;
-  border: 1px solid #ccc;
-  border-radius: 12px;
-  font-size: 1em;
-  background: #fff;
-}
+/* Filters */
+.filtri { margin-bottom: 20px; }
+.filter-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.filter select { padding: 14px; border-radius: 12px; font-size: 1em; }
 
 /* Carrello */
-.carrello {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
-}
-.carrello h2 {
-  font-size: 1.6em;
-  margin-bottom: 14px;
-}
-.carrello ul {
-  list-style: none;
-  margin-bottom: 14px;
-}
-.carrello li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-.carrello li:last-child {
-  border-bottom: none;
-}
-.carrello .totale {
-  font-weight: bold;
-  font-size: 1.2em;
-}
-
-/* Cliente cards */
-main#clientiContainer {
-  display: flex;
-  flex-direction: column;
-}
-.cliente {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-.cliente h3 {
-  font-size: 1.4em;
-  margin-bottom: 12px;
-}
-.cliente p {
-  margin-bottom: 10px;
-}
-
-/* Buttons styling */
-button {
-  font-family: 'Segoe UI', Tahoma, sans-serif;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-/* Operational buttons in cliente */
-.cliente button.acquisisci,
-.cliente button.contratto,
-.cliente button.annulla {
-  display: inline-block;
-  padding: 16px 24px;  /* larger padding */
-  margin-right: 10px;
-  font-size: 1.1em;     /* larger font */
-  border-radius: 32px;  /* fully rounded */
-}
-
-/* Variant colors */
-button.acquisisci {
-  background-color: #28a745; /* green */
-}
-button.contratto {
-  background-color: #17a2b8; /* cyan */
-}
-button.annulla {
-  background-color: #dc3545; /* red */
-}
-button.acquisito {
-  background-color: #6c757d; /* gray */
-  cursor: not-allowed;
-  padding: 16px 24px;
-  font-size: 1.1em;
-  border-radius: 32px;
-}
+.carrello { padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.carrello li { padding: 10px 0; border-bottom: 1px solid #eee; }
