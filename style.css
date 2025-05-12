@@ -43,7 +43,6 @@ button.acquisisci {
 }
 button.annulla {
   background-color: #dc3545;
-  margin-left: 10px;
 }
 button.acquisito {
   background-color: gray;
@@ -54,4 +53,8 @@ button.acquisito {
   margin: 5px 0;
   font-style: italic;
   color: #555;
+}
+/* Contratto button styling */
+button.contratto {
+  background-color: #007bff;
 }
