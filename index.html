@@ -1,1 +1,30 @@
-<!DOCTYPE html>...
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IlTrovaClienti</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="container">
+    <h1>IlTrovaClienti</h1>
+    <div id="creditiBox"><strong>Crediti:</strong> <span id="crediti">8</span> (<span id="valoreCrediti">€320.00</span>) 
+      <button onclick="ricaricaCrediti()">💳 Ricarica Crediti</button>
+    </div>
+    <div id="filtri">
+      <select id="regioneFilter"></select>
+      <select id="cittaFilter"></select>
+      <select id="categoriaFilter"></select>
+      <select id="tipoFilter"></select>
+    </div>
+    <div id="carrello">
+      <h2>🛒 Carrello</h2>
+      <ul id="listaCarrello"></ul>
+      <strong>Totale:</strong> <span id="totale">€0.00</span>
+    </div>
+    <div id="clienti"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

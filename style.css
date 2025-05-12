@@ -1,1 +1,33 @@
-body { font-family: sans-serif; ... }
+body {
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  padding: 20px;
+}
+.card {
+  border: 1px solid #ddd;
+  background: #fff;
+  padding: 10px;
+  margin: 10px 0;
+}
+button {
+  margin: 5px;
+  padding: 8px;
+  border: none;
+  cursor: pointer;
+}
+button.acquisisci {
+  background-color: #007bff;
+  color: white;
+}
+button.annulla {
+  background-color: #dc3545;
+  color: white;
+}
+#filtri select {
+  margin: 5px;
+  padding: 5px;
+}
