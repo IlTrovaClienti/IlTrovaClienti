@@ -3,6 +3,7 @@ const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2
 
 let crediti = 8;
 let clienti = [];
+let esclusi = [];
 let carrello = [];
 
 function aggiornaUI() {
@@ -66,6 +67,7 @@ function riempi(id, valori) {
 }
 
 function mostraClienti() {
+  container.innerHTML = "";
   const container = document.getElementById("clienti-container");
   container.innerHTML = "";
   const f1 = document.getElementById("regioneFilter").value;
@@ -94,6 +96,8 @@ function mostraClienti() {
     annullaBtn.onclick = () => {
       const i = carrello.findIndex(e => e.id === c.id);
       if (i !== -1) {
+      const indexEsclusi = esclusi.indexOf(c.id);
+      if (indexEsclusi !== -1) esclusi.splice(indexEsclusi, 1);
         const creditiRecuperati = Math.ceil(c.prezzo / 40);
         crediti += creditiRecuperati;
         carrello.splice(i, 1);
@@ -104,6 +108,7 @@ function mostraClienti() {
     };
 
     btn.onclick = () => {
+  esclusi.push(c.id);
 
       const creditiNecessari = Math.ceil(c.prezzo / 40);
       if (crediti < creditiNecessari) {
