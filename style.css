@@ -1,80 +1,61 @@
 
 body {
-  background: white;
-  font-family: sans-serif;
-  margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #fff;
+  color: #222;
 }
-.container {
-  max-width: 900px;
-  margin: auto;
-  padding: 20px;
-}
-h1 {
-  font-size: 2em;
-}
-.crediti-box {
+header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
-.filters > div {
-  margin: 10px 0;
+#ricaricaBtn {
+  background: linear-gradient(to right, #007bff, #00c6ff);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  font-weight: bold;
+  border-radius: 4px;
+}
+#carrelloBox, #filtri, #clienti {
+  margin-top: 20px;
 }
 select {
-  width: 100%;
-  padding: 10px;
-  font-size: 1em;
+  padding: 8px;
+  margin-right: 10px;
 }
-.client-item {
-  background: #f9f9f9;
-  margin: 10px 0;
-  padding: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-.btn {
-  padding: 10px 15px;
-  font-weight: bold;
-  font-size: 1em;
-  margin: 5px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: white;
-}
-.blu { background: linear-gradient(to right, #007bff, #00a8ff); }
-.verde { background: #28a745; }
-.arancio { background: #fd7e14; }
-.giallo { background: #ffc107; color: black; }
-.rosso { background: #dc3545; }
-.grigio { background: #343a40; }
-
-.modal {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background: white;
-  padding: 30px;
-  border-radius: 8px;
-  text-align: center;
-}
-.hidden {
-  display: none;
-}
-#carrello {
-  background: #fff;
-  list-style: none;
-  padding: 10px;
+.card {
   border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  background: #f9f9f9;
 }
-#carrello li {
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+.card strong {
+  font-size: 1.1em;
+}
+.card button {
+  padding: 6px 10px;
+  margin-right: 6px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+}
+.btn-blu {
+  background: #007bff;
+  color: #fff;
+}
+.btn-rosso {
+  background: #dc3545;
+  color: #fff;
+}
+#svuotaCarrello {
+  margin-top: 10px;
+  background: #ff4444;
+  color: white;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
 }

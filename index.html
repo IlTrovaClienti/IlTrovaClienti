@@ -1,53 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>IlTrovaClienti</h1>
-    <div class="crediti-box">
-      <strong>Crediti:</strong> <span id="crediti">8</span> (<span id="euro">€320.00</span>)
-      <button id="ricaricaBtn" class="btn blu">💳 Ricarica Crediti</button>
+    <div id="creditiBox">
+      Crediti: <span id="crediti">8</span> (€<span id="valoreCrediti">320.00</span>)
+      <button id="ricaricaBtn" onclick="ricaricaCrediti()">💳 Ricarica Crediti</button>
     </div>
+  </header>
 
+  <section id="carrelloBox">
     <h2>🛒 Carrello</h2>
     <ul id="carrello"></ul>
-    <p><strong>Totale:</strong> €<span id="totaleCarrello">0</span></p>
+    <div class="totale">Totale: €<span id="totaleCarrello">0.00</span></div>
+    <button id="svuotaCarrello" onclick="svuotaCarrello()">🧹 Annulla Ordine</button>
+  </section>
 
-    <div class="filters">
-      <div><select id="regioneFilter"><option value="">Tutte le Regioni</option></select></div>
-      <div><select id="cittaFilter"><option value="">Tutte le Città</option></select></div>
-      <div><select id="categoriaFilter"><option value="">Tutte le Categorie</option></select></div>
-      <div><select id="tipoFilter"><option value="">Tutti i Tipi</option></select></div>
-    </div>
+  <section id="filtri">
+    <select id="regioneFilter"><option value="">Tutte le Regioni</option></select>
+    <select id="cittaFilter"><option value="">Tutte le Città</option></select>
+    <select id="categoriaFilter"><option value="">Tutte le Categorie</option></select>
+    <select id="tipoFilter"><option value="">Tutti i Tipi</option></select>
+  </section>
 
-    <div id="clienti-container">Caricamento clienti...</div>
-  </div>
+  <section id="clienti"></section>
 
-  <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <h3>Simula ricarica crediti</h3>
-      <button onclick="ricarica(8)" class="btn arancio">💳 Carta (+8 crediti)</button>
-      <button onclick="ricarica(8)" class="btn verde">🅿️ PayPal (+8 crediti)</button>
-      <button onclick="ricarica(8)" class="btn grigio">🏦 Bonifico (+8 crediti)</button>
-      <br><br><button onclick="chiudiModal()" class="btn rosso">Chiudi</button>
-    </div>
-  </div>
-
-  
-  <style>
-    .dual-btns {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
-  </style>
   <script src="script.js"></script>
-
 </body>
 </html>
