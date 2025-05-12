@@ -1,11 +1,6 @@
 // URL del foglio Google in formato TSV
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv';
 
-// Funzione per arrotondare per eccesso alla centinaia
-function roundToHundred(num) {
-  return Math.ceil(num / 100) * 100;
-}
-
 let crediti = 8;
 const euroDisplay = document.getElementById('euro');
 const creditiDisplay = document.getElementById('crediti');
@@ -16,131 +11,110 @@ const ricaricaBtn = document.getElementById('ricaricaCrediti');
 
 const carrelloState = [];
 
-// Aggiorna la visualizzazione dei crediti
+// Aggiorna visualizzazione crediti
 function aggiornaCreditiDisplay() {
   creditiDisplay.textContent = crediti.toFixed(2);
   euroDisplay.textContent = '€' + (crediti * 40).toFixed(2);
 }
 
-// Aggiunge un lead al carrello
-function aggiungiAlCarrello(leadId, prezzo) {
-  if (carrelloState.includes(leadId)) return;
-  carrelloState.push(leadId);
+// Aggiunge elemento al carrello
+function aggiungiAlCarrello(leadId, desc, creditCost, euroCost) {
+  if (carrelloState.some(item => item.id === leadId && item.type === desc)) return;
+  carrelloState.push({id: leadId, type: desc, euro: euroCost});
   const li = document.createElement('li');
-  li.textContent = leadId + ' – €' + prezzo;
-  li.dataset.prezzo = prezzo;
+  li.textContent = leadId + ' – ' + desc + ' (€' + euroCost + ')';
+  li.dataset.id = leadId;
+  li.dataset.type = desc;
+  li.dataset.euro = euroCost;
 
   const btnAnnulla = document.createElement('button');
   btnAnnulla.textContent = 'Annulla';
   btnAnnulla.className = 'annulla';
   btnAnnulla.onclick = () => {
+    // rimuovi da stato e UI
     carrello.removeChild(li);
-    carrelloState.splice(carrelloState.indexOf(leadId), 1);
-    const creditCost = prezzo / 40;
+    const idx = carrelloState.findIndex(i => i.id === leadId && i.type === desc);
+    if (idx > -1) carrelloState.splice(idx, 1);
+    // ripristina crediti
     crediti += creditCost;
     aggiornaCreditiDisplay();
-
-    const btnOrig = document.getElementById('btn-' + leadId);
-    btnOrig.disabled = false;
-    btnOrig.textContent = 'Acquisisci Cliente';
-    btnOrig.className = 'acquisisci';
+    // riattiva i due bottoni
+    const btnLead = document.getElementById('btn-lead-' + leadId);
+    const btnApp = document.getElementById('btn-app-' + leadId);
+    btnLead.disabled = false; btnApp.disabled = false;
     aggiornaTotale();
   };
-
   li.appendChild(btnAnnulla);
   carrello.appendChild(li);
   aggiornaTotale();
 }
 
-// Aggiorna il totale del carrello
+// Aggiorna totale carrello
 function aggiornaTotale() {
-  const totale = carrelloState.reduce((sum, id) => {
-    const li = Array.from(carrello.children).find(item => item.textContent.startsWith(id));
-    return sum + (li ? parseFloat(li.dataset.prezzo) : 0);
-  }, 0);
+  const totale = carrelloState.reduce((sum, i) => sum + i.euro, 0);
   totaleDisplay.textContent = '€' + totale.toFixed(2);
 }
 
-// Crea il card di un cliente
+// Crea card cliente con due bottoni per lead e appuntamento
 function creaCliente(lead) {
   const id = lead.id;
-  const prezzo = lead.prezzo;
-
   const div = document.createElement('div');
   div.className = 'cliente';
-
+  // Titolo/info
   const h3 = document.createElement('h3');
   h3.textContent = lead.categoria + ' – ' + lead.citta;
   const pInfo = document.createElement('p');
   pInfo.textContent = '📍 ' + lead.regione + ' | 💬 ' + lead.tipo;
-
   const pDescr = document.createElement('p');
   pDescr.className = 'descrizione';
   pDescr.textContent = lead.descrizione || '';
+  div.append(h3, pInfo, pDescr);
 
-  const pBudget = document.createElement('p');
-  pBudget.innerHTML = '<strong>Budget:</strong> €' + lead.budget;
-  const pPrezzo = document.createElement('p');
-  pPrezzo.innerHTML = '<strong>Prezzo Acquisto:</strong> €' + prezzo;
-
-  const btn = document.createElement('button');
-  btn.textContent = 'Acquisisci Cliente';
-  btn.className = 'acquisisci';
-  btn.id = 'btn-' + id;
-  btn.onclick = () => {
-    const creditCost = prezzo / 40;
-    crediti -= creditCost;
+  // Bottoni
+  const btnLead = document.createElement('button');
+  btnLead.textContent = 'Lead da chiamare (1 credito)';
+  btnLead.id = 'btn-lead-' + id;
+  btnLead.className = 'acquisisci';
+  btnLead.onclick = () => {
+    // costa 1 credito = 40€
+    crediti -= 1;
     aggiornaCreditiDisplay();
-    aggiungiAlCarrello(id, prezzo);
-    btn.disabled = true;
-    btn.textContent = 'Acquisito';
-    btn.className = 'acquisito';
+    aggiungiAlCarrello(id, 'Lead da chiamare', 1, 40);
+    // disabilita entrambi
+    btnLead.disabled = true; btnApp.disabled = true;
+  };
+  const btnApp = document.createElement('button');
+  btnApp.textContent = 'Appuntamento fissato (2 crediti)';
+  btnApp.id = 'btn-app-' + id;
+  btnApp.className = 'acquisisci';
+  btnApp.onclick = () => {
+    // costa 2 crediti = 80€
+    crediti -= 2;
+    aggiornaCreditiDisplay();
+    aggiungiAlCarrello(id, 'Appuntamento fissato', 2, 80);
+    btnLead.disabled = true; btnApp.disabled = true;
   };
 
-  div.append(h3, pInfo, pDescr, pBudget, pPrezzo, btn);
+  div.append(btnLead, btnApp);
   clientiContainer.appendChild(div);
 }
 
-// Popola un dropdown con valori unici
-function popolaDropdown(selectId, leads, key) {
-  const select = document.getElementById(selectId);
-  const unici = Array.from(new Set(leads.map(l => l[key]))).sort();
-  unici.forEach(val => {
-    const opt = document.createElement('option');
-    opt.value = val;
-    opt.textContent = val;
-    select.appendChild(opt);
-  });
-}
-
-// Carica i dati e inizializza la pagina
+// Carica dati dal sheet e popola
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL)
     .then(res => res.text())
     .then(text => {
       const righe = text.trim().split('\n');
       const headers = righe.shift().split('\t');
-      // Trim e normalizzazione degli header
-      const keys = headers.map(h =>
-        h.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W+/g, '').toLowerCase()
-      );
-
+      const keys = headers.map(h => h.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W+/g, '').toLowerCase());
       const leads = righe.map((riga, idx) => {
         const vals = riga.split('\t');
-        const obj = { id: 'lead-' + idx };
-        keys.forEach((k, i) => obj[k] = vals[i] ? vals[i].trim() : '');
-        const budgetRaw = parseFloat(obj['budget']) || 0;
-        obj.budget = roundToHundred(budgetRaw);
-        if (obj['prezzodiacquisto']) {
-          obj.prezzo = roundToHundred(parseFloat(obj['prezzodiacquisto']));
-        } else {
-          obj.prezzo = roundToHundred(budgetRaw * 0.1);
-        }
+        const obj = {id: 'lead-' + idx};
+        keys.forEach((k,i) => obj[k] = vals[i] ? vals[i].trim() : '');
         obj.descrizione = obj['descrizione'] || '';
         return obj;
       });
-
-      // Popola filtri (non modificare)
+      // city, region, category, type used by filters unchanged
       popolaDropdown('regioneSelect', leads, 'regione');
       popolaDropdown('cittaSelect', leads, 'citta');
       popolaDropdown('categoriaSelect', leads, 'categoria');
@@ -149,10 +123,21 @@ window.addEventListener('DOMContentLoaded', () => {
       leads.forEach(creaCliente);
       aggiornaCreditiDisplay();
     })
-    .catch(err => console.error('Errore caricamento sheet:', err));
+    .catch(err => console.error('Errore:', err));
 });
 
-// Ricarica crediti al click
+// Funzione popola dropdown (unchanged)
+function popolaDropdown(selectId, leads, key) {
+  const select = document.getElementById(selectId);
+  const unici = Array.from(new Set(leads.map(l => l[key]))).sort();
+  unici.forEach(val => {
+    const opt = document.createElement('option');
+    opt.value = val; opt.textContent = val;
+    select.appendChild(opt);
+  });
+}
+
+// Ricarica crediti
 ricaricaBtn.onclick = () => {
   crediti += 8;
   aggiornaCreditiDisplay();
