@@ -127,7 +127,10 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(text => {
       const righe = text.trim().split('\n');
       const headers = righe.shift().split('\t');
-      const keys = headers.map(h => h.replace(/\W+/g, '').toLowerCase());
+      // Normalizzazione per mantenere lettere accentate trasformate in ascii
+      const keys = headers.map(h =>
+        h.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W+/g, '').toLowerCase()
+      );
 
       const leads = righe.map((riga, idx) => {
         const vals = riga.split('\t');
