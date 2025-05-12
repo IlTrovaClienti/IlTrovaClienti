@@ -9,13 +9,20 @@
 <body>
   <div id="app">
     <h1>IlTrovaClienti</h1>
+    <div id="crediti">Crediti disponibili: <span id="credito">8</span> (equivalente: €<span id="euro">320</span>)</div>
+
     <div id="filters">
-      <!-- Filtri dinamici in arrivo -->
+      <select id="regioneFilter"><option value="">Tutte le Regioni</option></select>
+      <select id="cittaFilter"><option value="">Tutte le Città</option></select>
+      <select id="categoriaFilter"><option value="">Tutte le Categorie</option></select>
+      <select id="tipoFilter"><option value="">Tutti i Tipi</option></select>
     </div>
-    <div id="clienti-container">
-      <p>Caricamento clienti in corso...</p>
-    </div>
+
+    <div id="clienti-container">Caricamento clienti...</div>
     <button id="mostra-altri">Mostra altri clienti</button>
+
+    <h2>🛒 Carrello</h2>
+    <ul id="carrello"></ul>
   </div>
 
   <footer>
