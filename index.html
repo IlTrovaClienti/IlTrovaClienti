@@ -1,1 +1,43 @@
-<!DOCTYPE html>...
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IlTrovaClienti</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>IlTrovaClienti</h1>
+    <div class="crediti-box">
+      <strong>Crediti:</strong> <span id="crediti">8</span> (<span id="euro">€320.00</span>)
+      <button id="ricaricaBtn" class="btn blu">💳 Ricarica Crediti</button>
+    </div>
+
+    <div class="filters">
+      <div><select id="regioneFilter"><option value="">Tutte le Regioni</option></select></div>
+      <div><select id="cittaFilter"><option value="">Tutte le Città</option></select></div>
+      <div><select id="categoriaFilter"><option value="">Tutte le Categorie</option></select></div>
+      <div><select id="tipoFilter"><option value="">Tutti i Tipi</option></select></div>
+    </div>
+
+    <div id="clienti-container">Caricamento clienti...</div>
+
+    <h2>🛒 Carrello</h2>
+    <ul id="carrello"></ul>
+    <p><strong>Totale:</strong> €<span id="totaleCarrello">0</span></p>
+  </div>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h3>Simula ricarica crediti</h3>
+      <button onclick="ricarica(8)" class="btn arancio">💳 Carta (+8 crediti)</button>
+      <button onclick="ricarica(8)" class="btn verde">🅿️ PayPal (+8 crediti)</button>
+      <button onclick="ricarica(8)" class="btn grigio">🏦 Bonifico (+8 crediti)</button>
+      <br><br><button onclick="chiudiModal()" class="btn rosso">Chiudi</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
