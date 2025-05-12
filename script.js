@@ -36,6 +36,7 @@ function caricaDati() {
     });
     popolaFiltri();
     mostraClienti();
+      document.getElementById("acq_" + cliente.id).disabled = false;
   });
 }
 
@@ -55,7 +56,7 @@ function popolaFiltri() {
 
 function riempi(id, valori) {
   const sel = document.getElementById(id);
-  sel.innerHTML = `<option value="">Tutti</option>`;
+  sel.innerHTML = `<option value="">Tutte le Regioni</option>`;
   [...valori].sort().forEach(v => {
     const opt = document.createElement("option");
     opt.value = v;
@@ -83,7 +84,7 @@ function mostraClienti() {
     btn.className = "btn blu";
     btn.textContent = "Acquisisci Cliente";
     const disabled = carrello.find(e => e.id === c.id);
-    if (disabled) btn.disabled = true;
+    if (disabled) btn.disabled = true; btn.id = "acq_" + c.id; annullaBtn.id = "ann_" + c.id;
     
     const annullaBtn = document.createElement("button");
     annullaBtn.className = "btn rosso";
@@ -98,6 +99,7 @@ function mostraClienti() {
         carrello.splice(i, 1);
         aggiornaUI();
         mostraClienti();
+      document.getElementById("acq_" + cliente.id).disabled = false;
       }
     };
 
@@ -112,6 +114,7 @@ function mostraClienti() {
       carrello.push({ nome: c.nome, prezzo: c.prezzo, id: c.id });
       aggiornaUI();
       mostraClienti();
+      document.getElementById("acq_" + cliente.id).disabled = false;
     };
     div.innerHTML = `<strong>${c.categoria}</strong><br>📍 ${c.regione}, ${c.citta} | 💬 ${c.tipo} | 💶 €${c.budget}<br>Prezzo Acquisto: €${c.prezzo}<br>`;
     div.appendChild(btn);
@@ -131,6 +134,7 @@ function rimuoviCliente(index) {
   carrello.splice(index, 1);
   aggiornaUI();
   mostraClienti();
+      document.getElementById("acq_" + cliente.id).disabled = false;
 }
 
 function ricarica(qty) {
@@ -163,4 +167,5 @@ function annullaOrdine() {
   carrello = [];
   aggiornaUI();
   mostraClienti();
+      document.getElementById("acq_" + cliente.id).disabled = false;
 }
