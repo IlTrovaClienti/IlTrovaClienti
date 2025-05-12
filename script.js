@@ -1,117 +1,72 @@
 
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv";
-let clienti = [];
-let carrello = [];
-let crediti = 8;
+document.addEventListener("DOMContentLoaded", function () {
+    const clienti = [
+        { regione: "Abruzzo", citta: "L'Aquila", categoria: "Impianto Fotovoltaico", tipo: "Appuntamento", budget: 11392, prezzo: 80, descrizione: "Installazione con accumulo 10kWh" },
+    ];
 
-function aggiornaInterfaccia() {
-  const div = document.getElementById("clienti");
-  div.innerHTML = "";
-  const regioneSel = document.getElementById("regioneFilter").value;
-  const cittaSel = document.getElementById("cittaFilter").value;
-  const categoriaSel = document.getElementById("categoriaFilter").value;
-  const tipoSel = document.getElementById("tipoFilter").value;
-  clienti.forEach((c, i) => {
-    if (
-      (regioneSel === "Tutti" || c.regione === regioneSel) &&
-      (cittaSel === "Tutti" || c.citta === cittaSel) &&
-      (categoriaSel === "Tutti" || c.categoria === categoriaSel) &&
-      (tipoSel === "Tutti" || c.tipo === tipoSel) &&
-      !c.acquisito
-    ) {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = \`
-        <strong>\${c.categoria}</strong><br>
-        📍 \${c.regione}, \${c.citta} | 💬 \${c.tipo} | 💶 €\${c.budget}<br>
-        Prezzo Acquisto: €\${c.prezzo}<br>
-        📝 \${c.descrizione}<br>
-        <button class="acquisisci" onclick="acquisisci(\${i})">Acquisisci Cliente</button>
-        <button class="annulla" onclick="annulla(\${i})">Annulla</button>
-      \`;
-      div.appendChild(card);
+    let crediti = 8;
+    let carrello = [];
+
+    function aggiornaCrediti() {
+        document.getElementById("creditiTotali").textContent = crediti;
+        document.getElementById("valoreCrediti").textContent = (crediti * 40).toFixed(2);
     }
-  });
-}
 
-function acquisisci(i) {
-  const cliente = clienti[i];
-  if (!cliente.acquisito && crediti >= cliente.crediti) {
-    cliente.acquisito = true;
-    carrello.push(cliente);
-    crediti -= cliente.crediti;
+    function aggiornaCarrello() {
+        const ul = document.getElementById("listaCarrello");
+        ul.innerHTML = "";
+        let totale = 0;
+        carrello.forEach((c, i) => {
+            const li = document.createElement("li");
+            li.textContent = `${c.categoria} – ${c.citta} – €${c.prezzo.toFixed(2)}`;
+            const annulla = document.createElement("button");
+            annulla.textContent = "Annulla";
+            annulla.onclick = function () {
+                crediti += c.prezzo / 40;
+                clienti.push(c);
+                carrello.splice(i, 1);
+                aggiornaCrediti();
+                aggiornaClienti();
+                aggiornaCarrello();
+            };
+            li.appendChild(annulla);
+            ul.appendChild(li);
+            totale += c.prezzo;
+        });
+        document.getElementById("totaleCarrello").textContent = totale.toFixed(2);
+    }
+
+    function aggiornaClienti() {
+        const lista = document.getElementById("listaClienti");
+        lista.innerHTML = "";
+        clienti.forEach((c, i) => {
+            const div = document.createElement("div");
+            div.innerHTML = `<h3>${c.categoria}</h3><p>📍 ${c.regione}, ${c.citta} | 💬 ${c.tipo} | 💶 €${c.budget}</p><p>${c.descrizione}</p><p>Prezzo Acquisto: €${c.prezzo}</p>`;
+            const btn = document.createElement("button");
+            btn.textContent = "Acquisisci Cliente";
+            btn.onclick = function () {
+                if (crediti >= c.prezzo / 40) {
+                    crediti -= c.prezzo / 40;
+                    carrello.push(c);
+                    clienti.splice(i, 1);
+                    aggiornaCrediti();
+                    aggiornaClienti();
+                    aggiornaCarrello();
+                } else {
+                    alert("Crediti insufficienti!");
+                }
+            };
+            div.appendChild(btn);
+            lista.appendChild(div);
+        });
+    }
+
+    window.ricaricaCrediti = function () {
+        crediti += 8;
+        aggiornaCrediti();
+    };
+
+    aggiornaCrediti();
+    aggiornaClienti();
     aggiornaCarrello();
-    aggiornaInterfaccia();
-  }
-}
-
-function annulla(i) {
-  const cliente = clienti[i];
-  if (cliente.acquisito) {
-    cliente.acquisito = false;
-    const idx = carrello.indexOf(cliente);
-    if (idx !== -1) carrello.splice(idx, 1);
-    crediti += cliente.crediti;
-    aggiornaCarrello();
-    aggiornaInterfaccia();
-  }
-}
-
-function aggiornaCarrello() {
-  document.getElementById("crediti").textContent = crediti;
-  document.getElementById("valoreCrediti").textContent = `€${crediti * 40}.00`;
-  const lista = document.getElementById("listaCarrello");
-  lista.innerHTML = "";
-  let tot = 0;
-  carrello.forEach((c) => {
-    const li = document.createElement("li");
-    li.textContent = `${c.categoria} – ${c.citta} – €${c.prezzo}`;
-    tot += parseFloat(c.prezzo);
-    lista.appendChild(li);
-  });
-  document.getElementById("totale").textContent = `€${tot.toFixed(2)}`;
-}
-
-function ricaricaCrediti() {
-  crediti += 8;
-  aggiornaCarrello();
-}
-
-function initFiltri() {
-  const r = new Set(), c = new Set(), cat = new Set(), t = new Set();
-  clienti.forEach(x => {
-    r.add(x.regione);
-    c.add(x.citta);
-    cat.add(x.categoria);
-    t.add(x.tipo);
-  });
-  populate("regioneFilter", [...r]);
-  populate("cittaFilter", [...c]);
-  populate("categoriaFilter", [...cat]);
-  populate("tipoFilter", [...t]);
-}
-
-function populate(id, options) {
-  const sel = document.getElementById(id);
-  sel.innerHTML = "<option>Tutti</option>" + options.map(x => `<option>${x}</option>`).join("");
-  sel.onchange = aggiornaInterfaccia;
-}
-
-fetch(sheetURL)
-  .then(res => res.text())
-  .then(data => {
-    const righe = data.trim().split("\n").slice(1);
-    clienti = righe.map(r => {
-      const [regione, citta, categoria, tipo, budget, prezzo, descrizione] = r.split("\t");
-      return {
-        regione, citta, categoria, tipo,
-        budget: parseFloat(budget),
-        prezzo: parseFloat(prezzo),
-        descrizione,
-        crediti: prezzo == 40 ? 1 : prezzo == 80 ? 2 : Math.ceil(prezzo / 40),
-        acquisito: false
-      };
-    });
-    initFiltri();
-    aggiornaInterfaccia();
-  });
+});
