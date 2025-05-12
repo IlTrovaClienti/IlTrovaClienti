@@ -36,12 +36,10 @@ function aggiungiAlCarrello(leadId, prezzo) {
   btnAnnulla.onclick = () => {
     carrello.removeChild(li);
     carrelloState.splice(carrelloState.indexOf(leadId), 1);
-    // Ripristina crediti
     const creditCost = prezzo / 40;
     crediti += creditCost;
     aggiornaCreditiDisplay();
 
-    // Ripristina bottone originale
     const btnOrig = document.getElementById('btn-' + leadId);
     btnOrig.disabled = false;
     btnOrig.textContent = 'Acquisisci Cliente';
@@ -71,30 +69,25 @@ function creaCliente(lead) {
   const div = document.createElement('div');
   div.className = 'cliente';
 
-  // Titolo e informazioni
   const h3 = document.createElement('h3');
   h3.textContent = lead.categoria + ' – ' + lead.citta;
   const pInfo = document.createElement('p');
   pInfo.textContent = '📍 ' + lead.regione + ' | 💬 ' + lead.tipo;
 
-  // Descrizione
   const pDescr = document.createElement('p');
   pDescr.className = 'descrizione';
   pDescr.textContent = lead.descrizione || '';
 
-  // Budget e prezzo
   const pBudget = document.createElement('p');
   pBudget.innerHTML = '<strong>Budget:</strong> €' + lead.budget;
   const pPrezzo = document.createElement('p');
   pPrezzo.innerHTML = '<strong>Prezzo Acquisto:</strong> €' + prezzo;
 
-  // Bottone di acquisizione
   const btn = document.createElement('button');
   btn.textContent = 'Acquisisci Cliente';
   btn.className = 'acquisisci';
   btn.id = 'btn-' + id;
   btn.onclick = () => {
-    // Deduce crediti
     const creditCost = prezzo / 40;
     crediti -= creditCost;
     aggiornaCreditiDisplay();
@@ -127,15 +120,15 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(text => {
       const righe = text.trim().split('\n');
       const headers = righe.shift().split('\t');
-      // Normalizzazione per mantenere lettere accentate trasformate in ascii
+      // Trim e normalizzazione degli header
       const keys = headers.map(h =>
-        h.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W+/g, '').toLowerCase()
+        h.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\W+/g, '').toLowerCase()
       );
 
       const leads = righe.map((riga, idx) => {
         const vals = riga.split('\t');
         const obj = { id: 'lead-' + idx };
-        keys.forEach((k, i) => obj[k] = vals[i] || '');
+        keys.forEach((k, i) => obj[k] = vals[i] ? vals[i].trim() : '');
         const budgetRaw = parseFloat(obj['budget']) || 0;
         obj.budget = roundToHundred(budgetRaw);
         if (obj['prezzodiacquisto']) {
@@ -147,7 +140,7 @@ window.addEventListener('DOMContentLoaded', () => {
         return obj;
       });
 
-      // Non modificare filtri e righe
+      // Popola filtri (non modificare)
       popolaDropdown('regioneSelect', leads, 'regione');
       popolaDropdown('cittaSelect', leads, 'citta');
       popolaDropdown('categoriaSelect', leads, 'categoria');
