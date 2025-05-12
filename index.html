@@ -1,27 +1,32 @@
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>IlTrovaClienti</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IlTrovaClienti</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>IlTrovaClienti</h1>
-    <div id="crediti">Crediti: <span id="creditiTotali">8</span> (€<span id="valoreCrediti">320.00</span>)</div>
-    <button onclick="ricaricaCrediti()">💳 Ricarica Crediti</button>
-    <div id="filtri">
-        <select id="filtroRegione"></select>
-        <select id="filtroCitta"></select>
-        <select id="filtroCategoria"></select>
-        <select id="filtroTipo"></select>
-    </div>
-    <div id="carrello">
-        <h2>🛒 Carrello</h2>
-        <ul id="listaCarrello"></ul>
-        <p><strong>Totale:</strong> €<span id="totaleCarrello">0.00</span></p>
-    </div>
-    <div id="listaClienti"></div>
-    <script src="script.js"></script>
+  <h1>IlTrovaClienti</h1>
+  <div class="crediti">
+    <strong>Crediti:</strong> <span id="crediti">8</span> (<span id="euro">€320.00</span>)
+    <button id="ricaricaCrediti">💳 Ricarica Crediti</button>
+  </div>
+
+  <div class="filtri">
+    <select id="regioneSelect"><option>Tutte le Regioni</option></select>
+    <select id="cittaSelect"><option>Tutte le Città</option></select>
+    <select id="categoriaSelect"><option>Tutte le Categorie</option></select>
+    <select id="tipoSelect"><option>Tutti i Tipi</option></select>
+  </div>
+
+  <div class="carrello" id="carrelloBox">
+    <h2>🛒 Carrello</h2>
+    <ul id="carrello"></ul>
+    <p><strong>Totale:</strong> <span id="totale">€0.00</span></p>
+  </div>
+
+  <div id="clientiContainer"></div>
+  <script src="script.js"></script>
 </body>
 </html>
