@@ -1,4 +1,4 @@
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=csv";
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv";
 
 let crediti = 8;
 let clienti = [];
@@ -11,7 +11,7 @@ function aggiornaUI() {
   document.getElementById("totaleCarrello").textContent = totale.toFixed(2);
   const ul = document.getElementById("carrello");
   ul.innerHTML = "";
-  carrello.forEach((c, i) => {
+  carrello.forEach(c => {
     const li = document.createElement("li");
     li.textContent = `${c.nome} – €${c.prezzo.toFixed(2)}`;
     ul.appendChild(li);
@@ -22,7 +22,7 @@ function caricaDati() {
   fetch(sheetURL).then(r => r.text()).then(text => {
     const righe = text.trim().split("\n").slice(1);
     clienti = righe.map(r => {
-      const [regione, citta, categoria, tipo, budget, prezzo] = r.split(",");
+      const [regione, citta, categoria, tipo, budget, prezzo] = r.split("\t");
       return {
         regione, citta, categoria, tipo,
         budget: parseFloat(budget),
@@ -36,16 +36,14 @@ function caricaDati() {
 }
 
 function popolaFiltri() {
-  const regSet = new Set(), citSet = new Set(), catSet = new Set(), tipSet = new Set();
+  const regSet = new Set(), citSet = new Set(), tipSet = new Set();
   clienti.forEach(c => {
     regSet.add(c.regione);
     citSet.add(c.citta);
-    catSet.add(c.categoria);
     tipSet.add(c.tipo);
   });
   fillSelect("regioneFilter", regSet);
   fillSelect("cittaFilter", citSet);
-  fillSelect("categoriaFilter", catSet);
   fillSelect("tipoFilter", tipSet);
 }
 
