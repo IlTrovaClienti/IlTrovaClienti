@@ -49,3 +49,9 @@ button.acquisito {
   background-color: gray;
   cursor: not-allowed;
 }
+/* Descrizione sotto il titolo */
+.cliente .descrizione {
+  margin: 5px 0;
+  font-style: italic;
+  color: #555;
+}

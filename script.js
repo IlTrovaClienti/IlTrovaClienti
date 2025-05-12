@@ -1,117 +1,165 @@
-let crediti = 8;
-const euroDisplay = document.getElementById("euro");
-const creditiDisplay = document.getElementById("crediti");
-const clientiContainer = document.getElementById("clientiContainer");
-const carrello = document.getElementById("carrello");
-const totaleDisplay = document.getElementById("totale");
+// URL del foglio Google in formato TSV
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv';
 
-const leadPrezzi = {
-  "Lead da chiamare": 40,
-  "Appuntamento": 80,
-  "Contratto": null
-};
+// Funzione per arrotondare per eccesso alla centinaia
+function roundToHundred(num) {
+  return Math.ceil(num / 100) * 100;
+}
+
+let crediti = 8;
+const euroDisplay = document.getElementById('euro');
+const creditiDisplay = document.getElementById('crediti');
+const clientiContainer = document.getElementById('clientiContainer');
+const carrello = document.getElementById('carrello');
+const totaleDisplay = document.getElementById('totale');
+const ricaricaBtn = document.getElementById('ricaricaCrediti');
+
 const carrelloState = [];
 const acquisitiGlobali = new Set();
 
+// Aggiorna la visualizzazione dei crediti
 function aggiornaCreditiDisplay() {
   creditiDisplay.textContent = crediti;
-  euroDisplay.textContent = "€" + (crediti * 40).toFixed(2);
+  euroDisplay.textContent = '€' + (crediti * 40).toFixed(2);
 }
 
-function aggiungiAlCarrello(cliente, prezzo, btn) {
-  if (carrelloState.includes(cliente.id)) return;
-  carrelloState.push(cliente.id);
-  const li = document.createElement("li");
-  li.textContent = cliente.titolo + " – " + cliente.citta + " – €" + prezzo.toFixed(2);
-  const btnAnnulla = document.createElement("button");
-  btnAnnulla.textContent = "Annulla";
-  btnAnnulla.className = "annulla";
+// Aggiunge un lead al carrello
+function aggiungiAlCarrello(leadId, prezzo) {
+  if (carrelloState.includes(leadId)) return;
+  carrelloState.push(leadId);
+  const li = document.createElement('li');
+  li.textContent = leadId + ' – €' + prezzo;
+  li.dataset.prezzo = prezzo;
+
+  const btnAnnulla = document.createElement('button');
+  btnAnnulla.textContent = 'Annulla';
+  btnAnnulla.className = 'annulla';
   btnAnnulla.onclick = () => {
     carrello.removeChild(li);
-    carrelloState.splice(carrelloState.indexOf(cliente.id), 1);
+    carrelloState.splice(carrelloState.indexOf(leadId), 1);
     crediti += prezzo / 40;
     aggiornaCreditiDisplay();
-    btn.disabled = false;
-    btn.textContent = "Acquisisci Cliente";
-    btn.className = "acquisisci";
-    acquisitiGlobali.delete(cliente.id);
+
+    const btnOrig = document.getElementById('btn-' + leadId);
+    btnOrig.disabled = false;
+    btnOrig.textContent = 'Acquisisci Cliente';
+    btnOrig.className = 'acquisisci';
+    acquisitiGlobali.delete(leadId);
     aggiornaTotale();
   };
+
   li.appendChild(btnAnnulla);
   carrello.appendChild(li);
-  acquisitiGlobali.add(cliente.id);
+  acquisitiGlobali.add(leadId);
   aggiornaTotale();
 }
 
+// Aggiorna il totale del carrello
 function aggiornaTotale() {
-  let totale = 0;
-  for (const id of carrelloState) {
-    const tipo = document.getElementById("btn-" + id).dataset.tipo;
-    totale += leadPrezzi[tipo] || 0;
-  }
-  totaleDisplay.textContent = "€" + totale.toFixed(2);
+  const totale = carrelloState.reduce((sum, id) => {
+    const li = Array.from(carrello.children).find(item => item.dataset.prezzo && item.textContent.startsWith(id));
+    return sum + (li ? parseFloat(li.dataset.prezzo) : 0);
+  }, 0);
+  totaleDisplay.textContent = '€' + totale;
 }
 
-function creaCliente(cliente) {
-  const div = document.createElement("div");
-  div.className = "cliente";
-  const h3 = document.createElement("h3");
-  h3.textContent = cliente.titolo;
-  const p = document.createElement("p");
-  p.textContent = "📍 " + cliente.regione + ", " + cliente.citta + " | 💬 " + cliente.tipo + " | 🧾 €" + cliente.budget;
+// Crea il card di un cliente
+function creaCliente(lead) {
+  const id = lead.id;
+  const prezzo = lead.prezzo;
 
-  const prezzo = leadPrezzi[cliente.tipo] || (parseFloat(cliente.budget) * 0.1);
-  const prezzoAcquisto = document.createElement("p");
-  prezzoAcquisto.innerHTML = "<strong>Prezzo Acquisto:</strong> €" + prezzo.toFixed(2);
+  const div = document.createElement('div');
+  div.className = 'cliente';
 
-  const btn = document.createElement("button");
-  btn.textContent = "Acquisisci Cliente";
-  btn.className = "acquisisci";
-  btn.id = "btn-" + cliente.id;
-  btn.dataset.tipo = cliente.tipo;
+  const h3 = document.createElement('h3');
+  h3.textContent = lead.categoria + ' – ' + lead.citta;
+
+  const pInfo = document.createElement('p');
+  pInfo.textContent = '📍 ' + lead.regione + ' | 💬 ' + lead.tipo;
+
+  const pDescr = document.createElement('p');
+  pDescr.className = 'descrizione';
+  pDescr.textContent = lead.descrizione || '';
+
+  const pBudget = document.createElement('p');
+  pBudget.innerHTML = '<strong>Budget:</strong> €' + lead.budget;
+
+  const pPrezzo = document.createElement('p');
+  pPrezzo.innerHTML = '<strong>Prezzo Acquisto:</strong> €' + prezzo;
+
+  const btn = document.createElement('button');
+  btn.textContent = 'Acquisisci Cliente';
+  btn.className = 'acquisisci';
+  btn.id = 'btn-' + id;
   btn.onclick = () => {
-    if (crediti < prezzo / 40 || acquisitiGlobali.has(cliente.id)) return;
+    if (crediti < prezzo / 40 || acquisitiGlobali.has(id)) return;
     crediti -= prezzo / 40;
     aggiornaCreditiDisplay();
-    aggiungiAlCarrello(cliente, prezzo, btn);
+    aggiungiAlCarrello(id, prezzo);
     btn.disabled = true;
-    btn.textContent = "Acquisito";
-    btn.className = "acquisito";
+    btn.textContent = 'Acquisito';
+    btn.className = 'acquisito';
   };
 
-  div.appendChild(h3);
-  div.appendChild(p);
-  div.appendChild(prezzoAcquisto);
-  div.appendChild(btn);
+  div.append(h3, pInfo, pDescr, pBudget, pPrezzo, btn);
   clientiContainer.appendChild(div);
 }
 
-function caricaDati() {
-  fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv")
-    .then(res => res.text())
-    .then(data => {
-      const righe = data.trim().split("\n");
-      const intestazioni = righe[0].split("\t");
-      const clienti = righe.slice(1).map(r => {
-        const c = r.split("\t");
-        return {
-          id: c[0] + "-" + c[1] + "-" + c[2],
-          regione: c[0],
-          citta: c[1],
-          categoria: c[2],
-          tipo: c[3],
-          budget: c[4],
-          titolo: c[2] + " – " + c[1]
-        };
-      });
-      clienti.forEach(creaCliente);
-    });
+// Popola un dropdown con valori unici
+function popolaDropdown(selectId, leads, key) {
+  const select = document.getElementById(selectId);
+  const unici = Array.from(new Set(leads.map(l => l[key]))).sort();
+  unici.forEach(val => {
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = val;
+    select.appendChild(opt);
+  });
 }
 
-document.getElementById("ricaricaCrediti").onclick = () => {
+// Carica i dati e inizializza la pagina
+window.addEventListener('DOMContentLoaded', () => {
+  fetch(sheetURL)
+    .then(res => res.text())
+    .then(text => {
+      const righe = text.trim().split('\n');
+      const headers = righe.shift().split('\t');
+      const keys = headers.map(h => h.replace(/\W+/g, '').toLowerCase());
+
+      // Mappa i dati in oggetti
+      const leads = righe.map((riga, idx) => {
+        const vals = riga.split('\t');
+        const obj = { id: 'lead-' + idx };
+        keys.forEach((k, i) => obj[k] = vals[i] || '');
+        // Budget arrotondato
+        const budgetRaw = parseFloat(obj['budget']) || 0;
+        obj.budget = roundToHundred(budgetRaw);
+        // Prezzo Acquisto arrotondato o calcolato
+        if (obj['prezzodiacquisto']) {
+          obj.prezzo = roundToHundred(parseFloat(obj['prezzodiacquisto']));
+        } else {
+          obj.prezzo = roundToHundred(budgetRaw * 0.1);
+        }
+        // Descrizione
+        obj.descrizione = obj['descrizione'] || '';
+        return obj;
+      });
+
+      // Popola i filtri
+      popolaDropdown('regioneSelect', leads, 'regione');
+      popolaDropdown('cittaSelect', leads, 'citta');
+      popolaDropdown('categoriaSelect', leads, 'categoria');
+      popolaDropdown('tipoSelect', leads, 'tipo');
+
+      // Mostra i clienti
+      leads.forEach(creaCliente);
+      aggiornaCreditiDisplay();
+    })
+    .catch(err => console.error('Errore caricamento sheet:', err));
+});
+
+// Ricarica crediti al click
+ricaricaBtn.onclick = () => {
   crediti += 8;
   aggiornaCreditiDisplay();
 };
-
-caricaDati();
-aggiornaCreditiDisplay();
