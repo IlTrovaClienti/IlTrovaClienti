@@ -8,57 +8,26 @@ const clientiContainer = document.getElementById('clientiContainer');
 const carrello = document.getElementById('carrello');
 const totaleDisplay = document.getElementById('totale');
 const ricaricaBtn = document.getElementById('ricaricaCrediti');
-const carrelloState = [];
+let carrelloState = [];
 
-// Update credits display
+// Aggiorna display crediti
 function aggiornaCreditiDisplay() {
   creditiDisplay.textContent = crediti.toFixed(2);
   euroDisplay.textContent = '€' + (crediti * 40).toFixed(2);
 }
 
-// Populate filter selects with default and unique options
-function populateFilters(leads) {
-  ['regione', 'citta', 'categoria', 'tipo'].forEach(key => {
-    const select = document.getElementById(key + 'Select');
-    if (!select) return;
-    // store default
-    const defaultOption = document.createElement('option');
-    defaultOption.value = 'Tutti';
-    let defaultText = '';
-    switch (key) {
-      case 'regione': defaultText = 'Tutte le Regioni'; break;
-      case 'citta': defaultText = 'Tutte le Città'; break;
-      case 'categoria': defaultText = 'Tutte le Categorie'; break;
-      case 'tipo': defaultText = 'Tutti i Tipi'; break;
-    }
-    defaultOption.textContent = defaultText;
-    // clear and re-add default
-    select.innerHTML = '';
-    select.appendChild(defaultOption);
-    // unique sorted values
-    const uniqueVals = Array.from(new Set(leads.map(l => l[key]).filter(v => v))).sort();
-    uniqueVals.forEach(val => {
-      const opt = document.createElement('option');
-      opt.value = val;
-      opt.textContent = val;
-      select.appendChild(opt);
-    });
-  });
-}
-
-// Add to cart and update UI
+// Aggiunge item al carrello
 function aggiungiAlCarrello(leadId, desc, creditCost, euroCost) {
   if (carrelloState.some(item => item.id === leadId && item.type === desc)) return;
   carrelloState.push({id: leadId, type: desc, euro: euroCost, creditCost});
   updateCarrelloUI();
 }
 
-// Update cart UI
+// Aggiorna UI carrello
 function updateCarrelloUI() {
   carrello.innerHTML = '';
   carrelloState.forEach(item => {
     const li = document.createElement('li');
-    // find corresponding lead title
     const card = document.getElementById(item.id);
     const title = card ? card.querySelector('h3').textContent : item.id;
     li.textContent = title + ' – ' + item.type + ' (€' + item.euro + ')';
@@ -68,8 +37,7 @@ function updateCarrelloUI() {
     btn.onclick = () => {
       crediti += item.creditCost;
       aggiornaCreditiDisplay();
-      const idx = carrelloState.indexOf(item);
-      if (idx > -1) carrelloState.splice(idx, 1);
+      carrelloState = carrelloState.filter(i => !(i.id === item.id && i.type === item.type));
       renderLeadsList();
       updateCarrelloUI();
     };
@@ -81,7 +49,7 @@ function updateCarrelloUI() {
 
 let allLeads = [];
 
-// Create lead card
+// Crea card cliente con pulsanti condizionali
 function creaCliente(lead) {
   const div = document.createElement('div');
   div.className = 'cliente';
@@ -94,109 +62,130 @@ function creaCliente(lead) {
   pPrezzo.innerHTML = '<strong>Prezzo Acquisto:</strong> €' + lead.prezzo.toFixed(2);
   div.append(h3, pInfo, pPrezzo);
 
-  // Actions
+  // container pulsanti
   const actions = document.createElement('div');
   actions.className = 'actions';
 
-  const btnLead = document.createElement('button');
-  btnLead.textContent = 'Lead da chiamare (1 credito)';
-  btnLead.className = 'acquisisci';
-  btnLead.onclick = () => {
-    crediti -= 1; aggiornaCreditiDisplay();
-    aggiungiAlCarrello(lead.id, 'Lead da chiamare', 1, 40);
-    renderLeadsList();
-  };
-
-  const btnApp = document.createElement('button');
-  btnApp.textContent = 'Appuntamento fissato (2 crediti)';
-  btnApp.className = 'appuntamento';
-  btnApp.onclick = () => {
-    crediti -= 2; aggiornaCreditiDisplay();
-    aggiungiAlCarrello(lead.id, 'Appuntamento fissato', 2, 80);
-    renderLeadsList();
-  };
-
-  const btnContr = document.createElement('button');
-  btnContr.textContent = 'Riserva trattativa';
-  btnContr.className = 'contratto';
-  btnContr.onclick = () => {
-    // show form
-    const form = document.createElement('form');
-    form.className = 'contratto-form';
-    form.innerHTML = `
-      <input type="text" name="nome" placeholder="Il tuo nome" required/>
-      <input type="email" name="email" placeholder="La tua email" required/>
-      <textarea name="messaggio" placeholder="Dettagli..." rows="4" required></textarea>
-      <button type="submit">Invia richiesta</button>
-    `;
-    form.onsubmit = e => {
-      e.preventDefault();
-      alert('Richiesta inviata. Grazie!');
-      form.remove();
+  const tipo = lead.tipo.toLowerCase();
+  if (tipo.includes('lead')) {
+    // lead da chiamare: 1 credito
+    const pCosto = document.createElement('p');
+    pCosto.innerHTML = '<strong>Costo:</strong> 1 credito (€40)';
+    actions.appendChild(pCosto);
+    const btn = document.createElement('button');
+    btn.textContent = 'Acquisisci';
+    btn.className = 'acquisisci';
+    btn.onclick = () => {
+      crediti -= 1; aggiornaCreditiDisplay();
+      aggiungiAlCarrello(lead.id, 'Lead da chiamare', 1, 40);
       renderLeadsList();
     };
-    div.appendChild(form);
-    btnLead.disabled = true;
-    btnApp.disabled = true;
-    btnContr.disabled = true;
-  };
+    actions.appendChild(btn);
 
-  actions.append(btnLead, btnApp, btnContr);
+  } else if (tipo.includes('appuntamento')) {
+    // appuntamento fissato: 2 crediti
+    const pCosto = document.createElement('p');
+    pCosto.innerHTML = '<strong>Costo:</strong> 2 crediti (€80)';
+    actions.appendChild(pCosto);
+    const btn = document.createElement('button');
+    btn.textContent = 'Acquisisci';
+    btn.className = 'acquisisci';
+    btn.onclick = () => {
+      crediti -= 2; aggiornaCreditiDisplay();
+      aggiungiAlCarrello(lead.id, 'Appuntamento fissato', 2, 80);
+      renderLeadsList();
+    };
+    actions.appendChild(btn);
+
+  } else if (tipo.includes('contratto')) {
+    // contratto: riserva trattativa
+    const btn = document.createElement('button');
+    btn.textContent = 'Riserva trattativa';
+    btn.className = 'contratto';
+    btn.onclick = () => {
+      const form = document.createElement('form');
+      form.className = 'contratto-form';
+      form.innerHTML = `
+        <input type="text" name="nome" placeholder="Il tuo nome" required/>
+        <input type="email" name="email" placeholder="La tua email" required/>
+        <textarea name="messaggio" placeholder="Dettagli..." rows="4" required></textarea>
+        <button type="submit">Invia richiesta</button>
+      `;
+      form.onsubmit = e => {
+        e.preventDefault();
+        alert('Richiesta inviata. Grazie!');
+        form.remove();
+      };
+      div.appendChild(form);
+      btn.disabled = true;
+    };
+    actions.appendChild(btn);
+  }
+
   div.appendChild(actions);
   return div;
 }
 
-// Render leads
+// Rendering leads
 function renderLeadsList() {
   clientiContainer.innerHTML = '';
   allLeads.forEach(lead => {
     const card = creaCliente(lead);
-    // disable purchased
+    // disabilita acquisiti
     carrelloState.forEach(item => {
-      if (item.id === lead.id && (item.type === 'Lead da chiamare' || item.type === 'Appuntamento fissato')) {
-        card.querySelectorAll('button.acquisisci, button.appuntamento').forEach(b => b.disabled = true);
+      if (item.id === lead.id) {
+        card.querySelectorAll('button.acquisisci').forEach(b => b.disabled = true);
       }
     });
     clientiContainer.appendChild(card);
   });
 }
 
-// Load data
+// Carica dati e inizializza
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL)
-    .then(res => res.text())
+    .then(r => r.text())
     .then(text => {
       const lines = text.trim().split('\n');
-      const headers = lines.shift().split('\t').map(h=>h.trim());
-      const idxMap = {
-        regione: headers.findIndex(h=>h.toLowerCase().includes('region')),
-        citta: headers.findIndex(h=>h.toLowerCase().includes('citt')),
-        categoria: headers.findIndex(h=>h.toLowerCase().includes('categ')),
-        tipo: headers.findIndex(h=>h.toLowerCase().includes('tip')),
-        budget: headers.findIndex(h=>h.toLowerCase().includes('budget')),
-        prezzo: headers.findIndex(h=>h.toLowerCase().includes('prezzo'))
+      const headers = lines.shift().split('\t').map(h => h.trim());
+      const idx = {
+        regione: headers.findIndex(h => /region/i.test(h)),
+        citta: headers.findIndex(h => /citt/i.test(h)),
+        categoria: headers.findIndex(h => /categ/i.test(h)),
+        tipo: headers.findIndex(h => /tip/i.test(h)),
+        budget: headers.findIndex(h => /budget/i.test(h)),
+        prezzo: headers.findIndex(h => /prezzo/i.test(h))
       };
-      allLeads = lines.map((line,i) => {
-        const cells = line.split('\t').map(c=>c.trim());
-        const rawBudget = parseFloat(cells[idxMap.budget]) || 0;
-        const prezzoAcq = parseFloat(cells[idxMap.prezzo]) || Math.ceil(rawBudget*0.1/100)*100;
+      allLeads = lines.map((line, i) => {
+        const cells = line.split('\t').map(c => c.trim());
+        const rawBudget = parseFloat(cells[idx.budget]) || 0;
+        const prezzoAcq = parseFloat(cells[idx.prezzo]) || Math.ceil(rawBudget * 0.1 / 100) * 100;
         return {
           id: 'lead-' + i,
-          regione: cells[idxMap.regione] || '',
-          citta: cells[idxMap.citta] || '',
-          categoria: cells[idxMap.categoria] || '',
-          tipo: cells[idxMap.tipo] || '',
+          regione: cells[idx.regione] || '',
+          citta: cells[idx.citta] || '',
+          categoria: cells[idx.categoria] || '',
+          tipo: cells[idx.tipo] || '',
           budget: rawBudget,
-          prezzo: Math.ceil(prezzoAcq/100)*100
+          prezzo: Math.ceil(prezzoAcq / 100) * 100
         };
       });
-      // populate filters and render
-      populateFilters(allLeads);
+      // filtri
+      ['regione','citta','categoria','tipo'].forEach(key => {
+        const select = document.getElementById(key + 'Select');
+        select.innerHTML = '';
+        const defaultOpt = document.createElement('option');
+        defaultOpt.value = 'Tutti';
+        defaultOpt.textContent = {'regione':'Tutte le Regioni','citta':'Tutte le Città','categoria':'Tutte le Categorie','tipo':'Tutti i Tipi'}[key];
+        select.appendChild(defaultOpt);
+        Array.from(new Set(allLeads.map(l => l[key]).filter(v => v))).sort().forEach(v => {
+          const opt = document.createElement('option'); opt.value = v; opt.textContent = v;
+          select.appendChild(opt);
+        });
+      });
       renderLeadsList();
       aggiornaCreditiDisplay();
     })
-    .catch(err => console.error('Errore caricamento sheet:', err));
+    .catch(err => console.error('Errore:', err));
+  ricaricaBtn.onclick = () => { crediti += 8; aggiornaCreditiDisplay(); };
 });
-
-// Reload credits
-ricaricaBtn.onclick = () => { crediti += 8; aggiornaCreditiDisplay(); };
