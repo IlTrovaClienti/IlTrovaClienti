@@ -7,9 +7,12 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 #btnLeads { background: #004080; color: #fff; }
 #btnAppuntamenti { background: #006400; color: #fff; }
 #btnContratti { background: #FFD700; color: #000; }
-.filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-.filters select { padding: 8px; border-radius: 8px; border: 1px solid #ccc; }
-.carrello { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+.section-buttons button.selected { outline: 3px solid #333; }
+.filters { margin-bottom: 15px; }
+.filter-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.filter-row label { display: block; margin-bottom: 4px; font-size: 0.9em; }
+.filters select { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #ccc; }
+.carrello { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
 .carrello h2 { margin-bottom: 5px; }
 #totale { margin-top: 10px; font-weight: bold; }
 .cliente-card { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; position: relative; }
@@ -26,10 +29,9 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .actions { display: flex; gap: 5px; position: absolute; top: 15px; right: 15px; }
 .actions button { padding: 8px 12px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
 button.acquisisci { background: #004080; color: #fff; }
-button.appuntamento { background: #006400; color: #fff; }
 button.annulla { background: #dc3545; color: #fff; }
 button.contratto { background: #FFD700; color: #000; }
-/* Modal overlay */
+/* Payment modal */
 .modal-overlay {
   position: fixed; top: 0; left: 0; width:100%; height:100%;
   background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:1000;
