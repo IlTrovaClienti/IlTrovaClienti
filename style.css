@@ -7,7 +7,6 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 #btnLeads { background: #004080; color: #fff; }
 #btnAppuntamenti { background: #006400; color: #fff; }
 #btnContratti { background: #FFD700; color: #000; }
-.section-buttons button.selected { outline: 3px solid #333; }
 .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
 .filters select { padding: 8px; border-radius: 8px; border: 1px solid #ccc; }
 .carrello { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
@@ -23,30 +22,10 @@ button.acquisisci { background: #004080; color: #fff; }
 button.appuntamento { background: #006400; color: #fff; }
 button.annulla { background: #dc3545; color: #fff; }
 button.contratto { background: #FFD700; color: #000; }
-
-/* Modal CSS */
+/* Modal overlay */
 .modal-overlay {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 1000;
+  position: fixed; top: 0; left: 0; width:100%; height:100%;
+  background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:1000;
 }
-.modal {
-  background: #fff; padding: 20px; border-radius: 12px;
-  max-width: 400px; width: 90%; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-.modal h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.2em; }
-.modal input, .modal textarea {
-  width: 100%; padding: 8px; margin-bottom: 10px;
-  border-radius: 6px; border: 1px solid #ccc; font-size: 0.95em;
-}
-.modal .form-actions {
-  display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;
-}
-.modal button {
-  padding: 8px 14px; border: none; border-radius: 6px;
-  font-size: 0.95em; cursor: pointer;
-}
-.modal button[type="submit"] { background: #28a745; color: #fff; }
-.modal button.cancel-form { background: #dc3545; color: #fff; }
+.modal { background:#fff; padding:20px; border-radius:12px; max-width:300px; width:90%; text-align:center; }
+.modal button { width:100%; margin:5px 0; padding:10px; border-radius:8px; font-weight:bold; }

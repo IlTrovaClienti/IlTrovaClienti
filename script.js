@@ -13,17 +13,22 @@ const elems = {
   btnLeads: document.getElementById('btnLeads'),
   btnApp: document.getElementById('btnAppuntamenti'),
   btnContr: document.getElementById('btnContratti'),
-  btnRic: document.getElementById('ricarica')
+  btnRic: document.getElementById('ricarica'),
+  payModal: document.getElementById('payment-modal'),
+  btnPayPal: document.getElementById('pay-paypal'),
+  btnCard: document.getElementById('pay-card'),
+  btnBank: document.getElementById('pay-bank'),
+  btnClosePay: document.getElementById('close-payment')
 };
 
 function updateCreditUI() {
   elems.credDisp.textContent = crediti.toFixed(2);
-  elems.euroDisp.textContent = '€' + (crediti*40).toFixed(2);
+  elems.euroDisp.textContent = '€' + (crediti * 40).toFixed(2);
 }
 
 function populateFilters() {
   ['regione','citta','categoria','tipo'].forEach(id => {
-    const sel = id==='regione'?elems.reg:id==='citta'?elems.cit:id==='categoria'?elems.cat:elems.tip;
+    const sel = id === 'regione' ? elems.reg : id === 'citta' ? elems.cit : id === 'categoria' ? elems.cat : elems.tip;
     const values = Array.from(new Set(leads.map(l => l[id]))).sort();
     sel.innerHTML = '<option value="">Tutti</option>' + values.map(v=>`<option value="${v}">${v}</option>`).join('');
     sel.onchange = render;
@@ -65,24 +70,7 @@ function render() {
     } else {
       const btnR=document.createElement('button'); btnR.className='contratto'; btnR.textContent='Riserva trattativa';
       btnR.onclick=()=>{
-        const overlay=document.createElement('div'); overlay.className='modal-overlay';
-        const modal=document.createElement('div'); modal.className='modal';
-        modal.innerHTML=`
-          <h3>Riserva Trattativa</h3>
-          <form class="contratto-form">
-            <input type="text" name="nome" placeholder="Nome e cognome" required/>
-            <input type="email" name="email" placeholder="E-mail" required/>
-            <input type="tel" name="telefono" placeholder="Telefono" required/>
-            <input type="text" name="localita" placeholder="Località" required/>
-            <textarea name="messaggio" placeholder="Messaggio" rows="4" required></textarea>
-            <div class="form-actions">
-              <button type="submit">Invia richiesta</button>
-              <button type="button" class="cancel-form">Annulla</button>
-            </div>
-          </form>`;
-        overlay.appendChild(modal); document.body.appendChild(overlay);
-        overlay.querySelector('.cancel-form').onclick=()=>document.body.removeChild(overlay);
-        overlay.querySelector('.contratto-form').onsubmit=e=>{e.preventDefault(); alert('Richiesta inviata!'); document.body.removeChild(overlay);};
+        elems.payModal.style.display='flex';
       };
       act.append(btnR);
     }
@@ -104,17 +92,23 @@ function updateCart() {
 window.onload=()=>{
   fetch(sheetURL).then(r=>r.text()).then(txt=>{
     const lines=txt.trim().split('\n'); const headers=lines.shift().split('\t').map(h=>h.trim().toLowerCase());
-    const idx={regione:headers.indexOf('regione'), citta:headers.indexOf('città')>=0?headers.indexOf('città'):headers.indexOf('citta'),
-               categoria:headers.indexOf('categoria'), tipo:headers.indexOf('tipo'), descrizione:headers.indexOf('descrizione'),
-               telefono:headers.indexOf('telefono'), budget:headers.findIndex(h=>h.includes('budget')),
-               costCredit:headers.findIndex(h=>h.includes('costo'))};
+    const idx={regione:headers.indexOf('regione'),
+               citta:headers.indexOf('città')>=0?headers.indexOf('città'):headers.indexOf('citta'),
+               categoria:headers.indexOf('categoria'), tipo:headers.indexOf('tipo'),
+               descrizione:headers.indexOf('descrizione'), telefono:headers.indexOf('telefono'),
+               budget:headers.findIndex(h=>h.includes('budget')), costCredit:headers.findIndex(h=>h.includes('costo'))};
     leads=lines.map((l,i)=>{const c=l.split('\t');return{id:'lead-'+i,regione:c[idx.regione]||'',citta:c[idx.citta]||'',
-      categoria:c[idx.categoria]||'', tipo:c[idx.tipo]||'', descrizione:c[idx.descrizione]||'', telefono:c[idx.telefono]||'',
-      budget:parseInt(c[idx.budget])||0, costCredit:parseInt(c[idx.costCredit])||0};});
+      categoria:c[idx.categoria]||'', tipo:c[idx.tipo]||'', descrizione:c[idx.descrizione]||'', budget:parseInt(c[idx.budget])||0,
+      costCredit:parseInt(c[idx.costCredit])||0};});
     populateFilters(); render(); updateCreditUI();
-  }).catch(e=>console.error(e));
+  });
   elems.btnLeads.onclick=()=>{sectionFilter=sectionFilter==='lead'?null:'lead'; elems.btnLeads.classList.toggle('selected'); render();};
   elems.btnApp.onclick=()=>{sectionFilter=sectionFilter==='appuntamento'?null:'appuntamento'; elems.btnApp.classList.toggle('selected'); render();};
   elems.btnContr.onclick=()=>{sectionFilter=sectionFilter==='contratto'?null:'contratto'; elems.btnContr.classList.toggle('selected'); render();};
-  elems.btnRic.onclick=()=>{crediti+=8; updateCreditUI();};
+  // payment modal handlers
+  elems.btnRic.onclick=()=>{ elems.payModal.style.display='flex'; };
+  elems.btnClosePay.onclick=()=>{ elems.payModal.style.display='none'; };
+  elems.btnPayPal.onclick=()=>{ window.open('https://www.paypal.com/paypalme/YourBusiness','_blank'); };
+  elems.btnCard.onclick=()=>{ window.open('https://your-stripe-checkout-link','_blank'); };
+  elems.btnBank.onclick=()=>{ alert('IBAN: IT00X0000000000000000000000'); };
 };
