@@ -106,17 +106,13 @@ function creaCliente(lead) {
   else if (typeLower.includes('appuntamento')) { cost = {c:2, e:80}; }
 
   const pPrez = document.createElement('p');
-// Determine commission based on type
-const t = lead.tipo.toLowerCase();
-let cost = {c:0, e:0};
-if (t.includes('lead')) { cost = {c:1, e:40}; }
-else if (t.includes('appuntamento')) { cost = {c:2, e:80}; }
-if (cost.c > 0) {
-  pPrez.innerHTML = `<strong>Commissione IlTrovaClienti:</strong> €${cost.e} (${cost.c} ${cost.c>1?'crediti':'credito'})`;
-} else {
-  pPrez.innerHTML = '<strong>Commissione IlTrovaClienti:</strong> Riservata in trattativa';
-}
-div.append(h3, pReg, pTipo, pBud, pPrez);
+  if (cost.c > 0) {
+    pPrez.innerHTML = `<strong>Commissione IlTrovaClienti:</strong> €${cost.e} (${cost.c} credito${cost.c>1?'i':''})`;
+  } else {
+    pPrez.innerHTML = '<strong>Commissione IlTrovaClienti:</strong> Riservata in trattativa';
+  }
+
+  div.append(h3, pReg, pTipo, pBud, pPrez);
 
   const floatDiv = document.createElement('div');
   floatDiv.className = 'floating-actions';
