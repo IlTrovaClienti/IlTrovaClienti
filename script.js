@@ -1,4 +1,4 @@
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv';
+const sheetURL = 'https://docs.google.com/spreadsheets/d/YOUR_OLD_ID/pub?output=tsv';
 let crediti = 8, leads = [], carrello = [], sectionFilter = null;
 
 const elems = {
