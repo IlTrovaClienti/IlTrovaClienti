@@ -44,7 +44,6 @@ function render() {
       <h3>${lead.categoria} – ${lead.citta}</h3>
       <p>${lead.regione} | ${lead.tipo}</p>
       <p class="desc">${lead.descrizione}</p>
-      <p class="tel">📞 ${lead.telefono}</p>
       <p>Budget: €${lead.budget}</p>
       <p class="commission">${lead.costCredit>0?`Commissione: €${lead.costCredit*40} (${lead.costCredit} ${lead.costCredit>1?'crediti':'credito'})`:'Commissione riservata'}</p>
     `;
@@ -82,12 +81,8 @@ function render() {
             </div>
           </form>`;
         overlay.appendChild(modal); document.body.appendChild(overlay);
-        overlay.querySelector('.cancel-form').onclick=()=>{
-          document.body.removeChild(overlay);
-        };
-        overlay.querySelector('.contratto-form').onsubmit=e=>{
-          e.preventDefault(); alert('Richiesta inviata!'); document.body.removeChild(overlay);
-        };
+        overlay.querySelector('.cancel-form').onclick=()=>document.body.removeChild(overlay);
+        overlay.querySelector('.contratto-form').onsubmit=e=>{e.preventDefault(); alert('Richiesta inviata!'); document.body.removeChild(overlay);};
       };
       act.append(btnR);
     }
@@ -113,11 +108,9 @@ window.onload=()=>{
                categoria:headers.indexOf('categoria'), tipo:headers.indexOf('tipo'), descrizione:headers.indexOf('descrizione'),
                telefono:headers.indexOf('telefono'), budget:headers.findIndex(h=>h.includes('budget')),
                costCredit:headers.findIndex(h=>h.includes('costo'))};
-    leads=lines.map((l,i)=>{
-      const c=l.split('\t'); return {id:'lead-'+i,regionе:c[idx.regione]||'',citta:c[idx.citta]||'',categoria:c[idx.categoria]||'',
-        tipo:c[idx.tipo]||'',descrizione:c[idx.descrizione]||'',telefono:c[idx.telefono]||'',budget:parseInt(c[idx.budget])||0,
-        costCredit:parseInt(c[idx.costCredit])||0};
-    });
+    leads=lines.map((l,i)=>{const c=l.split('\t');return{id:'lead-'+i,regione:c[idx.regione]||'',citta:c[idx.citta]||'',
+      categoria:c[idx.categoria]||'', tipo:c[idx.tipo]||'', descrizione:c[idx.descrizione]||'', telefono:c[idx.telefono]||'',
+      budget:parseInt(c[idx.budget])||0, costCredit:parseInt(c[idx.costCredit])||0};});
     populateFilters(); render(); updateCreditUI();
   }).catch(e=>console.error(e));
   elems.btnLeads.onclick=()=>{sectionFilter=sectionFilter==='lead'?null:'lead'; elems.btnLeads.classList.toggle('selected'); render();};
