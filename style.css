@@ -27,16 +27,16 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .cliente-card .desc { margin-bottom: 5px; font-style: italic; }
 .cliente-card .commission { font-weight: bold; margin-bottom: 8px; }
 .actions { display: flex; gap: 5px; position: absolute; top: 10px; right: 15px; }
-.actions button { padding: 8px 12px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; height: 40px; min-width: 110px; font-size: 14px; }
+.actions button { padding: 8px 12px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; height: 35px; min-width: 120px; font-size: 14px; }
 button.acquisisci { background: #006400; color: #fff; }
 button.annulla { background: #dc3545; color: #fff; }
 button.contratto { background: #FFD700; color: #000; }
-/* Mobile specific fixes for button overlap */
+/* Mobile specific fixes for button overlap and size */
 @media (max-width: 768px) {
   .actions button {
     font-size: 14px;
     padding: 10px 12px;
-    height: 40px;
+    height: 35px; /* Reduced height for uniform size with other buttons */
     min-width: 120px;
   }
   .cliente-card { padding: 12px; }
@@ -46,7 +46,7 @@ button.contratto { background: #FFD700; color: #000; }
   }
   .cliente-card .desc { font-size: 0.9em; }
   .actions button.acquisisci {
-    background: #006400; /* Dark green background */
+    background: #006400; /* Dark green background for "Acquisisci" */
     color: #fff; /* White text */
   }
   .actions button.annulla {
