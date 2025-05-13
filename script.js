@@ -1,4 +1,4 @@
-const sheetURL = 'https://docs.google.com/spreadsheets/d/YOUR_OLD_ID/pub?output=tsv';
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 let crediti = 8, leads = [], carrello = [], sectionFilter = null;
 
 const elems = {
@@ -23,86 +23,95 @@ function updateCreditUI() {
 }
 
 function populateFilters() {
-  const keys = {regione:'regione', citta:'citta', categoria:'categoria', tipo:'tipo'};
-  Object.values(keys).forEach(key => {
-    const set = [...new Set(leads.map(l=>l[key]).filter(v=>v))].sort();
-    const sel = elems[key.slice(0,3)];
-    sel.innerHTML = '<option value="">Tutti</option>' + set.map(v=>`<option value="${v}">${v}</option>`).join('');
+  const fields = ['regione','citta','categoria','tipo'];
+  fields.forEach(id => {
+    const sel = elems[id.slice(0,3)];
+    const values = Array.from(new Set(leads.map(l => l[id]))).sort();
+    sel.innerHTML = '<option value="">Tutti</option>' + values.map(v=>`<option value="${v}">${v}</option>`).join('');
     sel.onchange = render;
   });
 }
 
 function render() {
   elems.clienti.innerHTML = '';
-  const chosen = {reg:elems.reg.value, cit:elems.cit.value, cat:elems.cat.value, tip:elems.tip.value};
+  const filters = {reg: elems.reg.value, cit: elems.cit.value, cat: elems.cat.value, tip: elems.tip.value};
   leads.forEach(lead => {
-    if (sectionFilter && !lead.tipo.toLowerCase().includes(sectionFilter)) return;
-    if (chosen.reg && lead.regione!==chosen.reg) return;
-    if (chosen.cit && lead.citta!==chosen.cit) return;
-    if (chosen.cat && lead.categoria!==chosen.cat) return;
-    if (chosen.tip && lead.tipo!==chosen.tip) return;
-    // card
-    const div = document.createElement('div'); div.className='cliente-card';
-    const h3 = document.createElement('h3'); h3.textContent = lead.categoria + ' – ' + lead.citta;
-    const p1 = document.createElement('p'); p1.textContent = lead.regione + ' | ' + lead.tipo;
-    const budget = document.createElement('p'); budget.textContent = 'Budget: €' + lead.budget;
-    // commission
-    let cost = lead.tipo.toLowerCase().includes('appuntamento')?2:(lead.tipo.toLowerCase().includes('lead')?1:0);
-    let euro = cost*40;
-    const comm = document.createElement('p');
-    comm.textContent = cost>0?('Commissione: €'+euro+' ('+cost+' '+(cost>1?'crediti':'credito')+')'):'Commissione riservata';
-    // actions
+    if(sectionFilter && !lead.tipo.toLowerCase().includes(sectionFilter)) return;
+    if(filters.reg && lead.regione !== filters.reg) return;
+    if(filters.cit && lead.citta !== filters.cit) return;
+    if(filters.cat && lead.categoria !== filters.cat) return;
+    if(filters.tip && lead.tipo !== filters.tip) return;
+    
+    const card = document.createElement('div'); card.className = 'cliente-card';
+    card.innerHTML = `
+      <h3>${lead.categoria} – ${lead.citta}</h3>
+      <p>${lead.regione} | ${lead.tipo}</p>
+      <p class="desc">${lead.descrizione}</p>
+      <p class="tel">📞 ${lead.telefono}</p>
+      <p>Budget: €${lead.budget}</p>
+      <p class="commission">${lead.costCredit>0 ? `Commissione: €${lead.costCredit*40} (${lead.costCredit} credito${lead.costCredit>1?'i':''})` : 'Commissione riservata'}</p>
+    `;
     const act = document.createElement('div'); act.className='actions';
-    if(cost>0) {
-      const btnA = document.createElement('button'); btnA.className = cost>1?'appuntamento':'acquisisci'; btnA.textContent='Acquisisci';
+    if(lead.costCredit>0) {
+      const btnA = document.createElement('button'); btnA.className='acquisisci'; btnA.textContent='Acquisisci';
       const btnC = document.createElement('button'); btnC.className='annulla'; btnC.textContent='Annulla'; btnC.style.display='none';
       btnA.onclick = () => {
-        crediti -= cost; updateCreditUI();
-        carrello.push({id:lead.id,cost,euro}); updateCart();
+        crediti -= lead.costCredit; updateCreditUI();
+        carrello.push(lead); updateCart();
         btnA.disabled=true; btnC.style.display='inline-block';
       };
       btnC.onclick = () => {
-        crediti += cost; updateCreditUI();
-        carrello = carrello.filter(item=>item.id!==lead.id); updateCart();
+        crediti += lead.costCredit; updateCreditUI();
+        carrello = carrello.filter(l=>l.id!==lead.id); updateCart();
         btnA.disabled=false; btnC.style.display='none';
       };
       act.append(btnA, btnC);
     } else {
-      const btnR = document.createElement('button'); btnR.className='contratto'; btnR.textContent='Riserva';
+      const btnR = document.createElement('button'); btnR.className='contratto'; btnR.textContent='Riserva trattativa';
       act.append(btnR);
     }
-    div.append(h3, p1, budget, comm, act);
-    elems.clienti.append(div);
+    card.append(act);
+    elems.clienti.append(card);
   });
 }
 
 function updateCart() {
   elems.cart.innerHTML = '';
-  let sum=0;
-  carrello.forEach(item=> {
-    sum += item.euro;
+  let sum = 0;
+  carrello.forEach(item=>{
+    sum += item.costCredit*40;
     const li = document.createElement('li');
-    li.textContent = item.id + ' – €' + item.euro;
-    const btn = document.createElement('button'); btn.textContent='Annulla'; btn.className='annulla';
-    btn.onclick = () => { /* handled above */ };
+    li.textContent = `${item.id} – €${item.costCredit*40}`;
+    const btn = document.createElement('button'); btn.className='annulla'; btn.textContent='Annulla';
+    btn.onclick = () => render();
     li.append(btn);
     elems.cart.append(li);
   });
-  elems.tot.textContent = 'Totale: €'+sum.toFixed(2);
+  elems.tot.textContent = 'Totale: €'+sum;
 }
 
 window.onload = () => {
   fetch(sheetURL).then(r=>r.text()).then(txt=>{
     const lines = txt.trim().split('\n');
-    const hdr = lines.shift().split('\t');
+    lines.shift();
     leads = lines.map((l,i)=>{
-      const c=l.split('\t');
-      return { id:'lead-'+i, regione:c[0], citta:c[1], categoria:c[2], tipo:c[3], budget:parseFloat(c[4])||0 };
+      const c = l.split('\t');
+      return {
+        id: 'lead-'+i,
+        regione: c[0],
+        citta: c[1],
+        categoria: c[2],
+        tipo: c[3],
+        descrizione: c[4],
+        telefono: c[5],
+        budget: parseInt(c[6])||0,
+        costCredit: isNaN(parseInt(c[7]))?0:parseInt(c[7])
+      };
     });
     populateFilters(); render(); updateCreditUI();
   });
   elems.btnLeads.onclick = () => { sectionFilter = sectionFilter==='lead'?null:'lead'; elems.btnLeads.classList.toggle('selected'); render(); };
-  elems.btnApp.onclick = () => { sectionFilter = sectionFilter==='appuntamento'?null:'appuntamento'; elems.btnApp.classList.toggle('selected'); render(); };
+  elems.btnApp.onclick   = () => { sectionFilter = sectionFilter==='appuntamento'?null:'appuntamento'; elems.btnApp.classList.toggle('selected'); render(); };
   elems.btnContr.onclick = () => { sectionFilter = sectionFilter==='contratto'?null:'contratto'; elems.btnContr.classList.toggle('selected'); render(); };
-  elems.btnRic.onclick = () => { crediti += 8; updateCreditUI(); };
+  elems.btnRic.onclick   = () => { crediti += 8; updateCreditUI(); };
 };
