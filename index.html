@@ -4,44 +4,55 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <!-- FontAwesome Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p8a6VYXqIPH6ibbGZdpN3Yf1UQjEjnqvcxC7TWlYuUQ+zWpHfXmHWolL2iF8AtI0Gfsy+8Pv0gXcQMjJo4r1Kg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <header class="header">
-    <h1><i class="fas fa-search-location"></i> IlTrovaClienti</h1>
+    <h1>IlTrovaClienti</h1>
     <div class="crediti">
-      <span><i class="fas fa-coins"></i> Crediti: <strong id="crediti">8.00</strong> (<strong id="euro">€320.00</strong>)</span>
-      <button id="ricaricaCrediti" class="btn-primary"><i class="fas fa-wallet"></i> Ricarica</button>
+      <span>Crediti: <strong id="crediti">8.00</strong> (<strong id="euro">€320.00</strong>)</span>
+      <button id="ricaricaCrediti">💳 Ricarica Crediti</button>
     </div>
   </header>
 
-  <nav class="section-buttons">
-    <button id="btnLeads"><i class="fas fa-phone-alt"></i> Lead</button>
-    <button id="btnAppuntamenti"><i class="fas fa-calendar-check"></i> Appuntamenti</button>
-    <button id="btnContratti"><i class="fas fa-handshake"></i> Contratti</button>
-  </nav>
+  <!-- Section filter buttons -->
+  <div class="section-buttons">
+    <button id="btnLeads">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
+  </div>
 
   <section class="filtri">
     <div class="filter-row">
-      <div class="filter"><label for="regioneSelect">Regione</label><select id="regioneSelect"></select></div>
-      <div class="filter"><label for="cittaSelect">Città</label><select id="cittaSelect"></select></div>
+      <div class="filter">
+        <label for="regioneSelect">Regione</label>
+        <select id="regioneSelect"><option value="Tutti">Tutte le Regioni</option></select>
+      </div>
+      <div class="filter">
+        <label for="cittaSelect">Città</label>
+        <select id="cittaSelect"><option value="Tutti">Tutte le Città</option></select>
+      </div>
     </div>
     <div class="filter-row">
-      <div class="filter"><label for="categoriaSelect">Categoria</label><select id="categoriaSelect"></select></div>
-      <div class="filter"><label for="tipoSelect">Tipo</label><select id="tipoSelect"></select></div>
+      <div class="filter">
+        <label for="categoriaSelect">Categoria</label>
+        <select id="categoriaSelect"><option value="Tutti">Tutte le Categorie</option></select>
+      </div>
+      <div class="filter">
+        <label for="tipoSelect">Tipo</label>
+        <select id="tipoSelect"><option value="Tutti">Tutti i Tipi</option></select>
+      </div>
     </div>
   </section>
 
   <section class="carrello">
-    <h2><i class="fas fa-shopping-cart"></i> Carrello</h2>
+    <h2>🛒 Carrello</h2>
     <ul id="carrello"></ul>
     <p class="totale">Totale: <span id="totale">€0.00</span></p>
   </section>
 
-  <main id="clientiContainer" class="grid-container"></main>
+  <main id="clientiContainer"></main>
 
-  <script src="script.js?ver=32"></script>
+  <script src="script.js?ver=26"></script>
 </body>
 </html>
