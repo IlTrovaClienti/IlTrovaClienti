@@ -46,40 +46,46 @@ document.addEventListener('DOMContentLoaded', () => {
       tipo: elems.tipo.value
     };
     leads.forEach(lead => {
-      // section filter
       if (sectionFilter && !lead.tipo.toLowerCase().includes(sectionFilter)) return;
-      // dropdown filters
       if (filters.regione && lead.regione !== filters.regione) return;
       if (filters.citta && lead.citta !== filters.citta) return;
       if (filters.categoria && lead.categoria !== filters.categoria) return;
       if (filters.tipo && lead.tipo !== filters.tipo) return;
+
+      // derive costCredit from tipo
+      let costCredit = 0;
+      const t = lead.tipo.toLowerCase();
+      if (t.includes('lead')) costCredit = 1;
+      else if (t.includes('appuntamento')) costCredit = 2;
+      else costCredit = 0;
+
       // type classification
       let typeClass = 'contratto', typeLabel = 'Contratto riservato';
-      if (lead.costCredit === 1) { typeClass = 'lead'; typeLabel = 'Lead da chiamare'; }
-      else if (lead.costCredit === 2) { typeClass = 'appuntamento'; typeLabel = 'Appuntamento fissato'; }
-      // card
+      if (costCredit === 1) { typeClass = 'lead'; typeLabel = 'Lead da chiamare'; }
+      else if (costCredit === 2) { typeClass = 'appuntamento'; typeLabel = 'Appuntamento fissato'; }
+
       const card = document.createElement('div');
       card.className = 'cliente-card ' + typeClass;
       card.innerHTML = `
         <div class="badge ${typeClass}">${typeLabel}</div>
         <h3>${lead.categoria} – ${lead.citta}</h3>
         <p>${lead.regione} | ${lead.tipo}</p>
-        <p class="desc">${lead.descrizione}</p>
+        <p class="desc">${lead.descrizione || ''}</p>
         <p>Budget: €${lead.budget}</p>
-        <p class="commission">${lead.costCredit>0?`Commissione: €${lead.costCredit*40} (${lead.costCredit} ${lead.costCredit>1?'crediti':'credito'})`:'Commissione riservata'}</p>
+        <p class="commission">${costCredit>0?`Commissione: €${costCredit*40} (${costCredit} ${costCredit>1?'crediti':'credito'})`:'Commissione riservata'}</p>
       `;
-      // actions
+
       const act = document.createElement('div'); act.className = 'actions';
-      if (lead.costCredit > 0) {
+      if (costCredit > 0) {
         const btnA = document.createElement('button'); btnA.className='acquisisci'; btnA.textContent='Acquisisci';
         const btnC = document.createElement('button'); btnC.className='annulla'; btnC.textContent='Annulla'; btnC.style.display='none';
         btnA.onclick = () => {
-          crediti -= lead.costCredit; updateCreditUI();
+          crediti -= costCredit; updateCreditUI();
           carrello.push(lead); updateCart();
           btnA.disabled = true; btnC.style.display = 'inline-block';
         };
         btnC.onclick = () => {
-          crediti += lead.costCredit; updateCreditUI();
+          crediti += costCredit; updateCreditUI();
           carrello = carrello.filter(l => l.id !== lead.id); updateCart();
           btnA.disabled = false; btnC.style.display = 'none';
         };
@@ -97,9 +103,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateCart() {
     elems.cart.innerHTML = ''; let sum = 0;
     carrello.forEach(item => {
-      sum += item.costCredit * 40;
+      const t = item.tipo.toLowerCase();
+      let costCredit = t.includes('lead') ? 1 : t.includes('appuntamento') ? 2 : 0;
+      sum += costCredit * 40;
       const li = document.createElement('li');
-      li.textContent = `${item.id} – €${item.costCredit*40}`;
+      li.textContent = `${item.id} – €${costCredit*40}`;
       const btn = document.createElement('button'); btn.className='annulla'; btn.textContent='Annulla';
       btn.onclick = () => render();
       li.append(btn);
@@ -125,13 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const lines = txt.trim().split('\n');
     const headers = lines.shift().split('\t').map(h => h.trim().toLowerCase());
     const idx = {
-      regione: headers.indexOf('regione'),
-      citta: headers.indexOf('città') >= 0 ? headers.indexOf('città') : headers.indexOf('citta'),
-      categoria: headers.indexOf('categoria'),
-      tipo: headers.indexOf('tipo'),
-      descrizione: headers.indexOf('descrizione'),
-      budget: headers.findIndex(h => h.includes('budget')),
-      costCredit: headers.findIndex(h => h.includes('costo'))
+      regione: headers.indexOf('regione')>=0?headers.indexOf('regione'):0,
+      citta: headers.indexOf('città')>=0?headers.indexOf('città'):headers.indexOf('citta')>=0?headers.indexOf('citta'):1,
+      categoria: headers.indexOf('categoria')>=0?headers.indexOf('categoria'):2,
+      tipo: headers.indexOf('tipo')>=0?headers.indexOf('tipo'):3,
+      descrizione: headers.indexOf('descrizione')>=0?headers.indexOf('descrizione'):-1,
+      budget: headers.findIndex(h => h.includes('budget'))>=0?headers.findIndex(h => h.includes('budget')):4
     };
     leads = lines.map((l, i) => {
       const c = l.split('\t');
@@ -141,9 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
         citta: c[idx.citta]||'',
         categoria: c[idx.categoria]||'',
         tipo: c[idx.tipo]||'',
-        descrizione: c[idx.descrizione]||'',
-        budget: parseInt(c[idx.budget])||0,
-        costCredit: parseInt(c[idx.costCredit])||0
+        descrizione: idx.descrizione>=0?c[idx.descrizione]:'',
+        budget: parseInt(c[idx.budget])||0
       };
     });
     populateFilters();
