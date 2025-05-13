@@ -1,100 +1,59 @@
-/* Base */
+/* Reset & Base */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; padding: 20px; line-height: 1.5; }
+body { font-family: 'Inter', sans-serif; background: #eef2f5; color: #333; padding: 20px; }
+
 /* Header */
-.header { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px; }
-.header h1 { font-size: 2.2em; margin-bottom: 8px; }
-.header .crediti { display: flex; gap: 12px; align-items: center; justify-content: center; }
-.header .crediti button { padding: 12px 24px; border-radius: 24px; font-size: 1em; background-color: #007bff; color: #fff; border: none; cursor: pointer; }
+.header { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-align: center; margin-bottom: 20px; }
+.header h1 { font-size: 1.8em; color: #007bff; }
+.header .crediti { margin-top: 10px; display: flex; justify-content: center; gap: 15px; }
+.btn-primary { background: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 24px; font-size: 0.95em; cursor: pointer; transition: background 0.2s; }
+.btn-primary:hover { background: #0056b3; }
+
 /* Section Buttons */
 .section-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
-.section-buttons button { flex: 1; padding: 12px 20px; font-size: 1em; border: none; border-radius: 24px; color: #fff; cursor: pointer; }
-#btnLeads { background: #28a745; }
-#btnAppuntamenti { background: #007bff; }
-#btnContratti { background: #17a2b8; }
-.section-buttons button.selected { box-shadow: 0 0 0 3px rgba(0,0,0,0.2); }
-/* Filtri */
+.section-buttons button { flex: 1; padding: 12px; border: none; border-radius: 24px; font-size: 1em; background: #ddd; color: #444; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
+.section-buttons button.selected, .section-buttons button:hover { background: #007bff; color: #fff; }
+
+/* Filters */
 .filtri { margin-bottom: 20px; }
-.filter-row { display: flex; gap: 10px; margin-bottom: 12px; }
-.filter { flex: 1; display: flex; flex-direction: column; }
-.filter label { margin-bottom: 6px; color: #555; font-size: 1em; }
-.filter select { padding: 12px; border-radius: 8px; font-size: 1em; }
+.filter-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.filter { flex: 1; }
+.filter label { display: block; margin-bottom: 5px; color: #555; font-size: 0.9em; }
+.filter select { width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; }
+
 /* Carrello */
-.carrello { padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
-.carrello li { padding: 10px 0; border-bottom: 1px solid #eee; }
-.carrello .totale { font-weight: bold; font-size: 1.2em; }
-/* Lead cards */
-main#clientiContainer { display: flex; flex-direction: column; }
-.cliente { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; position: relative; }
-.cliente h3 { font-size: 1.4em; margin-bottom: 12px; }
-/* Info paragraphs */
-.cliente p { margin-bottom: 8px; word-break: break-word; }
-/* Floating actions */
-.floating-actions { position: absolute; top: auto;
-  bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
-.floating-actions button { flex: none; padding: 8px 12px; font-size: 0.9em; border-radius: 20px; }
-/* Actions unified */
-.actions button { flex: 1; padding: 12px 24px; font-size: 1em; border-radius: 24px; color: #fff; border: none; cursor: pointer; white-space: nowrap; }
-button.acquisisci { background-color: #28a745; }
-button.appuntamento { background-color: #007bff; }
-button.contratto { background-color: #17a2b8; }
-button.annulla, button[disabled], button.acquisito { background-color: #6c757d; opacity: 0.8; cursor: not-allowed; }
+.carrello { background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.05); margin-bottom: 20px; }
+.carrello h2 { margin-bottom: 10px; font-size: 1.2em; }
+.carrello li { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.carrello .totale { font-weight: 600; margin-top: 10px; }
 
+/* Grid Layout */
+.grid-container { display: grid; gap: 20px; }
+/* 1 col mobile, 2 cols tablet, 3 cols desktop */
+@media(min-width: 600px) { .grid-container { grid-template-columns: repeat(2,1fr); } }
+@media(min-width: 1000px) { .grid-container { grid-template-columns: repeat(3,1fr); } }
 
-/* Graphics Enhancements */
-/* Card hover effect */
-.cliente:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
+/* Card */
+.cliente { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+.cliente:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+.cliente h3 { font-size: 1.2em; margin-bottom: 12px; }
 
-/* Button hover opacity */
-button:not(:disabled):hover {
-  opacity: 0.9;
-  transition: opacity 0.2s;
-}
+/* Icon per categoria */
+.icon-category { font-size: 1.5em; margin-right: 8px; color: #007bff; vertical-align: middle; }
 
-/* Gradient section buttons */
-.section-buttons #btnLeads {
-  background: linear-gradient(135deg, #36d1dc, #5b86e5);
-}
-.section-buttons #btnAppuntamenti {
-  background: linear-gradient(135deg, #ff9966, #ff5e62);
-}
-.section-buttons #btnContratti {
-  background: linear-gradient(135deg, #f7971e, #ffd200);
-}
+/* Info lines */
+.cliente p { margin-bottom: 8px; font-size: 0.95em; display: flex; align-items: center; gap: 6px; }
 
-/* Smooth form inputs */
-.contratto-form input, .contratto-form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
+/* Floating actions bottom-right */
+.floating-actions { position: absolute; bottom: 16px; right: 16px; display: flex; gap: 8px; }
+.floating-actions button { padding: 8px 12px; border: none; border-radius: 20px; font-size: 0.9em; cursor: pointer; transition: opacity 0.2s; }
+button.acquisisci { background: #28a745; color: #fff; }
+button.appuntamento { background: #17a2b8; color: #fff; }
+button.annulla { background: #dc3545; color: #fff; }
+button.contratto { background: #ffc107; color: #333; }
 
-/* Primary font weight */
-h1, h2, h3 {
-  font-weight: 600;
-}
-
-/* Background pattern */
-body {
-  background: #eef2f5;
-}
-
-
-/* Fix contrast for floating 'Annulla' button */
-.floating-actions button.annulla {
-  background-color: #dc3545 !important;  /* Bootstrap danger red */
-  color: #ffffff !important;
-  opacity: 1 !important;
-}
-
-/* Ensure floating-actions positioned at bottom */
-.floating-actions {
-  top: auto !important;
-  bottom: 16px !important;
-}
+/* Form */
+.contratto-form { margin-top: 15px; display: flex; flex-direction: column; gap: 10px; }
+.contratto-form input, .contratto-form textarea { padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 0.95em; }
+.contratto-form .form-actions { display: flex; gap: 10px; }
+.contratto-form button { flex: 1; padding: 10px; border: none; border-radius: 20px; font-size: 0.95em; cursor: pointer; }
