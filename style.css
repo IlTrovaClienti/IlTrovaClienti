@@ -58,3 +58,25 @@ button.acquisito {
   opacity: 0.8;
   cursor: not-allowed;
 }
+
+
+/* Enable floating actions inside card */
+.cliente {
+  position: relative; /* to contain floating panel */
+}
+
+.floating-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.floating-actions button {
+  flex: none;
+  padding: 8px 12px;
+  font-size: 0.9em;
+  border-radius: 20px;
+}
