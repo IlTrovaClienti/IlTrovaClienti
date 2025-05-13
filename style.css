@@ -84,3 +84,17 @@ h1, h2, h3 {
 body {
   background: #eef2f5;
 }
+
+
+/* Fix contrast for floating 'Annulla' button */
+.floating-actions button.annulla {
+  background-color: #dc3545 !important;  /* Bootstrap danger red */
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Ensure floating-actions positioned at bottom */
+.floating-actions {
+  top: auto !important;
+  bottom: 16px !important;
+}
