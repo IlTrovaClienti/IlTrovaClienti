@@ -1,82 +1,40 @@
 /* Base */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0f2f5; color: #333; padding: 20px; line-height: 1.5; }
-
 /* Header */
 .header { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; margin-bottom: 20px; }
 .header h1 { font-size: 2.2em; margin-bottom: 8px; }
 .header .crediti { display: flex; gap: 12px; align-items: center; justify-content: center; }
-.header .crediti button {
-  padding: 12px 24px; border-radius: 24px; font-size: 1em;
-  background-color: #007bff; color: #fff; border: none; cursor: pointer;
-}
-
+.header .crediti button { padding: 12px 24px; border-radius: 24px; font-size: 1em; background-color: #007bff; color: #fff; border: none; cursor: pointer; }
+/* Section Buttons */
+.section-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
+.section-buttons button { flex: 1; padding: 12px 20px; font-size: 1em; border: none; border-radius: 24px; color: #fff; cursor: pointer; }
+#btnLeads { background: #28a745; }
+#btnAppuntamenti { background: #007bff; }
+#btnContratti { background: #17a2b8; }
+.section-buttons button.selected { box-shadow: 0 0 0 3px rgba(0,0,0,0.2); }
 /* Filtri */
 .filtri { margin-bottom: 20px; }
 .filter-row { display: flex; gap: 10px; margin-bottom: 12px; }
 .filter { flex: 1; display: flex; flex-direction: column; }
 .filter label { margin-bottom: 6px; color: #555; font-size: 1em; }
 .filter select { padding: 12px; border-radius: 8px; font-size: 1em; }
-
 /* Carrello */
 .carrello { padding: 20px; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
 .carrello li { padding: 10px 0; border-bottom: 1px solid #eee; }
 .carrello .totale { font-weight: bold; font-size: 1.2em; }
-
 /* Lead cards */
 main#clientiContainer { display: flex; flex-direction: column; }
-.cliente { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+.cliente { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px; position: relative; }
 .cliente h3 { font-size: 1.4em; margin-bottom: 12px; }
-
 /* Info paragraphs */
 .cliente p { margin-bottom: 8px; word-break: break-word; }
-
-/* Actions */
-.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-.actions p { flex-basis: 100%; font-size: 0.95em; color: #555; }
-
-/* Unified button styling */
-.actions button {
-  flex: 1;
-  padding: 12px 24px;
-  font-size: 1em;
-  border-radius: 24px;
-  color: #fff;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* Button variants */
+/* Floating actions */
+.floating-actions { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
+.floating-actions button { flex: none; padding: 8px 12px; font-size: 0.9em; border-radius: 20px; }
+/* Actions unified */
+.actions button { flex: 1; padding: 12px 24px; font-size: 1em; border-radius: 24px; color: #fff; border: none; cursor: pointer; white-space: nowrap; }
 button.acquisisci { background-color: #28a745; }
 button.appuntamento { background-color: #007bff; }
 button.contratto { background-color: #17a2b8; }
-button.annulla,
-button[disabled],
-button.acquisito {
-  background-color: #6c757d;
-  opacity: 0.8;
-  cursor: not-allowed;
-}
-
-
-/* Enable floating actions inside card */
-.cliente {
-  position: relative; /* to contain floating panel */
-}
-
-.floating-actions {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  gap: 8px;
-  z-index: 10;
-}
-
-.floating-actions button {
-  flex: none;
-  padding: 8px 12px;
-  font-size: 0.9em;
-  border-radius: 20px;
-}
+button.annulla, button[disabled], button.acquisito { background-color: #6c757d; opacity: 0.8; cursor: not-allowed; }

@@ -1,4 +1,4 @@
-// script.js
+// script.js - Fix27: Correct commission values based on credit system
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv';
 
 let crediti = 8, allLeads = [], carrelloState = [];
@@ -27,7 +27,12 @@ function populateFilters(leads) {
     select.innerHTML = '';
     const defaultOpt = document.createElement('option');
     defaultOpt.value = 'Tutti';
-    defaultOpt.textContent = { regione:'Tutte le Regioni', citta:'Tutte le Città', categoria:'Tutte le Categorie', tipo:'Tutti i Tipi' }[key];
+    defaultOpt.textContent = {
+      regione:'Tutte le Regioni',
+      citta:'Tutte le Città',
+      categoria:'Tutte le Categorie',
+      tipo:'Tutti i Tipi'
+    }[key];
     select.appendChild(defaultOpt);
     [...new Set(leads.map(l => l[key]).filter(v => v))].sort().forEach(v => {
       const o = document.createElement('option');
@@ -39,10 +44,13 @@ function populateFilters(leads) {
 }
 
 function getFilteredLeads() {
-  return allLeads.filter(lead => Object.keys(filters).every(k => {
-    const val = filters[k].value;
-    return val === 'Tutti' || lead[k] === val;
-  }));
+  return allLeads.filter(lead => {
+    // existing filters only
+    return Object.keys(filters).every(k => {
+      const val = filters[k].value;
+      return val === 'Tutti' || lead[k] === val;
+    });
+  });
 }
 
 function aggiungiAlCarrello(id, type, credCost, euroCost) {
@@ -81,58 +89,59 @@ function updateCarrelloUI() {
 
 function creaCliente(lead) {
   const div = document.createElement('div');
-  div.id = lead.id;
-  div.className = 'cliente';
+  div.id = lead.id; div.className = 'cliente';
   const h3 = document.createElement('h3');
   h3.textContent = `${lead.categoria} – ${lead.citta}`;
-
+  
   const pReg = document.createElement('p');
   pReg.innerHTML = '<img src="https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png" width="16" style="vertical-align:middle;"/> ' + lead.regione;
   const pTipo = document.createElement('p');
   pTipo.textContent = lead.tipo;
   const pBud = document.createElement('p');
   pBud.innerHTML = '<strong>Budget:</strong> €' + lead.budget;
+
+  // Determine commission based on type
+  const t = lead.tipo.toLowerCase();
+  let cost = {c: 0, e: 0};
+  if (t.includes('lead')) {
+    cost = {c:1, e:40};
+  } else if (t.includes('appuntamento')) {
+    cost = {c:2, e:80};
+  }
   const pPrez = document.createElement('p');
-  pPrez.innerHTML = '<strong>Commissione IlTrovaClienti:</strong> €' + lead.prezzo.toFixed(2);
+  if (cost.c > 0) {
+    pPrez.innerHTML = `<strong>Commissione IlTrovaClienti:</strong> €${cost.e} (${cost.c} credito${cost.c>1?'i':''})`;
+  } else {
+    pPrez.innerHTML = '<strong>Commissione IlTrovaClienti:</strong> Riservata in trattativa';
+  }
 
   div.append(h3, pReg, pTipo, pBud, pPrez);
 
   const floatDiv = document.createElement('div');
   floatDiv.className = 'floating-actions';
 
-  const t = lead.tipo.toLowerCase();
-
-  if (t.includes('lead') || t.includes('appuntamento')) {
-    const cost = t.includes('lead') ? {c:1, e:40} : {c:2, e:80};
-
+  if (cost.c > 0) {
     const btnAcq = document.createElement('button');
     btnAcq.textContent = 'Acquisisci'; 
-    btnAcq.className = t.includes('lead') ? 'acquisisci' : 'appuntamento';
-
+    btnAcq.className = t.includes('lead')?'acquisisci':'appuntamento';
     const btnCancel = document.createElement('button');
-    btnCancel.textContent = 'Annulla'; 
-    btnCancel.className = 'annulla';
-    btnCancel.style.display = 'none';
+    btnCancel.textContent = 'Annulla'; btnCancel.className = 'annulla'; btnCancel.style.display='none';
 
     btnAcq.onclick = () => {
       crediti -= cost.c; aggiornaCreditiDisplay();
-      aggiungiAlCarrello(lead.id, t.includes('lead') ? 'Lead da chiamare' : 'Appuntamento fissato', cost.c, cost.e);
-      btnAcq.disabled = true;
-      btnCancel.style.display = 'inline-block';
+      aggiungiAlCarrello(lead.id, t.includes('lead')?'Lead da chiamare':'Appuntamento fissato', cost.c, cost.e);
+      btnAcq.disabled = true; btnCancel.style.display='inline-block';
     };
     btnCancel.onclick = () => {
       crediti += cost.c; aggiornaCreditiDisplay();
-      removeFromCarrello(lead.id, t.includes('lead') ? 'Lead da chiamare' : 'Appuntamento fissato');
-      btnAcq.disabled = false;
-      btnCancel.style.display = 'none';
-      updateCarrelloUI();
+      removeFromCarrello(lead.id, t.includes('lead')?'Lead da chiamare':'Appuntamento fissato');
+      btnAcq.disabled = false; btnCancel.style.display='none'; updateCarrelloUI();
     };
 
     floatDiv.append(btnAcq, btnCancel);
-  } else if (t.includes('contratto')) {
+  } else {
     const btn = document.createElement('button');
-    btn.textContent = 'Riserva trattativa';
-    btn.className = 'contratto';
+    btn.textContent = 'Riserva trattativa'; btn.className = 'contratto';
     btn.onclick = () => {
       const form = document.createElement('form');
       form.className = 'contratto-form';
@@ -142,15 +151,9 @@ function creaCliente(lead) {
         <input type="tel" name="telefono" placeholder="Il tuo numero di telefono" required/>
         <input type="text" name="localita" placeholder="La tua località" required/>
         <textarea name="messaggio" placeholder="Dettagli..." rows="4" required></textarea>
-        <button type="submit">Invia richiesta</button>
-      `;
-      form.onsubmit = e => {
-        e.preventDefault();
-        alert('Richiesta inviata. Grazie!');
-        form.remove();
-      };
-      div.appendChild(form);
-      btn.disabled = true;
+        <button type="submit">Invia richiesta</button>`;
+      form.onsubmit = e => { e.preventDefault(); alert('Richiesta inviata. Grazie!'); form.remove(); };
+      div.appendChild(form); btn.disabled=true;
     };
     floatDiv.append(btn);
   }
@@ -165,7 +168,7 @@ function renderLeadsList() {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  fetch(sheetURL).then(r=>r.text()).then(txt => {
+  fetch(sheetURL).then(r => r.text()).then(txt => {
     const lines = txt.trim().split('\n');
     const headers = lines.shift().split('\t').map(h=>h.trim());
     const idx = {
@@ -173,24 +176,22 @@ window.addEventListener('DOMContentLoaded', () => {
       citta: headers.findIndex(h=>/citt/i.test(h)),
       categoria: headers.findIndex(h=>/categ/i.test(h)),
       tipo: headers.findIndex(h=>/tip/i.test(h)),
-      budget: headers.findIndex(h=>/budget/i.test(h)),
-      prezzo: headers.findIndex(h=>/prezzo/i.test(h))
+      budget: headers.findIndex(h=>/budget/i.test(h))
     };
-    allLeads = lines.map((line,i)=>{ const cells=line.split('\t').map(c=>c.trim()); const raw=parseFloat(cells[idx.budget])||0;
-      const acq=parseFloat(cells[idx.prezzo])||Math.ceil(raw*0.1/100)*100;
+    allLeads = lines.map((line,i) => {
+      const cells = line.split('\t').map(c=>c.trim());
       return {
-        id:'lead-'+i,
+        id: 'lead-'+i,
         regione: cells[idx.regione]||'',
         citta: cells[idx.citta]||'',
         categoria: cells[idx.categoria]||'',
         tipo: cells[idx.tipo]||'',
-        budget: raw,
-        prezzo: Math.ceil(acq/100)*100
+        budget: parseFloat(cells[idx.budget])||0
       };
     });
     populateFilters(allLeads);
     renderLeadsList();
     aggiornaCreditiDisplay();
   });
-  ricaricaBtn.onclick = () => { crediti+=8; aggiornaCreditiDisplay(); };
+  ricaricaBtn.onclick = () => { crediti += 8; aggiornaCreditiDisplay(); };
 });
