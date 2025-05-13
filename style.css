@@ -24,3 +24,30 @@ button.acquisisci { background: #004080; color: #fff; }
 button.appuntamento { background: #006400; color: #fff; }
 button.annulla { background: #dc3545; color: #fff; }
 button.contratto { background: #FFD700; color: #000; }
+
+/* Modal CSS */
+.modal-overlay {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 1000;
+}
+.modal {
+  background: #fff; padding: 20px; border-radius: 12px;
+  max-width: 400px; width: 90%; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.modal h3 { margin-top: 0; margin-bottom: 10px; font-size: 1.2em; }
+.modal input, .modal textarea {
+  width: 100%; padding: 8px; margin-bottom: 10px;
+  border-radius: 6px; border: 1px solid #ccc; font-size: 0.95em;
+}
+.modal .form-actions {
+  display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;
+}
+.modal button {
+  padding: 8px 14px; border: none; border-radius: 6px;
+  font-size: 0.95em; cursor: pointer;
+}
+.modal button[type="submit"] { background: #28a745; color: #fff; }
+.modal button.cancel-form { background: #dc3545; color: #fff; }
