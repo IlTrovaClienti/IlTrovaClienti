@@ -30,7 +30,8 @@ main#clientiContainer { display: flex; flex-direction: column; }
 /* Info paragraphs */
 .cliente p { margin-bottom: 8px; word-break: break-word; }
 /* Floating actions */
-.floating-actions { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
+.floating-actions { position: absolute; top: auto;
+  bottom: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
 .floating-actions button { flex: none; padding: 8px 12px; font-size: 0.9em; border-radius: 20px; }
 /* Actions unified */
 .actions button { flex: 1; padding: 12px 24px; font-size: 1em; border-radius: 24px; color: #fff; border: none; cursor: pointer; white-space: nowrap; }
@@ -38,3 +39,48 @@ button.acquisisci { background-color: #28a745; }
 button.appuntamento { background-color: #007bff; }
 button.contratto { background-color: #17a2b8; }
 button.annulla, button[disabled], button.acquisito { background-color: #6c757d; opacity: 0.8; cursor: not-allowed; }
+
+
+/* Graphics Enhancements */
+/* Card hover effect */
+.cliente:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Button hover opacity */
+button:not(:disabled):hover {
+  opacity: 0.9;
+  transition: opacity 0.2s;
+}
+
+/* Gradient section buttons */
+.section-buttons #btnLeads {
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+}
+.section-buttons #btnAppuntamenti {
+  background: linear-gradient(135deg, #ff9966, #ff5e62);
+}
+.section-buttons #btnContratti {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+/* Smooth form inputs */
+.contratto-form input, .contratto-form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+/* Primary font weight */
+h1, h2, h3 {
+  font-weight: 600;
+}
+
+/* Background pattern */
+body {
+  background: #eef2f5;
+}
