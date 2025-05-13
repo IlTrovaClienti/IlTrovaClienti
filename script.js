@@ -1,6 +1,7 @@
+
 document.addEventListener('DOMContentLoaded', () => {
   const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
-  let crediti = 8, leads = [], carrello = [], sectionFilter = null;
+  let crediti = 8, leads = [], carrello = [], sectionFilter = null, loggedIn = false;
 
   const elems = {
     credDisp: document.getElementById('crediti'),
@@ -20,8 +21,20 @@ document.addEventListener('DOMContentLoaded', () => {
     btnPayPal: document.getElementById('pay-paypal'),
     btnCard: document.getElementById('pay-card'),
     btnBank: document.getElementById('pay-bank'),
-    btnClosePay: document.getElementById('close-payment')
+    btnClosePay: document.getElementById('close-payment'),
+    btnLogin: document.getElementById('login-btn'),
+    btnRegister: document.getElementById('register-btn'),
+    btnRecoverPassword: document.getElementById('recover-password-btn'),
+    loginForm: document.getElementById('login-form'),
+    registerForm: document.getElementById('register-form'),
+    recoverPasswordForm: document.getElementById('recover-password-form')
   };
+
+  function checkLoginStatus() {
+    if (!loggedIn) {
+      elems.payModal.style.display = 'flex'; // Show the login/register modal when attempting to buy credits or leads
+    }
+  }
 
   function updateCreditUI() {
     elems.credDisp.textContent = crediti.toFixed(2);
@@ -78,9 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnA = document.createElement('button'); btnA.className='acquisisci'; btnA.textContent='Acquisisci';
         const btnC = document.createElement('button'); btnC.className='annulla'; btnC.textContent='Annulla'; btnC.style.display='none';
         btnA.onclick = () => {
-          crediti -= costCredit; updateCreditUI();
-          carrello.push(lead); updateCart();
-          btnA.disabled = true; btnC.style.display = 'inline-block';
+          checkLoginStatus();
+          if (loggedIn) {
+            crediti -= costCredit; updateCreditUI();
+            carrello.push(lead); updateCart();
+            btnA.disabled = true; btnC.style.display = 'inline-block';
+          }
         };
         btnC.onclick = () => {
           crediti += costCredit; updateCreditUI();
@@ -114,16 +130,48 @@ document.addEventListener('DOMContentLoaded', () => {
     elems.tot.textContent = 'Totale: €' + sum;
   }
 
+  // registration and login popups and functionality
   elems.btnRicarica.onclick = () => { elems.payModal.style.display = 'flex'; };
   elems.btnClosePay.onclick = () => { elems.payModal.style.display = 'none'; };
-  elems.btnPayPal.onclick = () => { window.open('https://www.paypal.com/paypalme/YourBusiness','_blank'); };
-  elems.btnCard.onclick = () => { window.open('https://your-stripe-checkout-link','_blank'); };
-  elems.btnBank.onclick = () => { alert('IBAN: IT00X0000000000000000000000'); };
+  elems.btnLogin.onclick = () => { 
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    if (email && password) {
+      loggedIn = true;
+      alert('Login successful!');
+      elems.payModal.style.display = 'none';
+    } else {
+      alert('Please enter valid credentials.');
+    }
+  };
 
+  elems.btnRegister.onclick = () => {
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    if (email && password) {
+      alert('Registration successful! You can now log in.');
+      elems.registerForm.style.display = 'none'; 
+      elems.loginForm.style.display = 'block'; 
+    } else {
+      alert('Please fill all fields.');
+    }
+  };
+
+  elems.btnRecoverPassword.onclick = () => {
+    const email = document.getElementById('recover-email').value;
+    if (email) {
+      alert('Password recovery link has been sent to ' + email);
+    } else {
+      alert('Please enter your email address.');
+    }
+  };
+
+  // section toggles
   elems.btnLeads.onclick = () => { sectionFilter = sectionFilter==='lead'?null:'lead'; elems.btnLeads.classList.toggle('selected'); render(); };
   elems.btnAppuntamenti.onclick = () => { sectionFilter = sectionFilter==='appuntamento'?null:'appuntamento'; elems.btnAppuntamenti.classList.toggle('selected'); render(); };
   elems.btnContratti.onclick = () => { sectionFilter = sectionFilter==='contratto'?null:'contratto'; elems.btnContratti.classList.toggle('selected'); render(); };
 
+  // fetch data
   fetch(sheetURL).then(r => r.text()).then(txt => {
     const lines = txt.trim().split('\n');
     const headers = lines.shift().split('\t').map(h => h.trim().toLowerCase());
