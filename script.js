@@ -1,4 +1,4 @@
-// script.js - Fix27: Correct commission values based on credit system
+// script.js - Fix28: Add cancel button to contract form
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2Zv6-_1eyg4bmZBhl6EvfhyD9OiGZZ_jE3yjFwkyuWKRodR3GCvG_wTGx4JnvCIGud/pub?output=tsv';
 
 let crediti = 8, allLeads = [], carrelloState = [];
@@ -45,7 +45,6 @@ function populateFilters(leads) {
 
 function getFilteredLeads() {
   return allLeads.filter(lead => {
-    // existing filters only
     return Object.keys(filters).every(k => {
       const val = filters[k].value;
       return val === 'Tutti' || lead[k] === val;
@@ -92,22 +91,20 @@ function creaCliente(lead) {
   div.id = lead.id; div.className = 'cliente';
   const h3 = document.createElement('h3');
   h3.textContent = `${lead.categoria} – ${lead.citta}`;
-  
+
   const pReg = document.createElement('p');
-  pReg.innerHTML = '<img src="https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png" width="16" style="vertical-align:middle;"/> ' + lead.regione;
+  pReg.innerHTML = '<img src="https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png" width="16"/> ' + lead.regione;
   const pTipo = document.createElement('p');
   pTipo.textContent = lead.tipo;
   const pBud = document.createElement('p');
   pBud.innerHTML = '<strong>Budget:</strong> €' + lead.budget;
 
-  // Determine commission based on type
-  const t = lead.tipo.toLowerCase();
-  let cost = {c: 0, e: 0};
-  if (t.includes('lead')) {
-    cost = {c:1, e:40};
-  } else if (t.includes('appuntamento')) {
-    cost = {c:2, e:80};
-  }
+  // Determine commission
+  const typeLower = lead.tipo.toLowerCase();
+  let cost = {c:0, e:0};
+  if (typeLower.includes('lead')) { cost = {c:1, e:40}; }
+  else if (typeLower.includes('appuntamento')) { cost = {c:2, e:80}; }
+
   const pPrez = document.createElement('p');
   if (cost.c > 0) {
     pPrez.innerHTML = `<strong>Commissione IlTrovaClienti:</strong> €${cost.e} (${cost.c} credito${cost.c>1?'i':''})`;
@@ -122,20 +119,19 @@ function creaCliente(lead) {
 
   if (cost.c > 0) {
     const btnAcq = document.createElement('button');
-    btnAcq.textContent = 'Acquisisci'; 
-    btnAcq.className = t.includes('lead')?'acquisisci':'appuntamento';
+    btnAcq.textContent = 'Acquisisci'; btnAcq.className = cost.c===1?'acquisisci':'appuntamento';
     const btnCancel = document.createElement('button');
-    btnCancel.textContent = 'Annulla'; btnCancel.className = 'annulla'; btnCancel.style.display='none';
+    btnCancel.textContent = 'Annulla'; btnCancel.className = 'annulla'; btnCancel.style.display = 'none';
 
     btnAcq.onclick = () => {
       crediti -= cost.c; aggiornaCreditiDisplay();
-      aggiungiAlCarrello(lead.id, t.includes('lead')?'Lead da chiamare':'Appuntamento fissato', cost.c, cost.e);
-      btnAcq.disabled = true; btnCancel.style.display='inline-block';
+      aggiungiAlCarrello(lead.id, cost.c===1?'Lead da chiamare':'Appuntamento fissato', cost.c, cost.e);
+      btnAcq.disabled = true; btnCancel.style.display = 'inline-block';
     };
     btnCancel.onclick = () => {
       crediti += cost.c; aggiornaCreditiDisplay();
-      removeFromCarrello(lead.id, t.includes('lead')?'Lead da chiamare':'Appuntamento fissato');
-      btnAcq.disabled = false; btnCancel.style.display='none'; updateCarrelloUI();
+      removeFromCarrello(lead.id, cost.c===1?'Lead da chiamare':'Appuntamento fissato');
+      btnAcq.disabled = false; btnCancel.style.display = 'none'; updateCarrelloUI();
     };
 
     floatDiv.append(btnAcq, btnCancel);
@@ -143,6 +139,7 @@ function creaCliente(lead) {
     const btn = document.createElement('button');
     btn.textContent = 'Riserva trattativa'; btn.className = 'contratto';
     btn.onclick = () => {
+      // create form with cancel
       const form = document.createElement('form');
       form.className = 'contratto-form';
       form.innerHTML = `
@@ -151,9 +148,22 @@ function creaCliente(lead) {
         <input type="tel" name="telefono" placeholder="Il tuo numero di telefono" required/>
         <input type="text" name="localita" placeholder="La tua località" required/>
         <textarea name="messaggio" placeholder="Dettagli..." rows="4" required></textarea>
-        <button type="submit">Invia richiesta</button>`;
-      form.onsubmit = e => { e.preventDefault(); alert('Richiesta inviata. Grazie!'); form.remove(); };
-      div.appendChild(form); btn.disabled=true;
+        <div class="form-actions">
+          <button type="submit">Invia richiesta</button>
+          <button type="button" class="cancel-form">Annulla</button>
+        </div>`;
+      form.querySelector('.cancel-form').onclick = () => {
+        form.remove();
+        btn.disabled = false;
+      };
+      form.onsubmit = e => {
+        e.preventDefault();
+        alert('Richiesta inviata. Grazie!');
+        form.remove();
+        btn.disabled = false;
+      };
+      div.appendChild(form);
+      btn.disabled = true;
     };
     floatDiv.append(btn);
   }
@@ -170,24 +180,17 @@ function renderLeadsList() {
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL).then(r => r.text()).then(txt => {
     const lines = txt.trim().split('\n');
-    const headers = lines.shift().split('\t').map(h=>h.trim());
+    const headers = lines.shift().split('\t').map(h => h.trim());
     const idx = {
-      regione: headers.findIndex(h=>/region/i.test(h)),
-      citta: headers.findIndex(h=>/citt/i.test(h)),
-      categoria: headers.findIndex(h=>/categ/i.test(h)),
-      tipo: headers.findIndex(h=>/tip/i.test(h)),
-      budget: headers.findIndex(h=>/budget/i.test(h))
+      regione: headers.findIndex(h => /region/i.test(h)),
+      citta: headers.findIndex(h => /citt/i.test(h)),
+      categoria: headers.findIndex(h => /categ/i.test(h)),
+      tipo:   headers.findIndex(h => /tip/i.test(h)),
+      budget: headers.findIndex(h => /budget/i.test(h))
     };
-    allLeads = lines.map((line,i) => {
-      const cells = line.split('\t').map(c=>c.trim());
-      return {
-        id: 'lead-'+i,
-        regione: cells[idx.regione]||'',
-        citta: cells[idx.citta]||'',
-        categoria: cells[idx.categoria]||'',
-        tipo: cells[idx.tipo]||'',
-        budget: parseFloat(cells[idx.budget])||0
-      };
+    allLeads = lines.map((line, i) => {
+      const cells = line.split('\t').map(c => c.trim());
+      return { id: 'lead-'+i, regione: cells[idx.regione]||'', citta: cells[idx.citta]||'', categoria: cells[idx.categoria]||'', tipo: cells[idx.tipo]||'', budget: parseFloat(cells[idx.budget])||0 };
     });
     populateFilters(allLeads);
     renderLeadsList();
