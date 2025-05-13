@@ -3,6 +3,7 @@ const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSaX-3LmEul1O2
 
 let crediti = 8, allLeads = [], carrelloState = [];
 
+// DOM elements
 const euroDisplay = document.getElementById('euro'),
       creditiDisplay = document.getElementById('crediti'),
       clientiContainer = document.getElementById('clientiContainer'),
@@ -51,6 +52,11 @@ function aggiungiAlCarrello(id, type, credCost, euroCost) {
   updateCarrelloUI();
 }
 
+function removeFromCarrello(id, type) {
+  carrelloState = carrelloState.filter(i => !(i.id === id && i.type === type));
+  updateCarrelloUI();
+}
+
 function updateCarrelloUI() {
   carrello.innerHTML = '';
   carrelloState.forEach(item => {
@@ -63,10 +69,12 @@ function updateCarrelloUI() {
     btn.onclick = () => {
       crediti += item.creditCost;
       aggiornaCreditiDisplay();
-      carrelloState = carrelloState.filter(i => !(i.id === item.id && i.type === item.type));
-      renderLeadsList(); updateCarrelloUI();
+      removeFromCarrello(item.id, item.type);
+      renderLeadsList();
+      updateCarrelloUI();
     };
-    li.appendChild(btn); carrello.appendChild(li);
+    li.appendChild(btn);
+    carrello.appendChild(li);
   });
   totaleDisplay.textContent = '€' + carrelloState.reduce((s,i)=>s+i.euro,0).toFixed(2);
 }
@@ -77,21 +85,39 @@ function creaCliente(lead) {
   const pReg = document.createElement('p'); pReg.innerHTML = '<img src="https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2.png" width="16" style="vertical-align:middle;"/> ' + lead.regione;
   const pTipo = document.createElement('p'); pTipo.textContent = lead.tipo;
   const pBud = document.createElement('p'); pBud.innerHTML = '<strong>Budget:</strong> €' + lead.budget;
-  const pPrez = document.createElement('p'); pPrez.innerHTML = '<strong>Prezzo Acquisto:</strong> €' + lead.prezzo.toFixed(2);
+  const pPrez = document.createElement('p'); pPrez.innerHTML = '<strong>Commissione IlTrovaClienti:</strong> €' + lead.prezzo.toFixed(2);
   div.append(h3, pReg, pTipo, pBud, pPrez);
 
   const actions = document.createElement('div'); actions.className = 'actions';
   const t = lead.tipo.toLowerCase();
-  if (t.includes('lead')) {
-    const pc = document.createElement('p'); pc.innerHTML = '<strong>Costo:</strong> 1 credito (€40)';
-    const btn = document.createElement('button'); btn.textContent = 'Acquisisci'; btn.className = 'acquisisci';
-    btn.onclick = () => { crediti -= 1; aggiornaCreditiDisplay(); aggiungiAlCarrello(lead.id,'Lead da chiamare',1,40); renderLeadsList(); };
-    actions.append(pc, btn);
-  } else if (t.includes('appuntamento')) {
-    const pc = document.createElement('p'); pc.innerHTML = '<strong>Costo:</strong> 2 crediti (€80)';
-    const btn = document.createElement('button'); btn.textContent = 'Acquisisci'; btn.className = 'appuntamento';
-    btn.onclick = () => { crediti -= 2; aggiornaCreditiDisplay(); aggiungiAlCarrello(lead.id,'Appuntamento fissato',2,80); renderLeadsList(); };
-    actions.append(pc, btn);
+
+  // Create buttons
+  if (t.includes('lead') || t.includes('appuntamento')) {
+    const cost = t.includes('lead') ? {c:1, e:40} : {c:2, e:80};
+    const pc = document.createElement('p');
+    pc.innerHTML = `<strong>Costo:</strong> ${cost.c} credito${cost.c>1?'i':''} (€${cost.e})`;
+    const btnAcq = document.createElement('button');
+    btnAcq.textContent = 'Acquisisci'; btnAcq.className = t.includes('lead')?'acquisisci':'appuntamento';
+    const btnAnnulla = document.createElement('button');
+    btnAnnulla.textContent = 'Annulla'; btnAnnulla.className = 'annulla';
+    btnAnnulla.style.display = 'none';
+    // acquisisci click
+    btnAcq.onclick = () => {
+      crediti -= cost.c; aggiornaCreditiDisplay();
+      aggiungiAlCarrello(lead.id, t.includes('lead')?'Lead da chiamare':'Appuntamento fissato', cost.c, cost.e);
+      btnAcq.disabled = true;
+      btnAnnulla.style.display = 'inline-block';
+    };
+    // annulla click
+    btnAnnulla.onclick = () => {
+      crediti += cost.c; aggiornaCreditiDisplay();
+      removeFromCarrello(lead.id, t.includes('lead')?'Lead da chiamare':'Appuntamento fissato');
+      btnAcq.disabled = false;
+      btnAnnulla.style.display = 'none';
+      renderLeadsList();
+      updateCarrelloUI();
+    };
+    actions.append(pc, btnAcq, btnAnnulla);
   } else if (t.includes('contratto')) {
     const btn = document.createElement('button'); btn.textContent = 'Riserva trattativa'; btn.className = 'contratto';
     btn.onclick = () => {
@@ -100,14 +126,15 @@ function creaCliente(lead) {
         <input type="text" name="nome" placeholder="Il tuo nome" required/>
         <input type="email" name="email" placeholder="La tua email" required/>
         <textarea name="messaggio" placeholder="Dettagli..." rows="4" required></textarea>
-        <button type="submit">Invia richiesta</button>`; 
+        <button type="submit">Invia richiesta</button>`;
       form.onsubmit = e => { e.preventDefault(); alert('Richiesta inviata. Grazie!'); form.remove(); };
       div.appendChild(form); btn.disabled = true;
     };
     actions.append(btn);
   }
-  carrelloState.forEach(i => { if (i.id === lead.id) actions.querySelectorAll('button.acquisisci').forEach(b=>b.disabled=true); });
-  div.appendChild(actions); return div;
+
+  div.appendChild(actions);
+  return div;
 }
 
 function renderLeadsList() {
@@ -128,10 +155,12 @@ window.addEventListener('DOMContentLoaded', () => {
       prezzo:  headers.findIndex(h=>/prezzo/i.test(h))
     };
     allLeads = lines.map((line,i)=>{ const cells=line.split('\t').map(c=>c.trim()); const raw=parseFloat(cells[idx.budget])||0;
-      const acq=parseFloat(cells[idx.prezzo])||Math.ceil(raw*0.1/100)*100; 
+      const acq=parseFloat(cells[idx.prezzo])||Math.ceil(raw*0.1/100)*100;
       return { id:'lead-'+i, regione:cells[idx.regione]||'', citta:cells[idx.citta]||'', categoria:cells[idx.categoria]||'', tipo:cells[idx.tipo]||'', budget:raw, prezzo:Math.ceil(acq/100)*100 }; 
     });
-    populateFilters(allLeads); renderLeadsList(); aggiornaCreditiDisplay();
+    populateFilters(allLeads);
+    renderLeadsList();
+    aggiornaCreditiDisplay();
   });
   ricaricaBtn.onclick = () => { crediti += 8; aggiornaCreditiDisplay(); };
 });
