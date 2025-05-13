@@ -52,14 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (filters.categoria && lead.categoria !== filters.categoria) return;
       if (filters.tipo && lead.tipo !== filters.tipo) return;
 
-      // derive costCredit from tipo
       let costCredit = 0;
       const t = lead.tipo.toLowerCase();
       if (t.includes('lead')) costCredit = 1;
       else if (t.includes('appuntamento')) costCredit = 2;
       else costCredit = 0;
 
-      // type classification
       let typeClass = 'contratto', typeLabel = 'Contratto riservato';
       if (costCredit === 1) { typeClass = 'lead'; typeLabel = 'Lead da chiamare'; }
       else if (costCredit === 2) { typeClass = 'appuntamento'; typeLabel = 'Appuntamento fissato'; }
@@ -116,19 +114,16 @@ document.addEventListener('DOMContentLoaded', () => {
     elems.tot.textContent = 'Totale: €' + sum;
   }
 
-  // payment modal
   elems.btnRicarica.onclick = () => { elems.payModal.style.display = 'flex'; };
   elems.btnClosePay.onclick = () => { elems.payModal.style.display = 'none'; };
   elems.btnPayPal.onclick = () => { window.open('https://www.paypal.com/paypalme/YourBusiness','_blank'); };
   elems.btnCard.onclick = () => { window.open('https://your-stripe-checkout-link','_blank'); };
   elems.btnBank.onclick = () => { alert('IBAN: IT00X0000000000000000000000'); };
 
-  // section toggles
   elems.btnLeads.onclick = () => { sectionFilter = sectionFilter==='lead'?null:'lead'; elems.btnLeads.classList.toggle('selected'); render(); };
   elems.btnAppuntamenti.onclick = () => { sectionFilter = sectionFilter==='appuntamento'?null:'appuntamento'; elems.btnAppuntamenti.classList.toggle('selected'); render(); };
   elems.btnContratti.onclick = () => { sectionFilter = sectionFilter==='contratto'?null:'contratto'; elems.btnContratti.classList.toggle('selected'); render(); };
 
-  // fetch data
   fetch(sheetURL).then(r => r.text()).then(txt => {
     const lines = txt.trim().split('\n');
     const headers = lines.shift().split('\t').map(h => h.trim().toLowerCase());
