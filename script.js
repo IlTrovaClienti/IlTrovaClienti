@@ -150,13 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
   elems.btnContratti.onclick=()=>{sectionFilter='contratto';elems.btnContratti.classList.toggle('selected');render();};
 
   fetch(sheetURL).then(r=>r.text()).then(txt=>{
-    const lines=txt.trim().split('\n');
-    const headers=lines.shift().split('\t').map(h=>h.trim().toLowerCase());
+    const lines=txt.trim().split('
+');
+    const headers=lines.shift().split('	').map(h=>h.trim().toLowerCase());
     const idx={regione:headers.indexOf('regione')>=0?headers.indexOf('regione'):0,citta:headers.indexOf('citta')>=0?headers.indexOf('citta'):1,
       categoria:headers.indexOf('categoria')>=0?headers.indexOf('categoria'):2,tipo:headers.indexOf('tipo')>=0?headers.indexOf('tipo'):3,
       descrizione:headers.indexOf('descrizione')>=0?headers.indexOf('descrizione'):-1,
       budget:headers.findIndex(h=>h.includes('budget'))>=0?headers.findIndex(h=>h.includes('budget')):4};
-    leads=lines.map((l,i)=>{const c=l.split('\t');return{id:'lead-'+i,regione:c[idx.regione]||'',citta:c[idx.citta]||'',categoria:c[idx.categoria]||'',tipo:c[idx.tipo]||'',descrizione:idx.descrizione>=0?c[idx.descrizione]:'',budget:parseInt(c[idx.budget])||0};});
+    leads=lines.map((l,i)=>{const c=l.split('	');return{id:'lead-'+i,regione:c[idx.regione]||'',citta:c[idx.citta]||'',categoria:c[idx.categoria]||'',tipo:c[idx.tipo]||'',descrizione:idx.descrizione>=0?c[idx.descrizione]:'',budget:parseInt(c[idx.budget])||0};});
     populateFilters();render();updateCreditUI();
   });
 });

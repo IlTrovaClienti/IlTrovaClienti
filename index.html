@@ -8,7 +8,6 @@
 </head>
 <body>
   <header class="header">
-    <img src="assets/logo.jpg" alt="Logo" class="logo">
     <h1>IlTrovaClienti</h1>
     <div class="credit-display">
       Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)
@@ -22,16 +21,12 @@
   </nav>
   <section class="filters">
     <div class="filter-row">
-      <label for="regione">Regione</label>
-      <select id="regione"></select>
-      <label for="citta">Città</label>
-      <select id="citta"></select>
+      <div><label for="regione">Regione</label><select id="regione"></select></div>
+      <div><label for="citta">Città</label><select id="citta"></select></div>
     </div>
     <div class="filter-row">
-      <label for="categoria">Categoria</label>
-      <select id="categoria"></select>
-      <label for="tipo">Tipo</label>
-      <select id="tipo"></select>
+      <div><label for="categoria">Categoria</label><select id="categoria"></select></div>
+      <div><label for="tipo">Tipo</label><select id="tipo"></select></div>
     </div>
   </section>
   <section class="carrello">
@@ -41,58 +36,24 @@
   </section>
   <main id="clienti"></main>
 
-  <!-- Auth Modal -->
-  <div id="auth-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-tabs">
-        <button id="show-login">Accedi</button>
-        <button id="show-register">Registrati</button>
-        <button id="show-recover">Recupera password</button>
-      </div>
-      <form id="login-form" style="display:block">
-        <input type="email" id="login-email" placeholder="Email"><br>
-        <input type="password" id="login-password" placeholder="Password"><br>
-        <button type="button" id="btnLogin">Accedi</button>
-      </form>
-      <form id="register-form" style="display:none">
-        <input type="text" id="register-name" placeholder="Nome"><br>
-        <input type="text" id="register-surname" placeholder="Cognome"><br>
-        <input type="tel" id="register-phone" placeholder="Telefono"><br>
-        <input type="email" id="register-email" placeholder="Email"><br>
-        <input type="password" id="register-password" placeholder="Password"><br>
-        <input type="password" id="register-password2" placeholder="Ripeti Password"><br>
-        <label>Quanto fa 2+3? <input type="text" id="captcha" placeholder="Risposta"></label><br>
-        <button type="button" id="btnRegister">Registrati</button>
-      </form>
-      <form id="recover-password-form" style="display:none">
-        <input type="email" id="recover-email" placeholder="Email"><br>
-        <button type="button" id="btnRecoverPassword">Recupera</button>
-      </form>
-      <button id="close-auth" class="cancel-form">Chiudi</button>
-    </div>
-  </div>
-
-  <!-- Payment Modal -->
-  <div id="payment-modal" class="modal-overlay">
-    <div class="modal payment-modal">
-      <h3>Scegli metodo di pagamento</h3>
-      <div class="payment-options">
-        <div class="option">
-          <img class="pay-logo" src="assets/paypal.png" alt="PayPal">
-          <button id="pay-paypal">PayPal</button>
-        </div>
-        <div class="option">
-          <img class="pay-logo" src="assets/credit-card.png" alt="Carta di credito">
-          <button id="pay-card">Carta di credito</button>
-        </div>
-        <div class="option">
-          <img class="pay-logo" src="assets/bank.png" alt="Bonifico bancario">
-          <button id="pay-bank">Bonifico bancario</button>
-        </div>
-      </div>
-      <button id="close-payment" class="cancel-form">Chiudi</button>
-    </div>
-  </div>
+  <!-- Firebase SDK via script tags -->
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.7.1/firebase-firestore.js"></script>
+  <script>
+    // Your Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAbiSZaWGRWTxA5C15TYv3IiuCTyS6WaOA",
+      authDomain: "iltrovaclienti-948af.firebaseapp.com",
+      projectId: "iltrovaclienti-948af",
+      storageBucket: "iltrovaclienti-948af.firebasestorage.app",
+      messagingSenderId: "774644367448",
+      appId: "1:774644367448:web:87bed07de4f922f959ca2d",
+      measurementId: "G-JF12YKNJX6"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
 
   <script src="script.js"></script>
 </body>

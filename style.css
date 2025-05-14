@@ -40,17 +40,13 @@ button.contratto { background: #FFD700; color: #000; }
 .payment-modal { max-width: 400px; }
 .payment-options { display: flex; flex-direction: column; gap: 15px; margin: 10px 0; }
 .payment-options .option { display: flex; align-items: center; }
-.payment-options .pay-logo { width: 40px; margin-right: 10px; }
+.payment-options .pay-logo { width: 80px; margin-right: 10px; }
 .payment-options button { flex: 1; padding: 10px; font-size: 16px; border-radius: 8px; border:none; }
-
-
-/* Enlarge payment logos */
-.pay-logo { width: 80px; }
 
 /* Ensure main content visible */
 #clienti, .filters, .carrello { display: block !important; }
 
-/* Bottone “Acquisisci” giallo in card Contratto riservato */
+/* Yellow button for reserved contracts */
 .cliente-card.contratto .actions button.acquisisci {
   background: #FFD700 !important;
   color: #000 !important;
