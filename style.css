@@ -4,9 +4,21 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .credit-display button { margin-left: 10px; padding: 4px 8px; border-radius: 12px; background: #004080; color: #fff; border: none; }
 .section-buttons { display: flex; gap: 5px; margin-bottom: 10px; }
 .section-buttons button { flex: 1; padding: 8px 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; }
-#btnLeads, .cliente-card.lead .acquisisci, .badge.lead { background: #00FF00; color: #fff; }
-#btnAppuntamenti, .cliente-card.appuntamento .acquisisci, .badge.appuntamento { background: #FF00FF; color: #fff; }
-#btnContratti, button.contratto, .badge.contratto { background: #FFD700; color: #000; }
+/* Lead da chiamare in blu acceso */
+#btnLeads, .cliente-card.lead .acquisisci, .badge.lead {
+  background: #007BFF !important;
+  color: #fff !important;
+}
+/* Appuntamenti fissati in fucsia */
+#btnAppuntamenti, .cliente-card.appuntamento .acquisisci, .badge.appuntamento {
+  background: #FF00FF !important;
+  color: #fff !important;
+}
+/* Contratti riservati in giallo */
+#btnContratti, button.contratto, .badge.contratto {
+  background: #FFD700 !important;
+  color: #000 !important;
+}
 .section-buttons button.selected { outline: 2px solid #333; }
 .filters { margin-bottom: 15px; }
 .filter-row { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -15,11 +27,11 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .carrello { background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
 #totale { margin-top: 8px; font-weight: bold; }
 .cliente-card { background: #fff; padding: 10px; position: relative; border-left: 4px solid; border-radius: 8px; margin-bottom: 10px; }
-.cliente-card.lead { border-color: #00FF00; }
+.cliente-card.lead { border-color: #007BFF; }
 .cliente-card.appuntamento { border-color: #FF00FF; }
 .cliente-card.contratto { border-color: #FFD700; }
 .badge { display: inline-block; padding: 2px 6px; border-radius: 12px; font-size: 0.8em; margin-bottom: 6px; }
-.badge.lead { background: #00FF00; color: #fff; }
+.badge.lead { background: #007BFF; color: #fff; }
 .badge.appuntamento { background: #FF00FF; color: #fff; }
 .badge.contratto { background: #FFD700; color: #000; }
 .cliente-card h3 { margin-bottom: 6px; font-size: 1.1em; }
@@ -29,7 +41,7 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .actions button { padding: 4px 8px; font-size: 12px; border: none; border-radius: 12px; }
 button.annulla { background: #dc3545; color: #fff; }
 button.contratto { background: #FFD700; color: #000; }
-/* Modal */
+/* Modal styles */
 .modal-overlay { position: fixed; top: 0; left: 0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:none; justify-content:center; align-items:center; z-index:1000; }
 .modal { background:#fff; padding:20px; border-radius:12px; max-width:320px; width:90%; text-align:center; }
 .modal-tabs button { padding:4px 8px; margin:4px; font-size:14px; }
