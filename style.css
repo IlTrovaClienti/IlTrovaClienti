@@ -1,3 +1,11 @@
-/* User's updated style.css */
-body { font-family: Arial, sans-serif; }
-/* Replace with your full style.css content */
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px;}
+.header{background:#fff;padding:15px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;}
+.section-buttons{display:flex;gap:5px;margin:10px 0;}
+.section-buttons button{flex:1;padding:10px;border:none;border-radius:20px;color:#fff;cursor:pointer;}
+#btnLeads{background:#007BFF;}#btnAppuntamenti{background:#FF00FF;}#btnContratti{background:#FFD700;color:#000;}
+.filters{margin-bottom:10px;}
+.filter-row{display:flex;gap:10px;margin-bottom:10px;}
+.filters select{flex:1;padding:8px;border-radius:6px;border:1px solid #ccc;}
+.carrello{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;}
+.cliente-card{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;}
