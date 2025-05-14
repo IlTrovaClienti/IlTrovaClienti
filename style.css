@@ -5,7 +5,7 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .section-buttons { display: flex; gap: 5px; margin-bottom: 10px; }
 .section-buttons button { flex: 1; padding: 12px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; }
 #btnLeads { background: #004080; color: #fff; }
-#btnAppuntamenti { background: #006400; color: #fff; }
+#btnAppuntamenti { background: #FF00FF; color: #fff; } /* Fucsia */
 #btnContratti { background: #FFD700; color: #000; }
 .section-buttons button.selected { outline: 3px solid #333; }
 .filters { margin-bottom: 15px; }
@@ -17,36 +17,30 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 #totale { margin-top: 10px; font-weight: bold; }
 .cliente-card { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; position: relative; }
 .cliente-card.lead { border-left: 4px solid #004080; }
-.cliente-card.appuntamento { border-left: 4px solid #006400; }
+.cliente-card.appuntamento { border-left: 4px solid #FF00FF; } /* Fucsia */
 .cliente-card.contratto { border-left: 4px solid #FFD700; }
 .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 0.8em; margin-bottom: 6px; }
 .badge.lead { background: #004080; color: #fff; }
-.badge.appuntamento { background: #006400; color: #fff; }
+.badge.appuntamento { background: #FF00FF; color: #fff; } /* Fucsia */
 .badge.contratto { background: #FFD700; color: #000; }
 .cliente-card h3 { margin-bottom: 8px; }
 .cliente-card .desc { margin-bottom: 5px; font-style: italic; }
 .cliente-card .commission { font-weight: bold; margin-bottom: 8px; }
 .actions { display: flex; gap: 5px; position: absolute; top: 15px; right: 15px; }
 .actions button { padding: 10px 15px; border: none; border-radius: 20px; cursor: pointer; font-weight: bold; height: 40px; min-width: 120px; }
-button.acquisisci { background: #006400; color: #fff; font-size: 14px; }
+button.acquisisci { font-size: 14px; }
+.cliente-card.lead .acquisisci { background: #004080; color: #fff; } /* Lead acquisisci blue */
+.cliente-card.appuntamento .acquisisci { background: #FF00FF; color: #fff; } /* Appuntamento acquisisci fucsia */
 button.annulla { background: #dc3545; color: #fff; }
 button.contratto { background: #FFD700; color: #000; }
 /* Mobile specific fixes for button overlap */
 @media (max-width: 768px) {
-  .actions button {
-    font-size: 14px;
-    padding: 10px 12px;
-  }
+  .actions button { font-size: 14px; padding: 10px 12px; }
   .cliente-card { padding: 12px; }
-  .actions {
-    position: relative;
-    top: 0;
-  }
+  .actions { position: relative; top: 0; }
   .cliente-card .desc { font-size: 0.9em; }
-  .actions button.acquisisci {
-    background: #006400; /* Dark green background */
-    color: #fff; /* White text */
-  }
+  .cliente-card.lead .acquisisci { background: #004080; color: #fff; }
+  .cliente-card.appuntamento .acquisisci { background: #FF00FF; color: #fff; }
 }
 /* Payment modal */
 .modal-overlay {
