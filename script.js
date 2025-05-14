@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     recoverPasswordForm: document.getElementById('recover-password-form')
   };
 
+  // Modal tabs
   document.getElementById('show-login').onclick = () => {
     elems.loginForm.style.display='block';
     elems.registerForm.style.display='none';
