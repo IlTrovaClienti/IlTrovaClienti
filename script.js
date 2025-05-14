@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['regione', 'citta', 'categoria', 'tipo'].forEach(id => {
       const sel = elems[id];
       const vals = Array.from(new Set(leads.map(l => l[id]))).filter(v => v).sort();
-      sel.innerHTML = '<option value="">Tutti</option>' + vals.map(v => `<option value="${v}">${v}</option>`).join('');
+      sel.innerHTML = '<option value="">Tutti</option>' + vals.map(v => '<option value="'+v+'">'+v+'</option>').join('');
       sel.onchange = render;
     });
   }
@@ -75,28 +75,36 @@ document.addEventListener('DOMContentLoaded', () => {
       if (f.citta && lead.citta !== f.citta) return;
       if (f.categoria && lead.categoria !== f.categoria) return;
       if (f.tipo && lead.tipo !== f.tipo) return;
+
       let cost = 0;
       const t = lead.tipo.toLowerCase();
       if (t.includes('lead')) cost = 1;
       else if (t.includes('appuntamento')) cost = 2;
+
       let cls = 'contratto', lbl = 'Contratto riservato';
       if (cost === 1) { cls = 'lead'; lbl = 'Lead da chiamare'; }
       if (cost === 2) { cls = 'appuntamento'; lbl = 'Appuntamento fissato'; }
+
       const card = document.createElement('div');
       card.className = 'cliente-card ' + cls;
-      card.innerHTML = `
-        <div class="badge ${cls}">${lbl}</div>
-        <h3>${lead.categoria} – ${lead.citta}</h3>
-        <p>${lead.regione} | ${lead.tipo}</p>
-        <p class="desc">${lead.descrizione || ''}</p>
-        <p>Budget: <strong>€${lead.budget}</strong></p>
-        <p class="commission">${cost > 0 ? \`Commissione: €\${cost*40} (\${cost} \${cost>1?'crediti':'credito'})\` : 'Commissione riservata'}</p>
-      `;
+      card.innerHTML =
+        '<div class="badge '+cls+'">'+lbl+'</div>' +
+        '<h3>'+lead.categoria+' – '+lead.citta+'</h3>' +
+        '<p>'+lead.regione+' | '+lead.tipo+'</p>' +
+        '<p class="desc">'+(lead.descrizione||'')+'</p>' +
+        '<p>Budget: <strong>€'+lead.budget+'</strong></p>' +
+        '<p class="commission">'+(cost>0?('Commissione: €'+(cost*40)+' ('+cost+' '+(cost>1?'crediti':'credito')+')'):'Commissione riservata')+'</p>';
+
       const act = document.createElement('div');
       act.className = 'actions';
       if (cost > 0) {
-        const bA = document.createElement('button'); bA.className = 'acquisisci'; bA.textContent = 'Acquisisci';
-        const bC = document.createElement('button'); bC.className = 'annulla'; bC.textContent = 'Annulla'; bC.style.display = 'none';
+        const bA = document.createElement('button');
+        bA.className = 'acquisisci';
+        bA.textContent = 'Acquisisci';
+        const bC = document.createElement('button');
+        bC.className = 'annulla';
+        bC.textContent = 'Annulla';
+        bC.style.display = 'none';
         bA.onclick = () => {
           checkLoginStatus();
           if (loggedIn) {
@@ -112,7 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         act.append(bA, bC);
       } else {
-        const bR = document.createElement('button'); bR.className = 'contratto'; bR.textContent = 'Riserva trattativa';
+        const bR = document.createElement('button');
+        bR.className = 'contratto';
+        bR.textContent = 'Riserva trattativa';
         bR.onclick = () => elems.payModal.style.display = 'flex';
         act.append(bR);
       }
@@ -129,8 +139,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const c = t.includes('lead') ? 1 : t.includes('appuntamento') ? 2 : 0;
       sum += c * 40;
       const li = document.createElement('li');
-      li.textContent = \`\${item.id} – €\${c*40}\`;
-      const btn = document.createElement('button'); btn.className = 'annulla'; btn.textContent = 'Annulla';
+      li.textContent = item.id + ' – €' + (c*40);
+      const btn = document.createElement('button');
+      btn.className = 'annulla';
+      btn.textContent = 'Annulla';
       btn.onclick = () => render();
       li.append(btn);
       elems.cart.append(li);
