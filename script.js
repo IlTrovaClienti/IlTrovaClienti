@@ -82,9 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
   elems.btnRecoverPassword.onclick = () => {
     const email = document.getElementById('recover-email').value.trim();
     if(!email) return alert('Inserisci email');
-    if(users.find(u=>u.email===email)) {
-      return alert('Link di recupero inviato');
-    }
+    if(users.find(u=>u.email===email)) return alert('Link di recupero inviato');
     alert('Email non registrata');
   };
 
