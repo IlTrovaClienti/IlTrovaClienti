@@ -42,3 +42,10 @@ button.contratto { background: #FFD700; color: #000; }
 .payment-options .option { display: flex; align-items: center; }
 .payment-options .pay-logo { width: 40px; margin-right: 10px; }
 .payment-options button { flex: 1; padding: 10px; font-size: 16px; border-radius: 8px; border:none; }
+
+
+/* Enlarge payment logos */
+.pay-logo { width: 80px; }
+
+/* Ensure main content visible */
+#clienti, .filters, .carrello { display: block !important; }
