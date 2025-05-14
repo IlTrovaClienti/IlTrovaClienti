@@ -6,7 +6,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Inserisci qui il contenuto esistente del body -->
+  <!-- Header con crediti e pulsante Ricarica -->
+  <header>
+    <h1>IlTrovaClienti</h1>
+    <div class="credits">
+      Crediti: <span id="currentCredits">0</span> (€<span id="currentCreditsEuro">0.00</span>)
+      <button id="ricarica">Ricarica</button>
+    </div>
+  </header>
+
+  <!-- Contenitori esistenti -->
+  <div id="filters"><!-- filtri Regioni/Città/Categoria/Tipo qui --></div>
+  <div id="cart"><!-- carrello --></div>
+  <div id="cards-container"><!-- qui vanno le card cliente --></div>
+
+  <!-- Modali -->
   <div id="auth-modal"></div>
   <div id="payment-modal"></div>
 
