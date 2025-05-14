@@ -39,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
     elems.credDisp.textContent = crediti.toFixed(2);
     elems.euroDisp.textContent = '€'+(crediti*40).toFixed(2);
   }
-
   function openAuth() { elems.authModal.style.display='flex'; }
   function closeAuth() { elems.authModal.style.display='none'; }
   function openPayment() { elems.paymentModal.style.display='flex'; }
@@ -57,28 +56,34 @@ document.addEventListener('DOMContentLoaded', () => {
   elems.closePay.onclick = closePayment;
 
   elems.btnRegister.onclick = () => {
-    const email = document.getElementById('register-email').value;
+    const name = document.getElementById('register-name').value.trim();
+    const surname = document.getElementById('register-surname').value.trim();
+    const phone = document.getElementById('register-phone').value.trim();
+    const email = document.getElementById('register-email').value.trim();
     const pwd = document.getElementById('register-password').value;
-    if(!email||!pwd) return alert('Compila tutti i campi');
-    users.push({email,pwd});
+    const pwd2 = document.getElementById('register-password2').value;
+    const captcha = document.getElementById('captcha').value.trim();
+    if(!name||!surname||!phone||!email||!pwd||!pwd2) return alert('Compila tutti i campi');
+    if(pwd!==pwd2) return alert('Le password non corrispondono');
+    if(captcha!=='5') return alert('Captcha non corretto');
+    users.push({name,surname,phone,email,pwd});
     localStorage.setItem('users',JSON.stringify(users));
-    alert('Registrazione OK, ora accedi');
+    alert('Registrazione avvenuta! Effettua il login.');
     elems.showLogin.click();
   };
   elems.btnLogin.onclick = () => {
-    const email = document.getElementById('login-email').value;
+    const email = document.getElementById('login-email').value.trim();
     const pwd = document.getElementById('login-password').value;
     if(users.find(u=>u.email===email&&u.pwd===pwd)) {
-      loggedIn=true; closeAuth(); updateCreditUI();
-      return alert('Login OK');
+      loggedIn=true; closeAuth(); updateCreditUI(); return alert('Login ok');
     }
     alert('Credenziali non valide');
   };
   elems.btnRecoverPassword.onclick = () => {
-    const email = document.getElementById('recover-email').value;
+    const email = document.getElementById('recover-email').value.trim();
     if(!email) return alert('Inserisci email');
     if(users.find(u=>u.email===email)) {
-      return alert('Link di recupero inviato a '+email);
+      return alert('Link di recupero inviato');
     }
     alert('Email non registrata');
   };
@@ -101,36 +106,30 @@ document.addEventListener('DOMContentLoaded', () => {
       if(f.citta&&lead.citta!==f.citta) return;
       if(f.categoria&&lead.categoria!==f.categoria) return;
       if(f.tipo&&lead.tipo!==f.tipo) return;
-
       let cost=0; const t=lead.tipo.toLowerCase();
       if(t.includes('lead')) cost=1; else if(t.includes('appuntamento')) cost=2;
-
       let cls='contratto',lbl='Contratto riservato';
       if(cost===1){cls='lead';lbl='Lead da chiamare';}
       if(cost===2){cls='appuntamento';lbl='Appuntamento fissato';}
-
       const card=document.createElement('div');card.className='cliente-card '+cls;
-      card.innerHTML='<div class="badge '+cls+'">'+lbl+'</div>'+
-        '<h3>'+lead.categoria+' – '+lead.citta+'</h3>'+
-        '<p>'+lead.regione+' | '+lead.tipo+'</p>'+
-        '<p class="desc">'+(lead.descrizione||'')+'</p>'+
-        '<p>Budget: <strong>€'+lead.budget+'</strong></p>'+
-        '<p class="commission">'+(cost>0?('Commissione: €'+(cost*40)+' ('+cost+' '+(cost>1?'crediti':'credito')+')'):'Commissione riservata')+'</p>';
-
+      card.innerHTML=`<div class="badge ${cls}">${lbl}</div>
+<h3>${lead.categoria} – ${lead.citta}</h3>
+<p>${lead.regione} | ${lead.tipo}</p>
+<p class="desc">${lead.descrizione||''}</p>
+<p>Budget: <strong>€${lead.budget}</strong></p>
+<p class="commission">${cost>0?`Commissione: €${cost*40} (${cost} ${cost>1?'crediti':'credito'})`:'Commissione riservata'}</p>`;
       const act=document.createElement('div');act.className='actions';
       const btnA=document.createElement('button');btnA.className='acquisisci';btnA.textContent='Acquisisci';
       const btnC=document.createElement('button');btnC.className='annulla';btnC.textContent='Annulla';btnC.style.display='none';
       btnA.onclick=()=>{
         if(!loggedIn){openAuth();return;}
         if(crediti<cost){
-          if(confirm('Crediti insufficienti. Vuoi acquistare crediti?')) openPayment();
+          if(confirm('Crediti insufficienti. Acquista crediti?')) openPayment();
           return;
         }
         crediti-=cost; updateCreditUI(); carrello.push(lead); updateCart(); btnA.disabled=true; btnC.style.display='inline-block';
       };
-      btnC.onclick=()=>{
-        crediti+=cost; updateCreditUI(); carrello=carrello.filter(l=>l.id!==lead.id); updateCart(); btnA.disabled=false; btnC.style.display='none';
-      };
+      btnC.onclick=()=>{crediti+=cost; updateCreditUI(); carrello=carrello.filter(l=>l.id!==lead.id); updateCart(); btnA.disabled=false; btnC.style.display='none';};
       act.append(btnA,btnC);card.append(act);elems.clienti.append(card);
     });
   }
@@ -140,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carrello.forEach(item=>{
       const t=item.tipo.toLowerCase();const c=t.includes('lead')?1:t.includes('appuntamento')?2:0;
       sum+=c*40;
-      const li=document.createElement('li');li.textContent=item.id+' – €'+(c*40);
+      const li=document.createElement('li');li.textContent=`${item.id} – €${c*40}`;
       const b=document.createElement('button');b.className='annulla';b.textContent='Annulla';b.onclick=()=>render();li.append(b);elems.cart.append(li);
     });
     elems.tot.textContent='Totale: €'+sum;
@@ -153,10 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL).then(r=>r.text()).then(txt=>{
     const lines=txt.trim().split('\n');
     const headers=lines.shift().split('\t').map(h=>h.trim().toLowerCase());
-    const idx={regione:headers.indexOf('regione')>=0?headers.indexOf('regione'):0,
-      citta:headers.indexOf('citta')>=0?headers.indexOf('citta'):1,
-      categoria:headers.indexOf('categoria')>=0?headers.indexOf('categoria'):2,
-      tipo:headers.indexOf('tipo')>=0?headers.indexOf('tipo'):3,
+    const idx={regione:headers.indexOf('regione')>=0?headers.indexOf('regione'):0,citta:headers.indexOf('citta')>=0?headers.indexOf('citta'):1,
+      categoria:headers.indexOf('categoria')>=0?headers.indexOf('categoria'):2,tipo:headers.indexOf('tipo')>=0?headers.indexOf('tipo'):3,
       descrizione:headers.indexOf('descrizione')>=0?headers.indexOf('descrizione'):-1,
       budget:headers.findIndex(h=>h.includes('budget'))>=0?headers.findIndex(h=>h.includes('budget')):4};
     leads=lines.map((l,i)=>{const c=l.split('\t');return{id:'lead-'+i,regione:c[idx.regione]||'',citta:c[idx.citta]||'',categoria:c[idx.categoria]||'',tipo:c[idx.tipo]||'',descrizione:idx.descrizione>=0?c[idx.descrizione]:'',budget:parseInt(c[idx.budget])||0};});

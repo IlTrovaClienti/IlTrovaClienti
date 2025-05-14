@@ -21,24 +21,16 @@
   </nav>
   <section class="filters">
     <div class="filter-row">
-      <div>
-        <label for="regione">Regione</label>
-        <select id="regione"></select>
-      </div>
-      <div>
-        <label for="citta">Città</label>
-        <select id="citta"></select>
-      </div>
+      <label for="regione">Regione</label>
+      <select id="regione"></select>
+      <label for="citta">Città</label>
+      <select id="citta"></select>
     </div>
     <div class="filter-row">
-      <div>
-        <label for="categoria">Categoria</label>
-        <select id="categoria"></select>
-      </div>
-      <div>
-        <label for="tipo">Tipo</label>
-        <select id="tipo"></select>
-      </div>
+      <label for="categoria">Categoria</label>
+      <select id="categoria"></select>
+      <label for="tipo">Tipo</label>
+      <select id="tipo"></select>
     </div>
   </section>
   <section class="carrello">
@@ -62,8 +54,13 @@
         <button type="button" id="btnLogin">Accedi</button>
       </form>
       <form id="register-form" style="display:none">
+        <input type="text" id="register-name" placeholder="Nome"><br>
+        <input type="text" id="register-surname" placeholder="Cognome"><br>
+        <input type="tel" id="register-phone" placeholder="Telefono"><br>
         <input type="email" id="register-email" placeholder="Email"><br>
         <input type="password" id="register-password" placeholder="Password"><br>
+        <input type="password" id="register-password2" placeholder="Ripeti Password"><br>
+        <label>Quanto fa 2+3? <input type="text" id="captcha" placeholder="Risposta"></label><br>
         <button type="button" id="btnRegister">Registrati</button>
       </form>
       <form id="recover-password-form" style="display:none">
