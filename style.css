@@ -49,3 +49,9 @@ button.contratto { background: #FFD700; color: #000; }
 
 /* Ensure main content visible */
 #clienti, .filters, .carrello { display: block !important; }
+
+/* Bottone “Acquisisci” giallo in card Contratto riservato */
+.cliente-card.contratto .actions button.acquisisci {
+  background: #FFD700 !important;
+  color: #000 !important;
+}
