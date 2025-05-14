@@ -36,3 +36,9 @@ button.contratto { background: #FFD700; color: #000; }
 .modal form input { width:100%; padding:6px 8px; margin-bottom:8px; border-radius:6px; border:1px solid #ccc; }
 .modal form button { padding:6px 12px; border:none; border-radius:8px; background:#004080; color:#fff; }
 .cancel-form { margin-top:8px; background:#ccc; color:#000; }
+
+.payment-modal { max-width: 400px; }
+.payment-options { display: flex; flex-direction: column; gap: 15px; margin: 10px 0; }
+.payment-options .option { display: flex; align-items: center; }
+.payment-options .pay-logo { width: 40px; margin-right: 10px; }
+.payment-options button { flex: 1; padding: 10px; font-size: 16px; border-radius: 8px; border:none; }
