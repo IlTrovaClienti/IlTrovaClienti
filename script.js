@@ -1,42 +1,83 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
-  let leads = [];
-  const elems = {
-    regione: document.getElementById('regione'),
-    citta: document.getElementById('citta'),
-    categoria: document.getElementById('categoria'),
-    tipo: document.getElementById('tipo'),
-    clienti: document.getElementById('clienti'),
-    cart: document.getElementById('carrello'),
-    tot: document.getElementById('totale')
-  };
-  function populateFilters() {
-    ['regione','citta','categoria','tipo'].forEach(id => {
-      const sel = elems[id];
-      const vals = Array.from(new Set(leads.map(l=>l[id]))).filter(v=>v).sort();
-      sel.innerHTML = '<option value="">Tutti</option>' + vals.map(v=>`<option>${v}</option>`).join('');
-      sel.onchange = render;
+// Import Firebase modules
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+
+const auth = window.firebaseAuth;
+const db = window.firebaseDB;
+
+// Esempio: funzioni esistenti per fetch dei dati e popolazione UI
+// --- Inizio codice esistente ---
+// fetch(sheetURL)
+//   .then(...)
+//   .then(data => {
+//     // Popola filtri e genera card
+//   });
+// --- Fine codice esistente ---
+
+// Registrazione utente
+export async function register(email, password) {
+  try {
+    const userCred = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      credits: 0,
+      createdAt: Date.now()
     });
+    await sendEmailVerification(user);
+    alert("Registrazione ok! Controlla la tua email per verificare l'account.");
+  } catch (err) {
+    console.error(err);
+    alert("Errore registrazione: " + err.message);
   }
-  function render() {
-    elems.clienti.innerHTML = '';
-    leads.forEach(lead => {
-      const card = document.createElement('div');
-      card.innerHTML = `<h3>${lead.categoria} – ${lead.citta}</h3><p>${lead.regione} | ${lead.tipo}</p><p>Budget: €${lead.budget}</p>`;
-      elems.clienti.append(card);
-    });
+}
+
+// Login utente
+export async function login(email, password) {
+  try {
+    const userCred = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCred.user;
+    if (!user.emailVerified) {
+      alert("Devi prima verificare la tua email.");
+      await auth.signOut();
+      return;
+    }
+    const snap = await getDoc(doc(db, "users", user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      window.currentUser = { uid: user.uid, email: user.email, credits: data.credits };
+      updateUIAfterLogin();
+    } else {
+      throw new Error("Dati utente non trovati.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Errore login: " + err.message);
   }
-  fetch(sheetURL).then(r=>r.text()).then(txt=>{
-    const lines = txt.trim().split('\n');
-    const headers = lines.shift().split('\t');
-    leads = lines.map(l=>{
-      const c = l.split('\t');
-      return {
-        regione: c[0], citta: c[1], categoria: c[2], tipo: c[3],
-        budget: parseInt(c[4])||0
-      };
+}
+
+// Mantieni sessione attiva
+onAuthStateChanged(auth, user => {
+  if (user && user.emailVerified) {
+    getDoc(doc(db, "users", user.uid)).then(snap => {
+      const data = snap.data();
+      window.currentUser = { uid: user.uid, email: user.email, credits: data.credits };
+      updateUIAfterLogin();
     });
-    populateFilters();
-    render();
-  });
+  } else {
+    window.currentUser = null;
+    updateUIAfterLogout();
+  }
 });
+
+// Modifica crediti
+export async function changeCredits(delta) {
+  if (!window.currentUser) return;
+  const uid = window.currentUser.uid;
+  const userRef = doc(db, "users", uid);
+  await updateDoc(userRef, {
+    credits: window.currentUser.credits + delta
+  });
+  window.currentUser.credits += delta;
+  renderCreditsInUI(window.currentUser.credits);
+}

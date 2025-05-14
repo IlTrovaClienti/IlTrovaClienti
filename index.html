@@ -1,52 +1,29 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlTrovaClienti</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <h1>IlTrovaClienti</h1>
-    <div class="credit-display">
-      Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)
-      <button id="ricarica">Ricarica</button>
-    </div>
-  </header>
-  <nav class="section-buttons">
-    <button id="btnLeads">Lead da chiamare</button>
-    <button id="btnAppuntamenti">Appuntamenti fissati</button>
-    <button id="btnContratti">Contratti riservati</button>
-  </nav>
-  <section class="filters">
-    <div class="filter-row">
-      <div>
-        <label for="regione">Regione</label>
-        <select id="regione"></select>
-      </div>
-      <div>
-        <label for="citta">Città</label>
-        <select id="citta"></select>
-      </div>
-    </div>
-    <div class="filter-row">
-      <div>
-        <label for="categoria">Categoria</label>
-        <select id="categoria"></select>
-      </div>
-      <div>
-        <label for="tipo">Tipo</label>
-        <select id="tipo"></select>
-      </div>
-    </div>
-  </section>
-  <section class="carrello">
-    <h2>Carrello</h2>
-    <ul id="carrello"></ul>
-    <div id="totale">Totale: €0.00</div>
-  </section>
-  <main id="clienti"></main>
-  <script src="script.js"></script>
+  <!-- Inserisci qui il contenuto esistente del body -->
+  <div id="auth-modal"></div>
+  <div id="payment-modal"></div>
+
+  <!-- Firebase Initialization -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+    import { firebaseConfig } from "./firebase-config.js";
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.firebaseAuth = auth;
+    window.firebaseDB = db;
+  </script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
