@@ -1,99 +1,82 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlTrovaClienti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Header with credits -->
   <header class="header">
-    <img src="assets/logo.jpg" alt="Logo" class="logo">
     <h1>IlTrovaClienti</h1>
-    <div class="credit-display">
-      Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)
+    <div class="credits">
+      Crediti: <span id="currentCredits">0</span> (€<span id="currentCreditsEuro">0.00</span>)
       <button id="ricarica">Ricarica</button>
     </div>
   </header>
-  <nav class="section-buttons">
-    <button id="btnLeads">Lead da chiamare</button>
-    <button id="btnAppuntamenti">Appuntamenti fissati</button>
-    <button id="btnContratti">Contratti riservati</button>
-  </nav>
-  <section class="filters">
-    <div class="filter-row">
-      <label for="regione">Regione</label>
-      <select id="regione"></select>
-      <label for="citta">Città</label>
-      <select id="citta"></select>
-    </div>
-    <div class="filter-row">
-      <label for="categoria">Categoria</label>
-      <select id="categoria"></select>
-      <label for="tipo">Tipo</label>
-      <select id="tipo"></select>
-    </div>
-  </section>
-  <section class="carrello">
-    <h2>Carrello</h2>
-    <ul id="carrello"></ul>
-    <div id="totale">Totale: €0.00</div>
-  </section>
-  <main id="clienti"></main>
 
-  <!-- Auth Modal -->
-  <div id="auth-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-tabs">
-        <button id="show-login">Accedi</button>
-        <button id="show-register">Registrati</button>
-        <button id="show-recover">Recupera password</button>
-      </div>
-      <form id="login-form" style="display:block">
-        <input type="email" id="login-email" placeholder="Email"><br>
-        <input type="password" id="login-password" placeholder="Password"><br>
-        <button type="button" id="btnLogin">Accedi</button>
-      </form>
-      <form id="register-form" style="display:none">
-        <input type="text" id="register-name" placeholder="Nome"><br>
-        <input type="text" id="register-surname" placeholder="Cognome"><br>
-        <input type="tel" id="register-phone" placeholder="Telefono"><br>
-        <input type="email" id="register-email" placeholder="Email"><br>
-        <input type="password" id="register-password" placeholder="Password"><br>
-        <input type="password" id="register-password2" placeholder="Ripeti Password"><br>
-        <label>Quanto fa 2+3? <input type="text" id="captcha" placeholder="Risposta"></label><br>
-        <button type="button" id="btnRegister">Registrati</button>
-      </form>
-      <form id="recover-password-form" style="display:none">
-        <input type="email" id="recover-email" placeholder="Email"><br>
-        <button type="button" id="btnRecoverPassword">Recupera</button>
-      </form>
-      <button id="close-auth" class="cancel-form">Chiudi</button>
+  <!-- Section buttons -->
+  <div class="section-buttons">
+    <button id="btnAll" class="section-btn all">Mostra tutti</button>
+    <button id="btnLeads" class="section-btn">Lead da chiamare</button>
+    <button id="btnAppuntamenti" class="section-btn">Appuntamenti fissati</button>
+    <button id="btnContratti" class="section-btn">Contratti riservati</button>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-row">
+      <label>Regione
+        <select id="regioneSelect"><option>Tutti</option></select>
+      </label>
+      <label>Città
+        <select id="cittaSelect"><option>Tutti</option></select>
+      </label>
+    </div>
+    <div class="filter-row">
+      <label>Categoria
+        <select id="categoriaSelect"><option>Tutti</option></select>
+      </label>
+      <label>Tipo
+        <select id="tipoSelect"><option>Tutti</option></select>
+      </label>
+      <button id="btnReset" class="section-btn reset">Reset filtri</button>
     </div>
   </div>
 
-  <!-- Payment Modal -->
-  <div id="payment-modal" class="modal-overlay">
-    <div class="modal payment-modal">
-      <h3>Scegli metodo di pagamento</h3>
-      <div class="payment-options">
-        <div class="option">
-          <img class="pay-logo" src="assets/paypal.png" alt="PayPal">
-          <button id="pay-paypal">PayPal</button>
-        </div>
-        <div class="option">
-          <img class="pay-logo" src="assets/credit-card.png" alt="Carta di credito">
-          <button id="pay-card">Carta di credito</button>
-        </div>
-        <div class="option">
-          <img class="pay-logo" src="assets/bank.png" alt="Bonifico bancario">
-          <button id="pay-bank">Bonifico bancario</button>
-        </div>
-      </div>
-      <button id="close-payment" class="cancel-form">Chiudi</button>
+  <!-- Cart -->
+  <div class="carrello" id="cart"></div>
+
+  <!-- Cards -->
+  <div id="cards-container"></div>
+
+  <!-- Authentication modal -->
+  <div id="auth-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" id="close-auth">&times;</span>
+      <h2>Login / Registrazione</h2>
+      <input type="email" id="authEmail" placeholder="Email">
+      <input type="password" id="authPassword" placeholder="Password">
+      <button id="btnLogin">Login</button>
+      <button id="btnRegister">Registrati</button>
+      <button id="btnForgot">Password dimenticata</button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Payment modal -->
+  <div id="payment-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" id="close-payment">&times;</span>
+      <h2>Ricarica crediti</h2>
+      <input type="number" id="paymentAmount" placeholder="Inserisci importo">
+      <button id="confirmPayment">Conferma</button>
+    </div>
+  </div>
+
+  <!-- Firebase init -->
+  <script type="module" src="firebase-init.js"></script>
+  <!-- Main script -->
+  <script type="module" src="script.js"></script>
 </body>
 </html>
