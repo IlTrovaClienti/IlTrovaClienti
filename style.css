@@ -1,63 +1,30 @@
-* { box-sizing:border-box; margin:0; padding:0; }
-body { font-family:Arial,sans-serif; background:#f0f2f5; padding:10px; }
-.header { background:#fff; padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
-.credits button { margin-left:10px; padding:5px 10px; border:none; border-radius:4px; cursor:pointer; }
-
-/* Section buttons */
-.section-buttons { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; justify-content:center; }
-.section-btn {
-  flex: none;
-  width: 200px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 20px;
-  color: #fff;
-  cursor: pointer;
-  text-align: center;
-}
-
-/* Button colors */
-#btnAll           { background: #28a745; }
-#btnLeads         { background: #0056b3; }
-#btnAppuntamenti  { background: #c71585; }
-#btnContratti     { background: #ffd700; color: #000; }
-#btnReset         { background: #006400; }
-
-/* Filters */
-.filters { margin-bottom:10px; }
-.filter-row { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; align-items:center; }
-.filters label { flex:1 1 120px; }
-.filters select { width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; }
-
-/* Cart */
-.carrello { background:#fff; padding:15px; border-radius:8px; margin-bottom:10px; }
-
-/* Cards */
-.cliente-card { background:#fff; padding:15px; border-radius:8px; margin-bottom:10px; }
-.cliente-card.lead { border:2px solid #0056b3; }
-.cliente-card.appunt { border:2px solid #c71585; }
-.cliente-card.contr { border:2px solid #ffd700; }
-.cliente-card.lead h3 { color:#0056b3; }
-.cliente-card.appunt h3 { color:#c71585; }
-.cliente-card.contr h3 { color:#333; }
-.cliente-card p { margin:5px 0; }
-.cliente-card button { margin-top:10px; padding:8px 12px; border:none; border-radius:6px; cursor:pointer; }
-
-/* Modals */
-.modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; }
-.modal.hidden { display:none; }
-.modal-content { background:#fff; padding:20px; border-radius:8px; position:relative; width:90%; max-width:320px; }
-.modal-content .close { position:absolute; top:10px; right:10px; cursor:pointer; font-size:18px; }
-.modal-content input { width:100%; padding:8px; margin:10px 0; border:1px solid #ccc; border-radius:4px; }
-.modal-content button { padding:8px 12px; border:none; border-radius:6px; cursor:pointer; width:100%; margin-top:5px; }
-
-/* Mobile overrides */
-@media(max-width:600px) {
-  .section-btn {
-    width: 100%;
-    flex: 1;
-  }
-  .filters .filter-row {
-    flex-direction: column;
-  }
-}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px;}
+.header{background:#fff;padding:15px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.credits button{margin-left:10px;padding:5px 10px;border:none;border-radius:4px;cursor:pointer;}
+.section-buttons{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;justify-content:center;}
+.section-btn{flex:none;width:200px;padding:10px 20px;border:none;border-radius:20px;color:#fff;cursor:pointer;text-align:center;margin:0 5px;}
+#btnAll{background:#28a745;}#btnLeads{background:#0056b3;}#btnAppuntamenti{background:#c71585;}
+#btnContratti{background:#ffd700;color:#000;}#btnReset{background:#006400;}
+.filters{margin-bottom:10px;}
+.filter-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;align-items:center;}
+.filters label{flex:1 1 150px;}
+.filters select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;}
+.reset-row{text-align:center;margin-top:10px;}
+.carrello{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;}
+.cliente-card{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;}
+.cliente-card.lead{border:2px solid #0056b3;} .cliente-card.appunt{border:2px solid #c71585;}
+.cliente-card.contr{border:2px solid #ffd700;}
+.cliente-card.lead h3{color:#0056b3;} .cliente-card.appunt h3{color:#c71585;}
+.cliente-card.contr h3{color:#333;} .cliente-card p{margin:5px 0;}
+.cliente-card button{margin-top:10px;padding:8px 12px;border:none;border-radius:6px;cursor:pointer;}
+.cliente-card.lead button{background:#0056b3;color:#fff;}
+.cliente-card.appunt button{background:#c71585;color:#fff;}
+.cliente-card.contr button{background:#ffd700;color:#000;}
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;}
+.modal.hidden{display:none;}
+.modal-content{background:#fff;padding:20px;border-radius:8px;position:relative;width:90%;max-width:320px;}
+.modal-content .close{position:absolute;top:10px;right:10px;cursor:pointer;font-size:18px;}
+.modal-content input{width:100%;padding:8px;margin:10px 0;border:1px solid #ccc;border-radius:4px;}
+.modal-content button{padding:8px 12px;border:none;border-radius:6px;cursor:pointer;width:100%;margin-top:5px;}
+@media(max-width:600px){.section-buttons{flex-direction:column;}.section-btn{width:100%;}.filter-row{flex-direction:column;}}
