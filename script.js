@@ -1,13 +1,9 @@
 import { 
-  getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
-  signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
 import {
-  getFirestore, doc, setDoc, getDoc, updateDoc
+  doc, getDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-
-const auth = window.firebaseAuth;
-const db   = window.firebaseDB;
 
 window.allItems = [];
 window.cart     = [];
@@ -15,6 +11,7 @@ window.cart     = [];
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Ricarica
   document.getElementById('ricarica').addEventListener('click', () => {
     document.getElementById('payment-modal').classList.remove('hidden');
   });
@@ -27,32 +24,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('payment-modal').classList.add('hidden');
   });
 
+  // Sezioni
   document.getElementById('btnLeads').addEventListener('click', () => filterBySection('lead'));
   document.getElementById('btnAppuntamenti').addEventListener('click', () => filterBySection('appunt'));
   document.getElementById('btnContratti').addEventListener('click', () => filterBySection('contratto'));
 
+  // Fetch e mappatura colonne
   fetch(sheetURL)
     .then(r => r.text())
     .then(tsv => {
       const rows = tsv.trim().split('\n').map(r => r.split('\t'));
-      rows.shift();
+      rows.shift(); // remove header
       rows.forEach(cols => {
-        const [regione, status, citta, budgetStr] = cols;
-        const item = {
-          regione,
-          status,
-          citta,
-          budget: parseFloat(budgetStr.replace(/[^0-9\.,]/g,'')) || 0
-        };
-        window.allItems.push(item);
+        const [regione, citta, categoria, tipo, descrizione, telefono, budgetStr, costoStr] = cols;
+        const costo = parseFloat(costoStr.replace(/[^0-9\.,]/g,'')) || 0;
+        window.allItems.push({ regione, citta, categoria, tipo, descrizione, telefono, costo });
       });
       renderCards(window.allItems);
       renderCart();
     });
 
-  onAuthStateChanged(auth, user => {
+  // Sessione utente
+  onAuthStateChanged(window.firebaseAuth, user => {
     if (user && user.emailVerified) {
-      getDoc(doc(db,'users',user.uid)).then(snap => {
+      getDoc(doc(window.firebaseDB,'users',user.uid)).then(snap => {
         const data = snap.data();
         window.currentUser = { uid:user.uid, credits:data.credits };
         document.getElementById('currentCredits').textContent     = data.credits;
@@ -73,7 +68,7 @@ function renderCards(list) {
 }
 
 function filterBySection(key) {
-  const filtered = window.allItems.filter(i => i.status.toLowerCase().includes(key));
+  const filtered = window.allItems.filter(i => i.tipo.toLowerCase().includes(key));
   renderCards(filtered);
 }
 
@@ -81,17 +76,14 @@ function createCard(item) {
   const card = document.createElement('div');
   card.className = 'cliente-card';
   card.innerHTML = `
-    <h3>${item.status} – ${item.citta}</h3>
-    <p>${item.regione} | ${item.status}</p>
-    <p>Budget: €${item.budget.toFixed(2)}</p>
+    <h3>${item.citta} – ${item.categoria}</h3>
+    <p>${item.regione} | ${item.tipo}</p>
+    <p>${item.descrizione}</p>
+    <p>Costo crediti: ${item.costo}</p>
   `;
   const btn = document.createElement('button');
-  const s = item.status.toLowerCase();
-  btn.textContent = /lead/.test(s)
-    ? 'Acquisisci'
-    : /appunt/.test(s)
-      ? 'Conferma'
-      : 'Contratto';
+  const s = item.tipo.toLowerCase();
+  btn.textContent = /lead/.test(s) ? 'Acquisisci' : /appunt/.test(s) ? 'Conferma' : 'Contratto';
   btn.addEventListener('click', () => handleAction(item));
   card.appendChild(btn);
   return card;
@@ -100,26 +92,26 @@ function createCard(item) {
 function handleAction(item) {
   window.cart.push(item);
   renderCart();
-  if (!window.currentUser || item.budget > window.currentUser.credits) {
+  if (!window.currentUser || item.costo > window.currentUser.credits) {
     alert('Crediti insufficienti, ricarica!');
     document.getElementById('payment-modal').classList.remove('hidden');
   } else {
-    changeCredits(-item.budget);
+    changeCredits(-item.costo);
   }
 }
 
 function renderCart() {
-  const tot = window.cart.reduce((s,i)=>s+i.budget,0);
+  const tot = window.cart.reduce((s,i)=>s+i.costo,0);
   document.getElementById('cart').innerHTML = `
     <h2>Carrello</h2>
-    <p>Totale: €${tot.toFixed(2)}</p>
+    <p>Totale crediti: ${tot}</p>
   `;
 }
 
 async function changeCredits(delta) {
   if (!window.currentUser) return;
-  const ref = doc(db,'users',window.currentUser.uid);
-  const newVal = window.currentUser.credits + delta;
+  const ref = doc(window.firebaseDB,'users',window.currentUser.uid);
+  const newVal = window.currentUser.credits + delta; 
   await updateDoc(ref,{ credits:newVal });
   window.currentUser.credits = newVal;
   document.getElementById('currentCredits').textContent     = newVal;
