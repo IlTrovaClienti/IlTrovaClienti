@@ -1,16 +1,20 @@
 * { box-sizing:border-box; margin:0; padding:0; }
 body { font-family:Arial,sans-serif; background:#f0f2f5; padding:10px; }
 
-/* Header */
 .header { background:#fff; padding:15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
 .credits button { margin-left:10px; padding:5px 10px; border:none; border-radius:4px; cursor:pointer; }
 
 /* Section buttons */
-.section-buttons { display:flex; gap:5px; margin-bottom:10px; }
-.section-buttons button { flex:1; padding:10px; border:none; border-radius:20px; color:#fff; cursor:pointer; }
+.section-buttons { display:flex; gap:5px; margin-bottom:10px; flex-wrap: wrap; }
+.section-btn { flex:1; padding:10px; border:none; border-radius:20px; color:#fff; cursor:pointer; text-align:center; }
 #btnLeads { background:#007BFF; }
 #btnAppuntamenti { background:#FF00FF; }
 #btnContratti { background:#FFD700; color:#000; }
+
+/* Mobile: buttons stack */
+@media (max-width: 600px) {
+  .section-buttons { flex-direction: column; }
+}
 
 /* Filtri */
 .filters { margin-bottom:10px; }
@@ -21,13 +25,20 @@ body { font-family:Arial,sans-serif; background:#f0f2f5; padding:10px; }
 .carrello { background:#fff; padding:15px; border-radius:8px; margin-bottom:10px; }
 
 /* Card cliente */
-.cliente-card { background:#fff; padding:15px; border-radius:8px; margin-bottom:10px; }
+.cliente-card { background:#fff; padding:15px; border-radius:8px; margin-bottom:10px; position: relative; }
+.cliente-card p { margin:5px 0; }
 .cliente-card button { margin-top:10px; padding:8px 12px; border:none; border-radius:6px; cursor:pointer; }
+.cliente-card button.lead { background:#007BFF; color:#fff; }
+.cliente-card button.appunt { background:#FF00FF; color:#fff; }
+.cliente-card button.contr { background:#FFD700; color:#000; }
+
+/* Hidden class */
+.hidden { display:none; }
 
 /* Modali */
 .modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; }
 .modal.hidden { display:none; }
-.modal-content { background:#fff; padding:20px; border-radius:8px; position:relative; width:300px; }
+.modal-content { background:#fff; padding:20px; border-radius:8px; position:relative; width:90%; max-width:300px; }
 .modal-content .close { position:absolute; top:10px; right:10px; cursor:pointer; font-size:18px; }
 .modal-content input { width:100%; padding:8px; margin:10px 0; border:1px solid #ccc; border-radius:4px; }
 .modal-content button { padding:8px 12px; border:none; border-radius:6px; cursor:pointer; }
