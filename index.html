@@ -1,30 +1,59 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css?v=1.0.5">
-  <link rel="icon" href="favicon.ico" />
-  
-  <!-- Firebase CDN -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
-  <script src="firebase-init.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+
+  <!-- Firebase -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
+  <script defer src="firebase-init.js"></script>
+
+  <!-- Main JS -->
+  <script defer src="script.js"></script>
 </head>
 <body>
+  <header>
+    <h1>IlTrovaClienti</h1>
+    <div id="user-section">
+      <span id="user-email"></span>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </header>
 
-  <section class="filters-container">
-    <select id="regioneFilter"><option>Regione</option></select>
-    <select id="cittaFilter"><option>Città</option></select>
-    <select id="categoriaFilter"><option>Categoria</option></select>
-    <select id="tipoFilter"><option>Tipo</option></select>
-    <button class="reset-button" onclick="resetFilters()">Reset filtri</button>
+  <section id="login-register">
+    <h2>Accedi o Registrati</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button id="login-btn">Login</button>
+    <button id="register-btn">Registrati</button>
+    <p id="auth-msg"></p>
+  </section>
+
+  <section id="filters" class="filters-container">
+    <select id="regioneFilter"><option value="">Tutte le Regioni</option></select>
+    <select id="cittaFilter"><option value="">Tutte le Città</option></select>
+    <select id="categoriaFilter"><option value="">Tutte le Categorie</option></select>
+    <select id="tipoFilter"><option value="">Tutti i Tipi</option></select>
+    <button id="resetFilters">Reset filtri</button>
+  </section>
+
+  <section id="crediti">
+    Crediti disponibili: <span id="crediti-utente">0</span>
+    <button id="ricarica-btn">Ricarica +10</button>
   </section>
 
   <section id="cards-container"></section>
 
-  <script src="script.js?v=1.0.5" defer></script>
+  <section id="carrello">
+    <h3>Carrello</h3>
+    <ul id="carrello-lista"></ul>
+    <p>Totale crediti: <span id="totale-crediti">0</span></p>
+  </section>
+
 </body>
 </html>

@@ -1,14 +1,12 @@
-// firebase-init.js
 
+// 🔐 Inserisci qui la tua configurazione Firebase
 const firebaseConfig = {
-  apiKey: "INSERISCI_API_KEY",
-  authDomain: "INSERISCI_AUTH_DOMAIN",
-  projectId: "INSERISCI_PROJECT_ID",
-  storageBucket: "INSERISCI_BUCKET",
-  messagingSenderId: "INSERISCI_MESSAGING_ID",
-  appId: "INSERISCI_APP_ID"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
