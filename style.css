@@ -3,7 +3,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: #f7f7f7;
+  background: #f4f4f4;
 }
 
 header {
@@ -26,6 +26,7 @@ header {
 select, button, input {
   margin: 5px;
   padding: 8px;
+  border-radius: 6px;
 }
 
 #cards-container {
@@ -36,25 +37,30 @@ select, button, input {
 }
 
 .card {
-  width: calc(100% - 20px);
+  width: 100%;
   max-width: 400px;
   padding: 15px;
-  border-radius: 8px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  background-color: #fff;
   color: #000 !important;
+  border: 3px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .card * {
   color: #000 !important;
 }
 
-.btn-lead,
-.btn-appuntamenti,
-.btn-contratti {
-  border: none;
-  padding: 8px;
-  cursor: pointer;
+.card-lead {
+  border-color: #003366;
+}
+
+.card-appuntamenti {
+  border-color: #e91e63;
+}
+
+.card-contratti {
+  border-color: #fbc02d;
 }
 
 .btn-lead {
@@ -72,6 +78,38 @@ select, button, input {
   color: black;
 }
 
+button {
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 button:hover {
   opacity: 0.9;
+}
+
+#crediti button,
+#filters button {
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.btn-green {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn-blue {
+  background-color: #003366;
+  color: white;
+}
+
+.btn-pink {
+  background-color: #e91e63;
+  color: white;
+}
+
+.btn-yellow {
+  background-color: #fbc02d;
+  color: black;
 }
