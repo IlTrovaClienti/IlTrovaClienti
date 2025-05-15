@@ -1,62 +1,84 @@
-let rawData = [];
-const tsvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv&t=' + Date.now();
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
+let data = [];
 
-fetch(tsvUrl)
-  .then(res => res.text())
-  .then(data => {
-    parseTSV(data);
-    populateFilters();
-    applyFilters();
-  });
+window.addEventListener('DOMContentLoaded', () => {
+  fetch(sheetURL)
+    .then(res => res.text())
+    .then(parseTSV)
+    .then(parsed => {
+      data = parsed;
+      populateFilters();
+      displayCards(data);
+    });
+});
 
-function parseTSV(data) {
-  const rows = data.trim().split('\n');
-  const headers = rows.shift().split('\t');
-  rawData = rows.map(row => {
-    const cols = row.split('\t');
-    return headers.reduce((obj, header, i) => (obj[header] = cols[i], obj), {});
+function parseTSV(tsv) {
+  const lines = tsv.trim().split('\n');
+  const headers = lines.shift().split('\t');
+  return lines.map(line => {
+    const values = line.split('\t');
+    return Object.fromEntries(headers.map((h, i) => [h.trim(), values[i] || '']));
   });
 }
 
 function populateFilters() {
-  const filters = ["Regione", "Città", "Categoria", "Tipo"];
-  filters.forEach(filter => {
-    const select = document.getElementById(filter.toLowerCase() + "Filter");
-    const options = ["Tutte", ...new Set(rawData.map(item => item[filter]))];
-    select.innerHTML = options.map(opt => `<option>${opt}</option>`).join('');
-    select.onchange = applyFilters;
-  });
+  const regioni = [...new Set(data.map(d => d.Regione))];
+  const citta = [...new Set(data.map(d => d.Città))];
+  const categorie = [...new Set(data.map(d => d.Categoria))];
+  const tipi = [...new Set(data.map(d => d.Tipo))];
 
-  document.querySelector('.reset-filters-btn').onclick = () => {
-    document.querySelectorAll('.filters-container select').forEach(sel => sel.selectedIndex = 0);
-    applyFilters();
-  };
+  fillSelect('regioneFilter', regioni);
+  fillSelect('cittaFilter', citta);
+  fillSelect('categoriaFilter', categorie);
+  fillSelect('tipoFilter', tipi);
+}
+
+function fillSelect(id, values) {
+  const select = document.getElementById(id);
+  values.sort().forEach(val => {
+    const opt = document.createElement('option');
+    opt.value = opt.textContent = val;
+    select.appendChild(opt);
+  });
+}
+
+function resetFilters() {
+  ['regioneFilter', 'cittaFilter', 'categoriaFilter', 'tipoFilter'].forEach(id => {
+    const el = document.getElementById(id);
+    el.selectedIndex = 0;
+  });
+  displayCards(data);
 }
 
 function applyFilters() {
-  const [regione, città, categoria, tipo] = ["regione", "città", "categoria", "tipo"]
-    .map(f => document.getElementById(f + "Filter").value);
-
-  const filteredData = rawData.filter(row =>
-    (regione === "Tutte" || row.Regione === regione) &&
-    (città === "Tutte" || row.Città === città) &&
-    (categoria === "Tutte" || row.Categoria === categoria) &&
-    (tipo === "Tutte" || row.Tipo === tipo)
-  );
-
-  renderCards(filteredData);
+  // (già implementato, da integrare se serve)
 }
 
-function renderCards(data) {
-  const container = document.getElementById('cards-container');
-  container.innerHTML = data.map(row => `
-    <div class="card">
-      <h3>${row.Categoria}</h3>
-      <p>${row.Descrizione}</p>
-      <p><strong>Città:</strong> ${row.Città}</p>
-      <p><strong>Budget:</strong> €${row["Budget (€)"]}</p>
-      <button class="action-btn ${row.Tipo.toLowerCase()}">Acquista (${row["Costo (crediti)"]} crediti)</button>
-      <button class="cancel-btn">Annulla</button>
-    </div>
-  `).join('');
+function displayCards(filteredData) {
+  const container = document.getElementById('cardContainer');
+  container.innerHTML = '';
+  filteredData.forEach(entry => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h3>${entry.Categoria} - ${entry.Tipo}</h3>
+      <p>${entry.Descrizione}</p>
+      <p><strong>${entry.Città}, ${entry.Regione}</strong></p>
+      <p>Tel: ${entry.Telefono}</p>
+      <p>Budget: €${entry["Budget (€)"]} | Costo: ${entry["Costo (crediti)"]} crediti</p>
+      <div class="card-action">
+        <button class="btn ${getBtnClass(entry.Categoria)}">Aggiungi</button>
+        <button class="btn btn-annulla">Annulla</button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function getBtnClass(cat) {
+  const catLower = cat.toLowerCase();
+  if (catLower.includes('lead')) return 'btn-lead';
+  if (catLower.includes('appuntamento')) return 'btn-appuntamenti';
+  if (catLower.includes('contratto')) return 'btn-contratti';
+  return '';
 }
