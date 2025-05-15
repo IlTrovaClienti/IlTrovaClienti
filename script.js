@@ -1,3 +1,5 @@
+// script.js
+
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 let data = [];
 
@@ -9,6 +11,9 @@ window.addEventListener('DOMContentLoaded', () => {
       data = parsed;
       populateFilters();
       displayCards(data);
+    })
+    .catch(err => {
+      console.error("Errore nel caricamento dati:", err);
     });
 });
 
@@ -17,7 +22,7 @@ function parseTSV(tsv) {
   const headers = lines.shift().split('\t');
   return lines.map(line => {
     const values = line.split('\t');
-    return Object.fromEntries(headers.map((h, i) => [h.trim(), values[i] || '']));
+    return Object.fromEntries(headers.map((h, i) => [h.trim(), values[i]?.trim() || '']));
   });
 }
 
@@ -56,20 +61,18 @@ function applyFilters() {
   const categoria = document.getElementById('categoriaFilter').value;
   const tipo = document.getElementById('tipoFilter').value;
 
-  const filtered = data.filter(entry => {
-    return (
-      (regione === 'Regione' || entry.Regione === regione) &&
-      (citta === 'Città' || entry.Città === citta) &&
-      (categoria === 'Categoria' || entry.Categoria === categoria) &&
-      (tipo === 'Tipo' || entry.Tipo === tipo)
-    );
-  });
+  const filtered = data.filter(entry =>
+    (regione === "Regione" || entry.Regione === regione) &&
+    (citta === "Città" || entry.Città === citta) &&
+    (categoria === "Categoria" || entry.Categoria === categoria) &&
+    (tipo === "Tipo" || entry.Tipo === tipo)
+  );
 
   displayCards(filtered);
 }
 
 function displayCards(filteredData) {
-  const container = document.getElementById('cardContainer');
+  const container = document.getElementById('cards-container');
   container.innerHTML = '';
   filteredData.forEach(entry => {
     const card = document.createElement('div');
@@ -90,9 +93,9 @@ function displayCards(filteredData) {
 }
 
 function getBtnClass(cat) {
-  const catLower = cat.toLowerCase();
-  if (catLower.includes('lead')) return 'btn-lead';
-  if (catLower.includes('appuntamento')) return 'btn-appuntamenti';
-  if (catLower.includes('contratto')) return 'btn-contratti';
+  const c = cat.toLowerCase();
+  if (c.includes('lead')) return 'btn-lead';
+  if (c.includes('appuntamento')) return 'btn-appuntamenti';
+  if (c.includes('contratto')) return 'btn-contratti';
   return '';
 }
