@@ -5,12 +5,13 @@ body {
   background: #f4f4f4;
 }
 
+/* ===== FILTRI ===== */
 .filters-container {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  background: #ffffff;
+  background: #fff;
   justify-content: center;
   border-bottom: 1px solid #ddd;
 }
@@ -46,31 +47,34 @@ body {
   }
 }
 
-/* --- CARD STILI BASE --- */
+/* ===== CARD ===== */
 .card {
   padding: 1rem;
-  margin: 1rem;
+  margin: 1rem auto;
   border-radius: 8px;
-  color: white;
   font-size: 0.95rem;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 90%;
+  max-width: 600px;
+  color: white;
 }
 
-/* --- CARD PER TIPO --- */
 .card-lead {
   background-color: #003366;
+  color: white;
 }
 
 .card-appuntamento {
   background-color: #e91e63;
+  color: white;
 }
 
 .card-contratto {
   background-color: #fbc02d;
-  color: #000;
+  color: black;
 }
 
-/* --- BOTTONI AZIONE --- */
+/* ===== BOTTONI AZIONE CARD ===== */
 .card-action {
   display: flex;
   gap: 0.5rem;
@@ -97,10 +101,52 @@ body {
 
 .btn-contratti {
   background-color: #fbc02d;
-  color: #000;
+  color: black;
 }
 
 .btn-annulla {
   background-color: #999;
   color: white;
+}
+
+/* ===== PULSANTI SEZIONE (Mostra tutti, Lead, ecc.) ===== */
+.section-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1rem;
+  flex-wrap: wrap;
+}
+
+.section-buttons .btn {
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.section-buttons .btn:hover {
+  opacity: 0.85;
+}
+
+.btn-tutti {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.btn-lead-top {
+  background-color: #003366;
+  color: white;
+}
+
+.btn-appuntamenti-top {
+  background-color: #e91e63;
+  color: white;
+}
+
+.btn-contratti-top {
+  background-color: #fbc02d;
+  color: black;
 }
