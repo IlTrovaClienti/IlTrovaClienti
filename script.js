@@ -51,7 +51,21 @@ function resetFilters() {
 }
 
 function applyFilters() {
-  // (già implementato, da integrare se serve)
+  const regione = document.getElementById('regioneFilter').value;
+  const citta = document.getElementById('cittaFilter').value;
+  const categoria = document.getElementById('categoriaFilter').value;
+  const tipo = document.getElementById('tipoFilter').value;
+
+  const filtered = data.filter(entry => {
+    return (
+      (regione === 'Regione' || entry.Regione === regione) &&
+      (citta === 'Città' || entry.Città === citta) &&
+      (categoria === 'Categoria' || entry.Categoria === categoria) &&
+      (tipo === 'Tipo' || entry.Tipo === tipo)
+    );
+  });
+
+  displayCards(filtered);
 }
 
 function displayCards(filteredData) {
