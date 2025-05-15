@@ -1,7 +1,11 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-const firebaseConfig = { /* your config */ };
-const app = initializeApp(firebaseConfig);
-window.firebaseAuth = getAuth(app);
-window.firebaseDB = getFirestore(app);
+// sostituisci con le tue chiavi Firebase REALI solo in locale
+const firebaseConfig = {
+  apiKey: "INSERISCI_API_KEY",
+  authDomain: "TUO_PROGETTO.firebaseapp.com",
+  projectId: "TUO_PROGETTO",
+  storageBucket: "TUO_PROGETTO.appspot.com",
+  messagingSenderId: "INSERISCI_ID",
+  appId: "INSERISCI_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
