@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header with credits -->
+  <!-- Header -->
   <header class="header">
     <h1>IlTrovaClienti</h1>
     <div class="credits">
@@ -18,10 +18,11 @@
 
   <!-- Section buttons -->
   <div class="section-buttons">
-    <button id="btnAll" class="section-btn all">Mostra tutti</button>
+    <button id="btnAll" class="section-btn">Mostra tutti</button>
     <button id="btnLeads" class="section-btn">Lead da chiamare</button>
     <button id="btnAppuntamenti" class="section-btn">Appuntamenti fissati</button>
     <button id="btnContratti" class="section-btn">Contratti riservati</button>
+    <button id="btnReset" class="section-btn">Reset filtri</button>
   </div>
 
   <!-- Filters -->
@@ -41,7 +42,6 @@
       <label>Tipo
         <select id="tipoSelect"><option>Tutti</option></select>
       </label>
-      <button id="btnReset" class="section-btn reset">Reset filtri</button>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
   <!-- Cards -->
   <div id="cards-container"></div>
 
-  <!-- Authentication modal -->
+  <!-- Auth Modal -->
   <div id="auth-modal" class="modal hidden">
     <div class="modal-content">
       <span class="close" id="close-auth">&times;</span>
@@ -64,7 +64,7 @@
     </div>
   </div>
 
-  <!-- Payment modal -->
+  <!-- Payment Modal -->
   <div id="payment-modal" class="modal hidden">
     <div class="modal-content">
       <span class="close" id="close-payment">&times;</span>
@@ -74,9 +74,7 @@
     </div>
   </div>
 
-  <!-- Firebase init -->
   <script type="module" src="firebase-init.js"></script>
-  <!-- Main script -->
   <script type="module" src="script.js"></script>
 </body>
 </html>
