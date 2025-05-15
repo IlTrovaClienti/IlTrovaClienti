@@ -18,7 +18,7 @@ body { font-family:Arial,sans-serif; background:#f0f2f5; padding:10px; }
 .filters { margin-bottom:10px; }
 .filter-row { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; align-items:center; }
 .filters label { flex:1 1 120px; }
-.filter-row button { flex:1 1 100%; padding:8px; border-radius:6px; }
+.filter-row button { flex:1 1 100%; }
 /* Filters select */
 .filters select { width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; }
 /* Cart */

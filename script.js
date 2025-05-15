@@ -16,17 +16,45 @@ let currentSectionFilter = 'all';
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Authentication modal handlers (login/register/password reset)
+  // Remove auto-show of auth modal on load
   const authModal = document.getElementById('auth-modal');
   document.getElementById('close-auth').onclick = () => authModal.classList.add('hidden');
-  onAuthStateChanged(auth, user => {
-    if (!user) authModal.classList.remove('hidden');
-  });
-  document.getElementById('btnLogin').onclick = async () => { /* login code as before */ };
-  document.getElementById('btnRegister').onclick = async () => { /* register code as before */ };
-  document.getElementById('btnForgot').onclick = () => { /* forgot code as before */ };
 
-  // Payment modal handlers
+  document.getElementById('btnLogin').onclick = async () => {
+    const email = document.getElementById('authEmail').value;
+    const pw = document.getElementById('authPassword').value;
+    try {
+      const cred = await signInWithEmailAndPassword(auth, email, pw);
+      if (!cred.user.emailVerified) {
+        await auth.signOut();
+        alert('Verifica la tua email prima di accedere.');
+      } else {
+        authModal.classList.add('hidden');
+      }
+    } catch (e) { alert('Login error: ' + e.message); }
+  };
+
+  document.getElementById('btnRegister').onclick = async () => {
+    const email = document.getElementById('authEmail').value;
+    const pw = document.getElementById('authPassword').value;
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pw);
+      const u = cred.user;
+      await setDoc(doc(db, 'users', u.uid), { email: u.email, credits: 0, createdAt: Date.now() });
+      await sendEmailVerification(u);
+      alert('Registrazione ok! Controlla email per verifica.');
+      authModal.classList.add('hidden');
+    } catch (e) { alert('Register error: ' + e.message); }
+  };
+
+  document.getElementById('btnForgot').onclick = () => {
+    const email = document.getElementById('authEmail').value;
+    sendPasswordResetEmail(auth, email)
+      .then(() => alert('Email di reset inviata'))
+      .catch(e => alert('Error: ' + e.message));
+  };
+
+  // Payment modal
   const paymentModal = document.getElementById('payment-modal');
   document.getElementById('ricarica').onclick = () => paymentModal.classList.remove('hidden');
   document.getElementById('close-payment').onclick = () => paymentModal.classList.add('hidden');
@@ -50,17 +78,16 @@ document.addEventListener('DOMContentLoaded', () => {
     applyFilters();
   };
 
-  // Fetch data and populate filters/cards
+  // Fetch items
   fetch(sheetURL)
-    .then(response => response.ok ? response.text() : Promise.reject('Status ' + response.status))
+    .then(r => r.ok ? r.text() : Promise.reject('Status ' + r.status))
     .then(tsv => {
-      const rows = tsv.trim().split('\n').slice(1).map(r => r.split('\t'));
-      rows.forEach(cols => {
-        const [regione, citta, categoria, tipo, descrizione, telefono, budgetStr, costoStr] = cols;
+      tsv.trim().split('\n').slice(1).forEach(line => {
+        const [regione, citta, categoria, tipo, descrizione, telefono, budgetStr, costoStr] = line.split('\t');
         window.allItems.push({
-          regione, citta, categoria, tipo, descrizione, telefono,
-          budget: parseFloat(budgetStr.replace(/[^0-9\.,]/g, '')) || 0,
-          costo: parseFloat(costoStr.replace(/[^0-9\.,]/g, '')) || 0
+          regione,citta,categoria,tipo,descrizione,telefono,
+          budget: parseFloat(budgetStr.replace(/[^0-9\.,]/g,''))||0,
+          costo: parseFloat(costoStr.replace(/[^0-9\.,]/g,''))||0
         });
       });
       populateFilters();
@@ -73,32 +100,36 @@ document.addEventListener('DOMContentLoaded', () => {
     .catch(err => alert('Errore caricamento dati: ' + err));
 });
 
-// Populate dropdown filters
+// Show auth modal only when needed
+function requireAuth() {
+  if (!auth.currentUser || !auth.currentUser.emailVerified) {
+    document.getElementById('auth-modal').classList.remove('hidden');
+    return false;
+  }
+  return true;
+}
+
 function populateFilters() {
   const regs = ['Tutti', ...new Set(window.allItems.map(i => i.regione))];
   const cits = ['Tutti', ...new Set(window.allItems.map(i => i.citta))];
   const cats = ['Tutti', ...new Set(window.allItems.map(i => i.categoria))];
   const tips = ['Tutti', ...new Set(window.allItems.map(i => i.tipo))];
-
   document.getElementById('regioneSelect').innerHTML = regs.map(v => `<option value="${v}">${v}</option>`).join('');
-  document.getElementById('cittaSelect').innerHTML   = cits.map(v => `<option value="${v}">${v}</option>`).join('');
+  document.getElementById('cittaSelect').innerHTML = cits.map(v => `<option value="${v}">${v}</option>`).join('');
   document.getElementById('categoriaSelect').innerHTML = cats.map(v => `<option value="${v}">${v}</option>`).join('');
-  document.getElementById('tipoSelect').innerHTML     = tips.map(v => `<option value="${v}">${v}</option>`).join('');
+  document.getElementById('tipoSelect').innerHTML = tips.map(v => `<option value="${v}">${v}</option>`).join('');
 }
 
-// Section filter
 function filterBySection(key) {
   currentSectionFilter = key;
   applyFilters();
 }
 
-// Apply filters to items and render cards
 function applyFilters() {
   const selReg = document.getElementById('regioneSelect').value;
   const selCit = document.getElementById('cittaSelect').value;
   const selCat = document.getElementById('categoriaSelect').value;
   const selTip = document.getElementById('tipoSelect').value;
-
   const filtered = window.allItems.filter(item => {
     if (currentSectionFilter !== 'all' && !item.tipo.toLowerCase().includes(currentSectionFilter)) return false;
     if (selReg !== 'Tutti' && item.regione !== selReg) return false;
@@ -107,11 +138,9 @@ function applyFilters() {
     if (selTip !== 'Tutti' && item.tipo !== selTip) return false;
     return true;
   });
-
   renderCards(filtered);
 }
 
-// Render a list of cards
 function renderCards(items) {
   const container = document.getElementById('cards-container');
   container.innerHTML = '';
@@ -121,12 +150,10 @@ function renderCards(items) {
   });
 }
 
-// Create a single card element
 function createCard(item) {
   const card = document.createElement('div');
-  const tipoLower = item.tipo.toLowerCase();
-  const cls = tipoLower.includes('lead') ? 'lead' :
-              tipoLower.includes('appunt') ? 'appunt' : 'contr';
+  const cls = item.tipo.toLowerCase().includes('lead') ? 'lead' :
+              item.tipo.toLowerCase().includes('appunt') ? 'appunt' : 'contr';
   card.className = `cliente-card ${cls}`;
   card.innerHTML = `
     <h3>${item.citta} – ${item.categoria}</h3>
@@ -137,15 +164,17 @@ function createCard(item) {
     <p>Costo crediti: ${item.costo}</p>
     <button class="${cls}">${cls==='lead'?'Acquisisci':cls==='appunt'?'Conferma':'Contratto'}</button>
   `;
-  card.querySelector('button').onclick = () => handleAction(item, card);
+  card.querySelector('button').onclick = () => {
+    if (!requireAuth()) return;
+    handleAction(item, card);
+  };
   return card;
 }
 
-// Handle acquisition action
 function handleAction(item, card) {
   const tel = card.querySelector('.telefono');
-  if (!window.currentUser || item.costo > window.currentUser.credits) {
-    alert('Crediti insufficienti');
+  if (item.costo > window.currentUser.credits) {
+    document.getElementById('payment-modal').classList.remove('hidden');
     return;
   }
   window.cart.push(item);
@@ -154,19 +183,27 @@ function handleAction(item, card) {
   tel.classList.remove('hidden');
 }
 
-// Render cart summary
 function renderCart() {
-  const total = window.cart.reduce((sum, it) => sum + it.costo, 0);
+  const total = window.cart.reduce((s, it) => s + it.costo, 0);
   document.getElementById('cart').innerHTML = `<h2>Carrello</h2><p>Totale crediti: ${total}</p>`;
 }
 
-// Update credits in Firestore and UI
 async function changeCredits(delta) {
   if (!window.currentUser) return;
   const ref = doc(db, 'users', window.currentUser.uid);
-  const newCredits = window.currentUser.credits + delta;
-  await updateDoc(ref, { credits: newCredits });
-  window.currentUser.credits = newCredits;
-  document.getElementById('currentCredits').textContent = newCredits;
-  document.getElementById('currentCreditsEuro').textContent = newCredits.toFixed(2);
+  const newVal = window.currentUser.credits + delta;
+  await updateDoc(ref, { credits: newVal });
+  window.currentUser.credits = newVal;
+  document.getElementById('currentCredits').textContent = newVal;
+  document.getElementById('currentCreditsEuro').textContent = newVal.toFixed(2);
 }
+
+// Auth state update window.currentUser
+onAuthStateChanged(auth, async user => {
+  if (user && user.emailVerified) {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    window.currentUser = { uid: user.uid, credits: snap.data().credits };
+  } else {
+    window.currentUser = null;
+  }
+});
