@@ -45,17 +45,17 @@ select, button, input {
 }
 
 .card-lead {
-  background-color: #003366;
-  color: white;
+  background-color: #e0e0e0;
+  color: black;
 }
 
 .card-appuntamenti {
-  background-color: #e91e63;
-  color: white;
+  background-color: #f8d7e3;
+  color: black;
 }
 
 .card-contratti {
-  background-color: #fbc02d;
+  background-color: #fff3cd;
   color: black;
 }
 
