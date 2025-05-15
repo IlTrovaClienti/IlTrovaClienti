@@ -7,11 +7,11 @@ body { font-family:Arial,sans-serif; background:#f0f2f5; padding:10px; }
 .section-buttons { display:flex; gap:5px; margin-bottom:10px; flex-wrap:wrap; }
 .section-btn { flex:1; padding:10px; border:none; border-radius:20px; color:#fff; cursor:pointer; text-align:center; }
 /* Button colors */
-#btnAll { background:#28a745; } /* intense green */
-#btnLeads { background:#0056b3; } /* dark blue */
-#btnAppuntamenti { background:#c71585; } /* fuchsia */
-#btnContratti { background:#ffd700; color:#000; } /* yellow */
-#btnReset { background:#006400; } /* dark green */
+#btnAll { background:#28a745; }
+#btnLeads { background:#0056b3; }
+#btnAppuntamenti { background:#c71585; }
+#btnContratti { background:#ffd700; color:#000; }
+#btnReset { background:#006400; }
 /* Responsive */
 @media(max-width:600px) { .section-buttons { flex-direction:column; } }
 /* Filters */
