@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <h1>IlTrovaClienti</h1>
     <div class="credits">
@@ -15,8 +14,6 @@
       <button id="ricarica">Ricarica</button>
     </div>
   </header>
-
-  <!-- Section buttons -->
   <div class="section-buttons">
     <button id="btnAll" class="section-btn">Mostra tutti</button>
     <button id="btnLeads" class="section-btn">Lead da chiamare</button>
@@ -24,8 +21,6 @@
     <button id="btnContratti" class="section-btn">Contratti riservati</button>
     <button id="btnReset" class="section-btn">Reset filtri</button>
   </div>
-
-  <!-- Filters -->
   <div class="filters">
     <div class="filter-row">
       <label>Regione
@@ -44,14 +39,8 @@
       </label>
     </div>
   </div>
-
-  <!-- Cart -->
   <div class="carrello" id="cart"></div>
-
-  <!-- Cards -->
   <div id="cards-container"></div>
-
-  <!-- Auth Modal -->
   <div id="auth-modal" class="modal hidden">
     <div class="modal-content">
       <span class="close" id="close-auth">&times;</span>
@@ -63,8 +52,6 @@
       <button id="btnForgot">Password dimenticata</button>
     </div>
   </div>
-
-  <!-- Payment Modal -->
   <div id="payment-modal" class="modal hidden">
     <div class="modal-content">
       <span class="close" id="close-payment">&times;</span>
@@ -73,7 +60,6 @@
       <button id="confirmPayment">Conferma</button>
     </div>
   </div>
-
   <script type="module" src="firebase-init.js"></script>
   <script type="module" src="script.js"></script>
 </body>

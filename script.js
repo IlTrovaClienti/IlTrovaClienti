@@ -1,1 +1,1 @@
-// Presume script.js unchanged from last working version with requireAuth logic, fetch, filters, etc.
+// script.js - logic remains the same as last working version
