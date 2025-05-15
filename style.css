@@ -2,19 +2,27 @@
 body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px;}
 .header{background:#fff;padding:15px;border-radius:8px;display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;z-index:1;}
 .credits button{margin-left:10px;padding:5px 10px;border:none;border-radius:4px;cursor:pointer;}
-.section-buttons{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;justify-content:center;position:relative;z-index:1;}
+.section-buttons{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;justify-content:center;z-index:1;}
 .section-btn{flex:none;width:200px;padding:10px 20px;border:none;border-radius:20px;color:#fff;cursor:pointer;text-align:center;margin:0 5px;}
 #btnAll{background:#28a745;}#btnLeads{background:#0056b3;}#btnAppuntamenti{background:#c71585;}
 #btnContratti{background:#ffd700;color:#000;}#btnReset{background:#006400;}
-.filters{margin-bottom:10px;position:relative;z-index:1;}
+.filters{margin-bottom:10px;}
 .filter-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;align-items:center;}
-.filters label{flex:1 1 150px;position:relative;z-index:2;}
-.filters select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;position:relative;z-index:2; background:#fff;}
+.filters label{flex:1 1 150px;}
+.filters select{width:100%;padding:8px;border-radius:6px;border:1px solid #ccc;position:relative;z-index:2;background:#fff;}
 .reset-row{text-align:center;margin-top:10px;}
-.carrello{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;position:relative;z-index:1;}
-.cliente-card{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;position:relative;z-index:1;}
+.carrello{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;z-index:1;}
+.cliente-card{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;z-index:1;}
 .cliente-card.lead{border:2px solid #0056b3;} .cliente-card.appunt{border:2px solid #c71585;}
 .cliente-card.contr{border:2px solid #ffd700;}
+.cliente-card.lead h3{color:#0056b3;} .cliente-card.appunt h3{color:#c71585;}
+.cliente-card.contr h3{color:#333;} .cliente-card p{margin:5px 0;}
+/* Action button colors */
+.cliente-card.lead .lead        { background:#0056b3; color:#fff; padding:8px 12px; border-radius:6px; margin-right:5px; }
+.cliente-card.appunt .appunt    { background:#c71585; color:#fff; padding:8px 12px; border-radius:6px; margin-right:5px; }
+.cliente-card.contr .contr      { background:#ffd700; color:#000; padding:8px 12px; border-radius:6px; margin-right:5px; }
+/* Cancel button */
+.cliente-card button.cancel      { background:#6c757d; color:#fff; padding:8px 12px; border:none; border-radius:6px; }
 .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:999;}
 .modal.hidden{display:none;}
 .modal-content{background:#fff;padding:20px;border-radius:8px;position:relative;width:90%;max-width:320px;}
