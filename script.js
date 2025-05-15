@@ -3,10 +3,12 @@ import { doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.
 
 window.allItems = [];
 window.cart = [];
+let currentSectionFilter = 'all';
 
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Payment modal handlers
   document.getElementById('ricarica').addEventListener('click', () => {
     document.getElementById('payment-modal').classList.remove('hidden');
   });
@@ -19,10 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('payment-modal').classList.add('hidden');
   });
 
+  // Section buttons
   document.getElementById('btnLeads').addEventListener('click', () => filterBySection('lead'));
   document.getElementById('btnAppuntamenti').addEventListener('click', () => filterBySection('appunt'));
   document.getElementById('btnContratti').addEventListener('click', () => filterBySection('contr'));
 
+  // Fetch data
   fetch(sheetURL)
     .then(r => r.text())
     .then(tsv => {
@@ -34,10 +38,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const costo = parseFloat(costoStr.replace(/[^0-9\.,]/g,'')) || 0;
         window.allItems.push({ regione, citta, categoria, tipo, descrizione, telefono, budget, costo });
       });
-      renderCards(window.allItems);
+      populateFilters();
+      applyFilters();
       renderCart();
     });
 
+  // Filter selects change handlers
+  ['regioneSelect','cittaSelect','categoriaSelect','tipoSelect'].forEach(id => {
+    document.getElementById(id).addEventListener('change', () => applyFilters());
+  });
+
+  // Auth state
   onAuthStateChanged(window.firebaseAuth, user => {
     if (user && user.emailVerified) {
       getDoc(doc(window.firebaseDB, 'users', user.uid)).then(snap => {
@@ -54,21 +65,52 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function renderCards(list) {
-  const container = document.getElementById('cards-container');
-  container.innerHTML = '';
-  list.forEach(item => container.appendChild(createCard(item)));
+function populateFilters() {
+  const regs = ['Tutti', ...new Set(window.allItems.map(i=>i.regione))];
+  const cits = ['Tutti', ...new Set(window.allItems.map(i=>i.citta))];
+  const cats = ['Tutti', ...new Set(window.allItems.map(i=>i.categoria))];
+  const tips = ['Tutti', ...new Set(window.allItems.map(i=>i.tipo))];
+  fillSelect('regioneSelect', regs);
+  fillSelect('cittaSelect', cits);
+  fillSelect('categoriaSelect', cats);
+  fillSelect('tipoSelect', tips);
+}
+
+function fillSelect(id, values) {
+  const select = document.getElementById(id);
+  select.innerHTML = '';
+  values.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    select.appendChild(opt);
+  });
 }
 
 function filterBySection(key) {
-  const filtered = window.allItems.filter(i => i.tipo.toLowerCase().includes(key));
+  currentSectionFilter = key;
+  applyFilters();
+}
+
+function applyFilters() {
+  const reg = document.getElementById('regioneSelect').value;
+  const cit = document.getElementById('cittaSelect').value;
+  const cat = document.getElementById('categoriaSelect').value;
+  const tip = document.getElementById('tipoSelect').value;
+  let filtered = window.allItems.filter(item => {
+    if (currentSectionFilter !== 'all' && !item.tipo.toLowerCase().includes(currentSectionFilter)) return false;
+    if (reg !== 'Tutti' && item.regione !== reg) return false;
+    if (cit !== 'Tutti' && item.citta !== cit) return false;
+    if (cat !== 'Tutti' && item.categoria !== cat) return false;
+    if (tip !== 'Tutti' && item.tipo !== tip) return false;
+    return true;
+  });
   renderCards(filtered);
 }
 
 function createCard(item) {
   const card = document.createElement('div');
   card.className = 'cliente-card';
-  const btnClass = /lead/.test(item.tipo.toLowerCase()) ? 'lead' : /appunt/.test(item.tipo.toLowerCase()) ? 'appunt' : 'contr';
+  const btnType = /lead/.test(item.tipo.toLowerCase()) ? 'lead' : /appunt/.test(item.tipo.toLowerCase()) ? 'appunt' : 'contr';
   card.innerHTML = `
     <h3>${item.citta} – ${item.categoria}</h3>
     <p>${item.regione} | ${item.tipo}</p>
@@ -76,11 +118,17 @@ function createCard(item) {
     <p>Budget: €${item.budget.toFixed(2)}</p>
     <p class="telefono hidden">Telefono: ${item.telefono}</p>
     <p>Costo crediti: ${item.costo}</p>
-    <button class="${btnClass}">${btnClass === 'lead' ? 'Acquisisci' : btnClass === 'appunt' ? 'Conferma' : 'Contratto'}</button>
+    <button class="${btnType}">${btnType==='lead'?'Acquisisci':btnType==='appunt'?'Conferma':'Contratto'}</button>
   `;
   const btn = card.querySelector('button');
-  btn.addEventListener('click', (e) => handleAction(e, item));
+  btn.addEventListener('click', e => handleAction(e, item));
   return card;
+}
+
+function renderCards(list) {
+  const container = document.getElementById('cards-container');
+  container.innerHTML = '';
+  list.forEach(item => container.appendChild(createCard(item)));
 }
 
 function handleAction(event, item) {
@@ -98,11 +146,8 @@ function handleAction(event, item) {
 }
 
 function renderCart() {
-  const tot = window.cart.reduce((s,i) => s + i.costo, 0);
-  document.getElementById('cart').innerHTML = `
-    <h2>Carrello</h2>
-    <p>Totale crediti: ${tot}</p>
-  `;
+  const tot = window.cart.reduce((s,i)=>s+i.costo,0);
+  document.getElementById('cart').innerHTML = `<h2>Carrello</h2><p>Totale crediti: ${tot}</p>`;
 }
 
 async function changeCredits(delta) {
