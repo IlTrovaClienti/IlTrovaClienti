@@ -29,7 +29,6 @@ body {
   cursor: pointer;
 }
 
-/* Correzioni per dispositivi mobili */
 @media (max-width: 768px) {
   .filters-container {
     flex-direction: column;
@@ -54,13 +53,12 @@ body {
   }
 }
 
-/* Stili per le card e i pulsanti di azione */
 .card {
+  background: #fff;
   border: 1px solid #ddd;
-  border-radius: 4px;
   padding: 1rem;
   margin: 1rem;
-  background-color: #fff;
+  border-radius: 5px;
 }
 
 .card-action {
@@ -87,7 +85,6 @@ body {
 .btn-contratti {
   background-color: #fbc02d;
 }
-
 .btn-annulla {
   background-color: #999;
 }
