@@ -2,6 +2,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
+  background: #f4f4f4;
 }
 
 .filters-container {
@@ -9,21 +10,24 @@ body {
   flex-wrap: wrap;
   gap: 1rem;
   padding: 1rem;
-  background: #f9f9f9;
+  background: #ffffff;
   justify-content: center;
+  border-bottom: 1px solid #ddd;
 }
 
 .filters-container select {
   padding: 0.5rem;
   font-size: 1rem;
   border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
 .reset-button {
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
-  background: #ccc;
+  background: #666;
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -36,55 +40,67 @@ body {
     gap: 0.75rem;
   }
 
-  .filters-container select {
-    width: 100%;
-    max-width: 100%;
-    position: relative;
-    z-index: 1;
-  }
-
-  .filters-container select:focus {
-    z-index: 10;
-  }
-
+  .filters-container select,
   .reset-button {
     width: 100%;
-    align-self: flex-start;
   }
 }
 
+/* --- CARD STILI BASE --- */
 .card {
-  background: #fff;
-  border: 1px solid #ddd;
   padding: 1rem;
   margin: 1rem;
-  border-radius: 5px;
+  border-radius: 8px;
+  color: white;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
+/* --- CARD PER TIPO --- */
+.card-lead {
+  background-color: #003366;
+}
+
+.card-appuntamento {
+  background-color: #e91e63;
+}
+
+.card-contratto {
+  background-color: #fbc02d;
+  color: #000;
+}
+
+/* --- BOTTONI AZIONE --- */
 .card-action {
   display: flex;
   gap: 0.5rem;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
 }
 
 .card-action .btn {
-  padding: 0.4rem 0.8rem;
+  padding: 0.5rem 1rem;
   border-radius: 4px;
   border: none;
   cursor: pointer;
   font-weight: bold;
-  color: white;
 }
 
 .btn-lead {
-  background-color: #007bff;
+  background-color: #003366;
+  color: white;
 }
+
 .btn-appuntamenti {
   background-color: #e91e63;
+  color: white;
 }
+
 .btn-contratti {
   background-color: #fbc02d;
+  color: #000;
 }
+
 .btn-annulla {
   background-color: #999;
+  color: white;
 }
