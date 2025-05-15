@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <h1>IlTrovaClienti</h1>
     <div class="credits">
@@ -16,14 +15,13 @@
     </div>
   </header>
 
-  <!-- Sezioni -->
   <div class="section-buttons">
+    <button id="btnAll" class="section-btn all">Mostra tutti</button>
     <button id="btnLeads" class="section-btn">Lead da chiamare</button>
     <button id="btnAppuntamenti" class="section-btn">Appuntamenti fissati</button>
     <button id="btnContratti" class="section-btn">Contratti riservati</button>
   </div>
 
-  <!-- Filtri -->
   <div class="filters">
     <div class="filter-row">
       <label>Regione
@@ -43,13 +41,9 @@
     </div>
   </div>
 
-  <!-- Carrello -->
   <div class="carrello" id="cart"></div>
-
-  <!-- Cards -->
   <div id="cards-container"></div>
 
-  <!-- Modali -->
   <div id="auth-modal" class="modal hidden"></div>
   <div id="payment-modal" class="modal hidden">
     <div class="modal-content">
@@ -60,7 +54,6 @@
     </div>
   </div>
 
-  <!-- Firebase Init -->
   <script type="module" src="firebase-init.js"></script>
   <script type="module" src="script.js"></script>
 </body>
