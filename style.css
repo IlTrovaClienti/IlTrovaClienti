@@ -1,57 +1,84 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 0 auto;
-  padding: 10px;
-  max-width: 1200px;
+  margin: 0;
+  padding: 0;
 }
 
 .filters-container {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f9f9f9;
+  justify-content: center;
 }
 
-.filters-container select,
-.filters-container button {
-  padding: 8px;
-  flex: 1;
-}
-
-.reset-filters-btn {
-  background-color: #ccc;
-  cursor: pointer;
-}
-
-.card {
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 6px;
-}
-
-.card button {
-  padding: 8px;
-  color: #fff;
-  cursor: pointer;
-  border: none;
+.filters-container select {
+  padding: 0.5rem;
+  font-size: 1rem;
   border-radius: 4px;
 }
 
-.card button.action-btn.lead { background-color: #007bff; }
-.card button.action-btn.appuntamento { background-color: #ff1493; }
-.card button.action-btn.contratto { background-color: #ffc107; }
-.card button.cancel-btn { background-color: #dc3545; margin-left: 5px; }
+.reset-button {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background: #ccc;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
+/* MOBILE FIX */
 @media (max-width: 768px) {
   .filters-container {
     flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
-  .filters-container select,
-  .filters-container button {
+
+  .filters-container select {
     width: 100%;
-    box-sizing: border-box;
+    max-width: 100%;
+    position: relative;
+    z-index: 1;
   }
-  .reset-filters-btn {
-    order: 5;
+
+  .filters-container select:focus {
+    z-index: 10;
+  }
+
+  .reset-button {
+    width: 100%;
+    align-self: flex-start;
   }
 }
+
+/* Sezioni e bottoni azione sulle card */
+.card-action {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.card-action .btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: white;
+}
+
+.btn-lead {
+  background-color: #007bff;
+}
+.btn-appuntamenti {
+  background-color: #e91e63;
+}
+.btn-contratti {
+  background-color: #fbc02d;
+}
+
+.btn-annulla {
+  background-co
