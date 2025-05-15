@@ -6,8 +6,8 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Header con crediti e pulsante Ricarica -->
-  <header>
+  <!-- Header -->
+  <header class="header">
     <h1>IlTrovaClienti</h1>
     <div class="credits">
       Crediti: <span id="currentCredits">0</span> (€<span id="currentCreditsEuro">0.00</span>)
@@ -15,29 +15,52 @@
     </div>
   </header>
 
-  <!-- Contenitori esistenti -->
-  <div id="filters"><!-- filtri Regioni/Città/Categoria/Tipo qui --></div>
-  <div id="cart"><!-- carrello --></div>
-  <div id="cards-container"><!-- qui vanno le card cliente --></div>
+  <!-- Sezioni -->
+  <div class="section-buttons">
+    <button id="btnLeads">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
+  </div>
+
+  <!-- Filtri -->
+  <div class="filters">
+    <div class="filter-row">
+      <label>Regione
+        <select id="regioneSelect"><option>Tutti</option></select>
+      </label>
+      <label>Città
+        <select id="cittaSelect"><option>Tutti</option></select>
+      </label>
+    </div>
+    <div class="filter-row">
+      <label>Categoria
+        <select id="categoriaSelect"><option>Tutti</option></select>
+      </label>
+      <label>Tipo
+        <select id="tipoSelect"><option>Tutti</option></select>
+      </label>
+    </div>
+  </div>
+
+  <!-- Carrello -->
+  <div class="carrello" id="cart"></div>
+
+  <!-- Cards -->
+  <div id="cards-container"></div>
 
   <!-- Modali -->
-  <div id="auth-modal"></div>
-  <div id="payment-modal"></div>
+  <div id="auth-modal" class="modal"></div>
+  <div id="payment-modal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" id="close-payment">&times;</span>
+      <h2>Ricarica crediti</h2>
+      <input type="number" id="paymentAmount" placeholder="Inserisci importo">
+      <button id="confirmPayment">Conferma</button>
+    </div>
+  </div>
 
-  <!-- Firebase Initialization -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
-    import { firebaseConfig } from "./firebase-config.js";
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    window.firebaseAuth = auth;
-    window.firebaseDB = db;
-  </script>
+  <!-- Firebase Init -->
+  <script type="module" src="firebase-init.js"></script>
   <script type="module" src="script.js"></script>
 </body>
 </html>

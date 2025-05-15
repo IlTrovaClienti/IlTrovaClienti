@@ -1,152 +1,127 @@
-// Import Firebase modules
-import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
+import { 
+  getAuth, onAuthStateChanged, createUserWithEmailAndPassword,
+  signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-auth.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore.js";
 
 const auth = window.firebaseAuth;
-const db = window.firebaseDB;
+const db   = window.firebaseDB;
 
-// Stato globale
-window.cart = [];
+window.allItems = [];
+window.cart     = [];
 
-// Example: funzioni per fetch dei dati e creazione card
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Handler Ricarica
   document.getElementById('ricarica').addEventListener('click', () => {
-    // Apri modale pagamento
-    document.getElementById('payment-modal').style.display = 'block';
+    document.getElementById('payment-modal').classList.remove('hidden');
+  });
+  document.getElementById('close-payment').addEventListener('click', () => {
+    document.getElementById('payment-modal').classList.add('hidden');
+  });
+  document.getElementById('confirmPayment').addEventListener('click', () => {
+    const amt = parseFloat(document.getElementById('paymentAmount').value) || 0;
+    if (amt > 0) changeCredits(amt);
+    document.getElementById('payment-modal').classList.add('hidden');
   });
 
-  // Carica dati e popola card
+  document.getElementById('btnLeads').addEventListener('click', () => filterBySection('lead'));
+  document.getElementById('btnAppuntamenti').addEventListener('click', () => filterBySection('appunt'));
+  document.getElementById('btnContratti').addEventListener('click', () => filterBySection('contratto'));
+
   fetch(sheetURL)
-    .then(res => res.text())
+    .then(r => r.text())
     .then(tsv => {
       const rows = tsv.trim().split('\n').map(r => r.split('\t'));
-      // Rimuovi header
       rows.shift();
       rows.forEach(cols => {
-        const [regione, status, citta, budget] = cols;
-        const item = { regione, status, citta, budget: parseFloat(budget.replace('€','') || 0) };
-        const card = createCard(item);
-        document.getElementById('cards-container').appendChild(card);
+        const [regione, status, citta, budgetStr] = cols;
+        const item = {
+          regione,
+          status,
+          citta,
+          budget: parseFloat(budgetStr.replace(/[^0-9\.,]/g,'')) || 0
+        };
+        window.allItems.push(item);
       });
+      renderCards(window.allItems);
       renderCart();
     });
+
+  onAuthStateChanged(auth, user => {
+    if (user && user.emailVerified) {
+      getDoc(doc(db,'users',user.uid)).then(snap => {
+        const data = snap.data();
+        window.currentUser = { uid:user.uid, credits:data.credits };
+        document.getElementById('currentCredits').textContent     = data.credits;
+        document.getElementById('currentCreditsEuro').textContent = data.credits.toFixed(2);
+      });
+    } else {
+      window.currentUser = null;
+      document.getElementById('currentCredits').textContent     = '0';
+      document.getElementById('currentCreditsEuro').textContent = '0.00';
+    }
+  });
 });
 
-// Crea una singola card cliente con pulsante azione
+function renderCards(list) {
+  const container = document.getElementById('cards-container');
+  container.innerHTML = '';
+  list.forEach(item => container.appendChild(createCard(item)));
+}
+
+function filterBySection(key) {
+  const filtered = window.allItems.filter(i => i.status.toLowerCase().includes(key));
+  renderCards(filtered);
+}
+
 function createCard(item) {
   const card = document.createElement('div');
-  card.classList.add('cliente-card');
-  card.innerHTML = \`
-    <h3>\${item.status} – \${item.citta}</h3>
-    <p>\${item.regione} | \${item.status}</p>
-    <p>Budget: €\${item.budget}</p>
-  \`;
-  // Pulsante di azione
-  const actionBtn = document.createElement('button');
-  actionBtn.classList.add('btn-action');
-  actionBtn.textContent = item.status === 'Lead da chiamare'
+  card.className = 'cliente-card';
+  card.innerHTML = `
+    <h3>${item.status} – ${item.citta}</h3>
+    <p>${item.regione} | ${item.status}</p>
+    <p>Budget: €${item.budget.toFixed(2)}</p>
+  `;
+  const btn = document.createElement('button');
+  const s = item.status.toLowerCase();
+  btn.textContent = /lead/.test(s)
     ? 'Acquisisci'
-    : item.status === 'Appuntamento fissato'
+    : /appunt/.test(s)
       ? 'Conferma'
       : 'Contratto';
-  actionBtn.addEventListener('click', () => handleAction(item));
-  card.appendChild(actionBtn);
+  btn.addEventListener('click', () => handleAction(item));
+  card.appendChild(btn);
   return card;
 }
 
-// Azione su clic pulsante
 function handleAction(item) {
-  console.log('Azione su:', item.status);
-  // Aggiungi al carrello e sottrai crediti
-  addToCart(item);
-  if (item.budget > window.currentUser?.credits) {
+  window.cart.push(item);
+  renderCart();
+  if (!window.currentUser || item.budget > window.currentUser.credits) {
     alert('Crediti insufficienti, ricarica!');
-    document.getElementById('payment-modal').style.display = 'block';
+    document.getElementById('payment-modal').classList.remove('hidden');
   } else {
     changeCredits(-item.budget);
   }
 }
 
-// Gestione carrello
-function addToCart(item) {
-  window.cart.push(item);
-  renderCart();
-}
-
 function renderCart() {
-  const total = window.cart.reduce((sum,i)=>sum+i.budget,0);
-  document.getElementById('cart').innerHTML = \`
+  const tot = window.cart.reduce((s,i)=>s+i.budget,0);
+  document.getElementById('cart').innerHTML = `
     <h2>Carrello</h2>
-    <p>Totale: €\${total.toFixed(2)}</p>
-  \`;
+    <p>Totale: €${tot.toFixed(2)}</p>
+  `;
 }
 
-// Auth/Firestore: registrazione, login, crediti
-export async function register(email, password) {
-  try {
-    const userCred = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCred.user;
-    await setDoc(doc(db, "users", user.uid), {
-      email: user.email,
-      credits: 0,
-      createdAt: Date.now()
-    });
-    await sendEmailVerification(user);
-    alert("Registrazione ok! Controlla la tua email per verificare l'account.");
-  } catch (err) {
-    console.error(err);
-    alert("Errore registrazione: " + err.message);
-  }
-}
-
-export async function login(email, password) {
-  try {
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCred.user;
-    if (!user.emailVerified) {
-      alert("Devi prima verificare la tua email.");
-      await auth.signOut();
-      return;
-    }
-    const snap = await getDoc(doc(db, "users", user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      window.currentUser = { uid: user.uid, email: user.email, credits: data.credits };
-      document.getElementById('currentCredits').textContent = data.credits;
-      document.getElementById('currentCreditsEuro').textContent = data.credits.toFixed(2);
-    }
-  } catch (err) {
-    console.error(err);
-    alert("Errore login: " + err.message);
-  }
-}
-
-onAuthStateChanged(auth, user => {
-  if (user && user.emailVerified) {
-    getDoc(doc(db, "users", user.uid)).then(snap => {
-      const data = snap.data();
-      window.currentUser = { uid: user.uid, email: user.email, credits: data.credits };
-      document.getElementById('currentCredits').textContent = data.credits;
-      document.getElementById('currentCreditsEuro').textContent = data.credits.toFixed(2);
-    });
-  } else {
-    window.currentUser = null;
-    document.getElementById('currentCredits').textContent = '0';
-    document.getElementById('currentCreditsEuro').textContent = '0.00';
-  }
-});
-
-export async function changeCredits(delta) {
+async function changeCredits(delta) {
   if (!window.currentUser) return;
-  const uid = window.currentUser.uid;
-  const userRef = doc(db, "users", uid);
-  await updateDoc(userRef, {
-    credits: window.currentUser.credits + delta
-  });
-  window.currentUser.credits += delta;
-  document.getElementById('currentCredits').textContent = window.currentUser.credits;
-  document.getElementById('currentCreditsEuro').textContent = window.currentUser.credits.toFixed(2);
+  const ref = doc(db,'users',window.currentUser.uid);
+  const newVal = window.currentUser.credits + delta;
+  await updateDoc(ref,{ credits:newVal });
+  window.currentUser.credits = newVal;
+  document.getElementById('currentCredits').textContent     = newVal;
+  document.getElementById('currentCreditsEuro').textContent = newVal.toFixed(2);
 }
