@@ -40,47 +40,36 @@ select, button, input {
   max-width: 400px;
   padding: 15px;
   border-radius: 8px;
-  color: white;
+  background-color: #ffffff;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  color: #000 !important;
 }
 
-.card-lead {
-  background-color: #e0e0e0;
-  color: black;
+.card * {
+  color: #000 !important;
 }
 
-.card-appuntamenti {
-  background-color: #f8d7e3;
-  color: black;
-}
-
-.card-contratti {
-  background-color: #fff3cd;
-  color: black;
+.btn-lead,
+.btn-appuntamenti,
+.btn-contratti {
+  border: none;
+  padding: 8px;
+  cursor: pointer;
 }
 
 .btn-lead {
   background-color: #003366;
   color: white;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
 }
 
 .btn-appuntamenti {
   background-color: #e91e63;
   color: white;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
 }
 
 .btn-contratti {
   background-color: #fbc02d;
   color: black;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
 }
 
 button:hover {
