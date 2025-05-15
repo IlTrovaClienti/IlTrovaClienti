@@ -7,8 +7,10 @@ let currentSectionFilter = 'all';
 
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Payment modal handlers
+document.addEventListener('DOMContentLoaded', async () => {
+  console.log("Initializing app");
+  
+  // Modal handlers
   document.getElementById('ricarica').addEventListener('click', () => {
     document.getElementById('payment-modal').classList.remove('hidden');
   });
@@ -26,37 +28,42 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('btnAppuntamenti').addEventListener('click', () => filterBySection('appunt'));
   document.getElementById('btnContratti').addEventListener('click', () => filterBySection('contr'));
 
-  // Fetch data
-  fetch(sheetURL)
-    .then(r => r.text())
-    .then(tsv => {
-      const rows = tsv.trim().split('\n').map(r => r.split('\t'));
-      rows.shift();
-      rows.forEach(cols => {
-        const [regione, citta, categoria, tipo, descrizione, telefono, budgetStr, costoStr] = cols;
-        const budget = parseFloat(budgetStr.replace(/[^0-9\.,]/g,'')) || 0;
-        const costo = parseFloat(costoStr.replace(/[^0-9\.,]/g,'')) || 0;
-        window.allItems.push({ regione, citta, categoria, tipo, descrizione, telefono, budget, costo });
-      });
-      populateFilters();
-      applyFilters();
-      renderCart();
+  // Fetch and parse
+  try {
+    console.log("Fetching TSV from", sheetURL);
+    const response = await fetch(sheetURL);
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    const tsv = await response.text();
+    const rows = tsv.trim().split('\n').map(r => r.split('\t'));
+    rows.shift(); // drop header
+    rows.forEach(cols => {
+      const [regione, citta, categoria, tipo, descrizione, telefono, budgetStr, costoStr] = cols;
+      const budget = parseFloat(budgetStr.replace(/[^0-9\.,]/g,'')) || 0;
+      const costo = parseFloat(costoStr.replace(/[^0-9\.,]/g,'')) || 0;
+      window.allItems.push({ regione, citta, categoria, tipo, descrizione, telefono, budget, costo });
     });
+    console.log("Parsed items:", window.allItems.length);
+    populateFilters();
+    applyFilters();
+    renderCart();
+  } catch (err) {
+    console.error("Errore fetching/parsing sheet:", err);
+    alert("Impossibile caricare i dati. Controlla la console.");
+  }
 
-  // Filter selects change handlers
+  // Filter change handlers after populate
   ['regioneSelect','cittaSelect','categoriaSelect','tipoSelect'].forEach(id => {
     document.getElementById(id).addEventListener('change', () => applyFilters());
   });
 
   // Auth state
-  onAuthStateChanged(window.firebaseAuth, user => {
+  onAuthStateChanged(window.firebaseAuth, async user => {
     if (user && user.emailVerified) {
-      getDoc(doc(window.firebaseDB, 'users', user.uid)).then(snap => {
-        const data = snap.data();
-        window.currentUser = { uid: user.uid, credits: data.credits };
-        document.getElementById('currentCredits').textContent = data.credits;
-        document.getElementById('currentCreditsEuro').textContent = data.credits.toFixed(2);
-      });
+      const snap = await getDoc(doc(window.firebaseDB, 'users', user.uid));
+      const data = snap.data();
+      window.currentUser = { uid: user.uid, credits: data.credits };
+      document.getElementById('currentCredits').textContent = data.credits;
+      document.getElementById('currentCreditsEuro').textContent = data.credits.toFixed(2);
     } else {
       window.currentUser = null;
       document.getElementById('currentCredits').textContent = '0';
@@ -65,15 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Populate filter selects
 function populateFilters() {
-  const regs = ['Tutti', ...new Set(window.allItems.map(i=>i.regione))];
-  const cits = ['Tutti', ...new Set(window.allItems.map(i=>i.citta))];
-  const cats = ['Tutti', ...new Set(window.allItems.map(i=>i.categoria))];
-  const tips = ['Tutti', ...new Set(window.allItems.map(i=>i.tipo))];
+  const regs = ['Tutti', ...new Set(window.allItems.map(i => i.regione))];
+  const cits = ['Tutti', ...new Set(window.allItems.map(i => i.citta))];
+  const cats = ['Tutti', ...new Set(window.allItems.map(i => i.categoria))];
+  const tips = ['Tutti', ...new Set(window.allItems.map(i => i.tipo))];
   fillSelect('regioneSelect', regs);
   fillSelect('cittaSelect', cits);
   fillSelect('categoriaSelect', cats);
   fillSelect('tipoSelect', tips);
+  console.log("Filters populated");
 }
 
 function fillSelect(id, values) {
@@ -81,7 +90,8 @@ function fillSelect(id, values) {
   select.innerHTML = '';
   values.forEach(v => {
     const opt = document.createElement('option');
-    opt.value = v; opt.textContent = v;
+    opt.value = v;
+    opt.textContent = v;
     select.appendChild(opt);
   });
 }
@@ -96,7 +106,7 @@ function applyFilters() {
   const cit = document.getElementById('cittaSelect').value;
   const cat = document.getElementById('categoriaSelect').value;
   const tip = document.getElementById('tipoSelect').value;
-  let filtered = window.allItems.filter(item => {
+  const filtered = window.allItems.filter(item => {
     if (currentSectionFilter !== 'all' && !item.tipo.toLowerCase().includes(currentSectionFilter)) return false;
     if (reg !== 'Tutti' && item.regione !== reg) return false;
     if (cit !== 'Tutti' && item.citta !== cit) return false;
@@ -104,6 +114,7 @@ function applyFilters() {
     if (tip !== 'Tutti' && item.tipo !== tip) return false;
     return true;
   });
+  console.log("Filtering:", reg, cit, cat, tip, "->", filtered.length, "items");
   renderCards(filtered);
 }
 
@@ -111,15 +122,15 @@ function createCard(item) {
   const card = document.createElement('div');
   card.className = 'cliente-card';
   const btnType = /lead/.test(item.tipo.toLowerCase()) ? 'lead' : /appunt/.test(item.tipo.toLowerCase()) ? 'appunt' : 'contr';
-  card.innerHTML = `
-    <h3>${item.citta} – ${item.categoria}</h3>
-    <p>${item.regione} | ${item.tipo}</p>
-    <p>${item.descrizione}</p>
-    <p>Budget: €${item.budget.toFixed(2)}</p>
-    <p class="telefono hidden">Telefono: ${item.telefono}</p>
-    <p>Costo crediti: ${item.costo}</p>
-    <button class="${btnType}">${btnType==='lead'?'Acquisisci':btnType==='appunt'?'Conferma':'Contratto'}</button>
-  `;
+  card.innerHTML = \`
+    <h3>\${item.citta} – \${item.categoria}</h3>
+    <p>\${item.regione} | \${item.tipo}</p>
+    <p>\${item.descrizione}</p>
+    <p>Budget: €\${item.budget.toFixed(2)}</p>
+    <p class="telefono hidden">Telefono: \${item.telefono}</p>
+    <p>Costo crediti: \${item.costo}</p>
+    <button class="\${btnType}">\${btnType==='lead'?'Acquisisci':btnType==='appunt'?'Conferma':'Contratto'}</button>
+  \`;
   const btn = card.querySelector('button');
   btn.addEventListener('click', e => handleAction(e, item));
   return card;
@@ -146,8 +157,8 @@ function handleAction(event, item) {
 }
 
 function renderCart() {
-  const tot = window.cart.reduce((s,i)=>s+i.costo,0);
-  document.getElementById('cart').innerHTML = `<h2>Carrello</h2><p>Totale crediti: ${tot}</p>`;
+  const tot = window.cart.reduce((s,i) => s + i.costo, 0);
+  document.getElementById('cart').innerHTML = \`<h2>Carrello</h2><p>Totale crediti: \${tot}</p>\`;
 }
 
 async function changeCredits(delta) {
