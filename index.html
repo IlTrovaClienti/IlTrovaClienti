@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css?v=1.0.2">
+  <link rel="stylesheet" href="style.css?v=1.0.5">
+  <link rel="icon" href="favicon.ico" />
+  
+  <!-- Firebase CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <script src="firebase-init.js"></script>
 </head>
 <body>
 
@@ -16,14 +23,8 @@
     <button class="reset-button" onclick="resetFilters()">Reset filtri</button>
   </section>
 
-  <section id="cardContainer"></section>
+  <section id="cards-container"></section>
 
-  <!-- Modali, autenticazione e gestione crediti -->
-  <div id="modaliContainer">
-    <!-- Inserisci qui i modali per login, registrazione e ricarica crediti -->
-  </div>
-
-  <script src="firebase-init.js"></script>
-  <script src="script.js?v=1.0.2" defer></script>
+  <script src="script.js?v=1.0.5" defer></script>
 </body>
 </html>
