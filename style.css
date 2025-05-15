@@ -12,12 +12,15 @@ body { font-family:Arial,sans-serif; background:#f0f2f5; padding:10px; }
 #btnAppuntamenti { background:#c71585; }
 #btnContratti { background:#ffd700; color:#000; }
 #btnReset { background:#006400; }
-/* Responsive */
+/* Responsive section buttons */
 @media(max-width:600px) { .section-buttons { flex-direction:column; } }
 /* Filters */
 .filters { margin-bottom:10px; }
-.filter-row { display:flex; gap:10px; margin-bottom:10px; align-items:center; }
-.filters select { flex:1; padding:8px; border-radius:6px; border:1px solid #ccc; }
+.filter-row { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:10px; align-items:center; }
+.filters label { flex:1 1 120px; }
+.filter-row button { flex:1 1 100%; padding:8px; border-radius:6px; }
+/* Filters select */
+.filters select { width:100%; padding:8px; border-radius:6px; border:1px solid #ccc; }
 /* Cart */
 .carrello { background:#fff; padding:15px; border-radius:8px; margin-bottom:10px; }
 /* Cards */
