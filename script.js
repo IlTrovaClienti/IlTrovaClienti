@@ -36,10 +36,8 @@ function parseTSV(tsv) {
 function setupFilters() {
   cols.forEach((col, idx) => {
     const sel = document.getElementById(ids[idx]);
-    // rimuove opzioni esistenti
-    sel.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());
-    // aggiunge valori unici
-    [...new Set(data.map(r=>r[col]))].sort().forEach(val => {
+    sel.querySelectorAll('option:not(:first-child)').forEach(o => o.remove());
+    [...new Set(data.map(r => r[col]))].sort().forEach(val => {
       const o = document.createElement('option');
       o.value = o.textContent = val;
       sel.appendChild(o);
@@ -52,7 +50,7 @@ function applyFilters() {
   const crit = {};
   ids.forEach((id,i) => crit[cols[i]] = document.getElementById(id).value);
   const filtered = data.filter(r => {
-    return cols.every(c => crit[c]==='Tutti' || r[c]===crit[c]);
+    return cols.every(c => crit[c] === 'Tutti' || r[c] === crit[c]);
   });
   displayCards(filtered);
 }
@@ -61,15 +59,18 @@ function displayCards(list) {
   const main = document.getElementById('clienti');
   main.innerHTML = '';
   list.forEach(r => {
-    // determina la categoria breve
-    const catKey = r.Categoria.toLowerCase().includes('lead') ? 'lead'
-                 : r.Categoria.toLowerCase().includes('appuntamento') ? 'appuntamento'
-                 : 'contratto';
-    const borderColor = colorMap[catKey] || 'transparent';
+    // Determina la chiave breve
+    let catKey;
+    const raw = r.Categoria.toLowerCase();
+    if (raw.includes('lead')) catKey = 'lead';
+    else if (raw.includes('appuntamento')) catKey = 'appuntamento';
+    else catKey = 'contratto';
+
+    const borderColor = colorMap[catKey];
 
     const card = document.createElement('div');
     card.className = 'cliente-card';
-    // applica bordo inline
+    // Applica bordo inline
     card.style.borderLeft = `4px solid ${borderColor}`;
 
     card.innerHTML = `
@@ -99,12 +100,10 @@ function addToCart(id, cred) {
     updateCart();
   }
 }
-
 function removeFromCart(id) {
   carrello = carrello.filter(x => x.id !== id);
   updateCart();
 }
-
 function updateCart() {
   document.getElementById('carrello').innerHTML =
     carrello.map(x => `<li>${x.id} – ${x.cred} crediti</li>`).join('');
