@@ -1,5 +1,13 @@
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/…/pub?output=tsv';
 let data = [], carrello = [];
+
+// Mapping affidabile tra campo nel TSV e ID del select
+const filters = [
+  { prop: 'Regione', id: 'regioneFilter' },
+  { prop: 'Città',   id: 'cittaFilter'   },
+  { prop: 'Categoria',id: 'categoriaFilter' },
+  { prop: 'Tipo',     id: 'tipoFilter'     },
+];
 
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL)
@@ -13,23 +21,6 @@ window.addEventListener('DOMContentLoaded', () => {
     .catch(console.error);
 });
 
-function setActiveTab(cat) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  switch(cat) {
-    case 'Lead':
-      document.getElementById('tab-leads').classList.add('active');
-      break;
-    case 'Appuntamento':
-      document.getElementById('tab-appuntamenti').classList.add('active');
-      break;
-    case 'Contratto':
-      document.getElementById('tab-contratti').classList.add('active');
-      break;
-    default:
-      document.getElementById('tab-tutti').classList.add('active');
-  }
-}
-
 function parseTSV(tsv) {
   const lines = tsv.trim().split('\n');
   const headers = lines.shift().split('\t');
@@ -40,9 +31,13 @@ function parseTSV(tsv) {
 }
 
 function populateFilters() {
-  ['Regione','Città','Categoria','Tipo'].forEach(key => {
-    const sel = document.getElementById(key.toLowerCase() + 'Filter');
-    [...new Set(data.map(d => d[key]))].sort().forEach(v => {
+  filters.forEach(({ prop, id }) => {
+    const sel = document.getElementById(id);
+    // Prima rimuovi eventuali <option> oltre al primo
+    sel.querySelectorAll('option:not(:first-child)').forEach(o => o.remove());
+    // Prendi i valori unici, ordinati
+    const unique = [...new Set(data.map(d => d[prop]))].sort();
+    unique.forEach(v => {
       const o = document.createElement('option');
       o.value = o.textContent = v;
       sel.appendChild(o);
@@ -53,8 +48,9 @@ function populateFilters() {
 }
 
 function resetFilters() {
-  ['regione','citta','categoria','tipo']
-    .forEach(id => document.getElementById(id + 'Filter').selectedIndex = 0);
+  filters.forEach(({ id }) => {
+    document.getElementById(id).selectedIndex = 0;
+  });
   setActiveTab('');
   displayCards(data);
 }
@@ -65,18 +61,28 @@ function filterByCategoria(cat) {
 }
 
 function applyFilters() {
-  const r  = document.getElementById('regioneFilter').value;
-  const c  = document.getElementById('cittaFilter').value;
-  const ca = document.getElementById('categoriaFilter').value;
-  const t  = document.getElementById('tipoFilter').value;
+  const criteria = filters.reduce((acc, { prop, id }) => {
+    acc[prop] = document.getElementById(id).value;
+    return acc;
+  }, {});
   setActiveTab('');
   const filtered = data.filter(e =>
-    (r === 'Regione'   || e.Regione   === r) &&
-    (c === 'Città'     || e.Città     === c) &&
-    (ca === 'Categoria'|| e.Categoria === ca) &&
-    (t === 'Tipo'      || e.Tipo      === t)
+    filters.every(({ prop }) =>
+      criteria[prop] === prop ||                      // default option e.g. "Categoria"
+      criteria[prop] === e[prop]
+    )
   );
   displayCards(filtered);
+}
+
+function setActiveTab(cat) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  switch(cat) {
+    case 'Lead':        document.getElementById('tab-leads').classList.add('active'); break;
+    case 'Appuntamento':document.getElementById('tab-appuntamenti').classList.add('active'); break;
+    case 'Contratto':   document.getElementById('tab-contratti').classList.add('active'); break;
+    default:            document.getElementById('tab-tutti').classList.add('active');
+  }
 }
 
 function displayCards(list) {
@@ -127,5 +133,5 @@ function aggiornaCarrello() {
 }
 
 function openRicarica() {
-  // Qui puoi inserire la logica per aprire il modal PayPal
+  // Apri qui il tuo modal PayPal
 }
