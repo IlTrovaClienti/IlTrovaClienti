@@ -3,9 +3,16 @@
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 let data = [], carrello = [];
 
-// colonne e select IDs
+// colonne & select IDs
 const cols = ['Regione','Città','Categoria','Tipo'];
-const selIds = ['regione','citta','categoria','tipo'];
+const sids = ['regione','citta','categoria','tipo'];
+
+// mappa stringa esatta → colore
+const colorMap = {
+  'Lead da chiamare':     '#0085FF',
+  'Appuntamento fissato': '#FF00FF',
+  'Contratto riservato':  '#FFD700'
+};
 
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL)
@@ -13,8 +20,8 @@ window.addEventListener('DOMContentLoaded', () => {
     .then(parseTSV)
     .then(parsed => {
       data = parsed;
-      initFilters();
-      renderCards(data);
+      setupFilters();
+      drawCards(data);
     })
     .catch(console.error);
 });
@@ -24,53 +31,49 @@ function parseTSV(tsv) {
   const headers = lines.shift().split('\t');
   return lines.map(line => {
     const vals = line.split('\t');
-    return Object.fromEntries(headers.map((h,i) => [h.trim(), vals[i]?.trim()||'']));
+    return Object.fromEntries(headers.map((h,i)=>[h.trim(), vals[i]?.trim()||'']));
   });
 }
 
-function initFilters() {
-  cols.forEach((col, idx) => {
-    const sel = document.getElementById(selIds[idx]);
-    sel.querySelectorAll('option:not(:first-child)').forEach(o => o.remove());
+function setupFilters() {
+  cols.forEach((col,i) => {
+    const sel = document.getElementById(sids[i]);
+    sel.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());
     [...new Set(data.map(r=>r[col]))].sort().forEach(val => {
-      const opt = document.createElement('option');
-      opt.value = opt.textContent = val;
-      sel.appendChild(opt);
+      const o = document.createElement('option');
+      o.value = o.textContent = val;
+      sel.appendChild(o);
     });
     sel.addEventListener('change', () => {
       const filtered = applyFilters();
-      renderCards(filtered);
+      drawCards(filtered);
     });
   });
 }
 
 function applyFilters() {
   const crit = {};
-  cols.forEach((col, i) => crit[col] = document.getElementById(selIds[i]).value);
+  sids.forEach((id,i)=> crit[cols[i]] = document.getElementById(id).value );
   return data.filter(r =>
-    cols.every(col => crit[col] === 'Tutti' || r[col] === crit[col])
+    cols.every(c => crit[c]==='Tutti' || r[c]===crit[c])
   );
 }
 
-function renderCards(list) {
+function drawCards(list) {
   const main = document.getElementById('clienti');
   main.innerHTML = '';
   list.forEach(r => {
-    // badge basato su Categoria
-    const catKey = r.Categoria.toLowerCase().includes('lead')          ? 'lead'
-                  : r.Categoria.toLowerCase().includes('appuntamento') ? 'appuntamento'
-                  : 'contratto';
+    const badgeText = r.Categoria;  // es. "Lead da chiamare"
+    const borderColor = colorMap[badgeText] || 'transparent';
 
     const card = document.createElement('div');
     card.className = 'cliente-card';
-    // bordo colorato inline
-    const badgeColor = getComputedStyle(
-      Object.assign(document.createElement('span'), { className: `badge ${catKey}` })
-    ).backgroundColor;
-    card.style.borderLeft = `4px solid ${badgeColor}`;
+    card.style.borderLeft = `4px solid ${borderColor}`;
 
     card.innerHTML = `
-      <span class="badge ${catKey}">${r.Categoria}</span>
+      <span class="badge ${badgeText.replace(/\\s+/g,'').toLowerCase()}">
+        ${badgeText}
+      </span>
       <h3>${r.Tipo}</h3>
       <p class="desc">${r.Descrizione}</p>
       <p><strong>${r.Città}, ${r.Regione}</strong></p>
@@ -96,10 +99,12 @@ function addToCart(id, cred) {
     updateCart();
   }
 }
+
 function removeFromCart(id) {
   carrello = carrello.filter(x=>x.id!==id);
   updateCart();
 }
+
 function updateCart() {
   document.getElementById('carrello').innerHTML =
     carrello.map(x=>`<li>${x.id} – ${x.cred} crediti</li>`).join('');
@@ -107,7 +112,17 @@ function updateCart() {
     `Totale: €${carrello.reduce((s,x)=>s+x.cred,0)}`;
 }
 
-// necessario per il button Ricarica
+function resetFilters() {
+  ['regione','citta','categoria','tipo'].forEach(id=>{
+    document.getElementById(id).value = 'Tutti';
+  });
+  drawCards(data);
+}
+
+function filterByCategoria(cat) {
+  drawCards(data.filter(r=>r.Categoria===cat));
+}
+
 function openRicarica() {
-  // apri il modale PayPal...
+  alert('Funzione ricarica non implementata qui');
 }
