@@ -5,13 +5,6 @@ let data = [], carrello = [];
 const cols = ['Regione','Città','Categoria','Tipo'];
 const ids  = ['regione','citta','categoria','tipo'];
 
-// Mappa categoria → colore bordo
-const colorMap = {
-  lead: '#0085FF',
-  appuntamento: '#FF00FF',
-  contratto: '#FFD700'
-};
-
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL)
     .then(r => r.text())
@@ -20,6 +13,7 @@ window.addEventListener('DOMContentLoaded', () => {
       data = parsed;
       setupFilters();
       displayCards(data);
+      colorBordersFromBadges();  // applica i bordi dopo il render
     })
     .catch(console.error);
 });
@@ -27,9 +21,9 @@ window.addEventListener('DOMContentLoaded', () => {
 function parseTSV(tsv) {
   const lines = tsv.trim().split('\n');
   const headers = lines.shift().split('\t');
-  return lines.map(l => {
-    const v = l.split('\t');
-    return Object.fromEntries(headers.map((h,i) => [h.trim(), v[i]?.trim()||'']));
+  return lines.map(line => {
+    const vals = line.split('\t');
+    return Object.fromEntries(headers.map((h,i) => [h.trim(), vals[i]?.trim()||'']));
   });
 }
 
@@ -37,44 +31,41 @@ function setupFilters() {
   cols.forEach((col, idx) => {
     const sel = document.getElementById(ids[idx]);
     sel.querySelectorAll('option:not(:first-child)').forEach(o => o.remove());
-    [...new Set(data.map(r => r[col]))].sort().forEach(val => {
-      const o = document.createElement('option');
-      o.value = o.textContent = val;
-      sel.appendChild(o);
+    [...new Set(data.map(r => r[col]))]
+      .sort()
+      .forEach(val => {
+        const o = document.createElement('option');
+        o.value = o.textContent = val;
+        sel.appendChild(o);
+      });
+    sel.addEventListener('change', () => {
+      displayCards(applyFilters());
+      colorBordersFromBadges();
     });
-    sel.addEventListener('change', applyFilters);
   });
 }
 
 function applyFilters() {
   const crit = {};
   ids.forEach((id,i) => crit[cols[i]] = document.getElementById(id).value);
-  const filtered = data.filter(r => {
-    return cols.every(c => crit[c] === 'Tutti' || r[c] === crit[c]);
-  });
-  displayCards(filtered);
+  return data.filter(r =>
+    cols.every(c => crit[c]==='Tutti' || r[c]===crit[c])
+  );
 }
 
 function displayCards(list) {
   const main = document.getElementById('clienti');
   main.innerHTML = '';
   list.forEach(r => {
-    // Determina la chiave breve
-    let catKey;
-    const raw = r.Categoria.toLowerCase();
-    if (raw.includes('lead')) catKey = 'lead';
-    else if (raw.includes('appuntamento')) catKey = 'appuntamento';
-    else catKey = 'contratto';
-
-    const borderColor = colorMap[catKey];
+    // estrai categoria per badge e testo
+    const cat = r.Categoria.toLowerCase().includes('lead') ? 'lead'
+              : r.Categoria.toLowerCase().includes('appuntamento') ? 'appuntamento'
+              : 'contratto';
 
     const card = document.createElement('div');
-    card.className = 'cliente-card';
-    // Applica bordo inline
-    card.style.borderLeft = `4px solid ${borderColor}`;
-
+    card.className = `cliente-card ${cat}`;
     card.innerHTML = `
-      <span class="badge ${catKey}">${r.Categoria}</span>
+      <span class="badge ${cat}">${r.Categoria}</span>
       <h3>${r.Tipo}</h3>
       <p class="desc">${r.Descrizione}</p>
       <p><strong>${r.Città}, ${r.Regione}</strong></p>
@@ -83,30 +74,37 @@ function displayCards(list) {
         Costo: ${r["Costo (crediti)"]} crediti
       </p>
       <div class="actions">
-        <button class="acquisisci" onclick="addToCart('${r.Telefono}', ${r["Costo (crediti)"]})">
-          Acquisisci
-        </button>
-        <button class="annulla" onclick="removeFromCart('${r.Telefono}')">
-          Annulla
-        </button>
+        <button class="acquisisci" onclick="addToCart('${r.Telefono}',${r["Costo (crediti)"]})">Acquisisci</button>
+        <button class="annulla" onclick="removeFromCart('${r.Telefono}')">Annulla</button>
       </div>`;
     main.appendChild(card);
+  });
+  return list;
+}
+
+function colorBordersFromBadges() {
+  document.querySelectorAll('.cliente-card').forEach(card => {
+    const badge = card.querySelector('.badge');
+    if (badge) {
+      const bg = getComputedStyle(badge).backgroundColor;
+      card.style.borderLeft = `4px solid ${bg}`;
+    }
   });
 }
 
 function addToCart(id, cred) {
-  if (!carrello.find(x => x.id === id)) {
-    carrello.push({ id, cred });
+  if (!carrello.find(x=>x.id===id)) {
+    carrello.push({id,cred});
     updateCart();
   }
 }
 function removeFromCart(id) {
-  carrello = carrello.filter(x => x.id !== id);
+  carrello = carrello.filter(x=>x.id!==id);
   updateCart();
 }
 function updateCart() {
   document.getElementById('carrello').innerHTML =
-    carrello.map(x => `<li>${x.id} – ${x.cred} crediti</li>`).join('');
+    carrello.map(x=>`<li>${x.id} – ${x.cred} crediti</li>`).join('');
   document.getElementById('totale').textContent =
-    `Totale: €${carrello.reduce((s, x) => s + x.cred, 0)}`;
+    `Totale: €${carrello.reduce((s,x)=>s+x.cred,0)}`;
 }
