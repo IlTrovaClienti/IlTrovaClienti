@@ -4,10 +4,10 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .credit-display button { margin-left: 10px; padding: 4px 8px; border-radius: 12px; background: #004080; color: #fff; border: none; }
 .section-buttons { display: flex; gap: 5px; margin-bottom: 10px; }
 .section-buttons button { flex: 1; padding: 8px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-#btnTutti { background: #ddd; color: #000; }
-#btnLeads { background: #0085FF; color: #fff; }
-#btnAppuntamenti { background: #FF00FF; color: #fff; }
-#btnContratti { background: #FFD700; color: #000; }
+#btnTutti         { background: #ddd; color: #000; }
+#btnLeads         { background: #0085FF; color: #fff; }
+#btnAppuntamenti  { background: #FF00FF; color: #fff; }
+#btnContratti     { background: #FFD700; color: #000; }
 .filters { margin-bottom: 15px; }
 .filter-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
 .filters select { flex: 1; padding: 2px 4px; border-radius: 6px; border: 1px solid #ccc; margin-top: 0; }
@@ -16,9 +16,9 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 #carrello li { margin-bottom: 4px; }
 #totale { margin-top: 8px; font-weight: bold; }
 .cliente-card { background: #fff; border-left: 4px solid transparent; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.cliente-card.lead { border-left-color: #0085FF; }
-.cliente-card.appuntamento { border-left-color: #FF00FF; }
-.cliente-card.contratto { border-left-color: #FFD700; }
+.cliente-card.lead { border-left-color: #0085FF !important; }
+.cliente-card.appuntamento { border-left-color: #FF00FF !important; }
+.cliente-card.contratto { border-left-color: #FFD700 !important; }
 .badge { display: inline-block; padding: 2px 6px; border-radius: 12px; font-size: 0.8em; margin-bottom: 6px; color: #fff; }
 .badge.lead { background: #0085FF; }
 .badge.appuntamento { background: #FF00FF; }

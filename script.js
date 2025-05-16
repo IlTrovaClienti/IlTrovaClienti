@@ -35,9 +35,9 @@ function applyFilters() {
 function drawCards(list) {
   const main = document.getElementById('clienti'); main.innerHTML = '';
   list.forEach(r => {
-    const badgeClass = r.Categoria === 'Lead da chiamare' ? 'lead' :
-                       r.Categoria === 'Appuntamento fissato' ? 'appuntamento' :
-                       'contratto';
+    const badgeClass = r.Categoria.toLowerCase().includes('lead') ? 'lead'
+                     : r.Categoria.toLowerCase().includes('appuntamento') ? 'appuntamento'
+                     : 'contratto';
     const card = document.createElement('div');
     card.className = `cliente-card ${badgeClass}`;
     card.innerHTML = `
@@ -63,5 +63,5 @@ function updateCart() {
   document.getElementById('totale').textContent = `Totale: €${carrello.reduce((s,x)=>s+x.cred,0)}`;
 }
 function resetFilters() { ['regione','citta','categoria','tipo'].forEach(id=>document.getElementById(id).value='Tutti'); drawCards(data); }
-function filterByCategoria(cat) { drawCards(data.filter(r=>r.Categoria===cat)); }
+function filterByCategoria(cat) { drawCards(data.filter(r=>r.Categoria.toLowerCase().includes(cat.toLowerCase()))); }
 function openRicarica() { alert('Ricarica via PayPal'); }
