@@ -2,15 +2,20 @@ const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlD
 let data = [], carrello = [];
 
 window.addEventListener('DOMContentLoaded', () => {
+  console.log('DOM ready, fetching TSV...');
   fetch(sheetURL)
-    .then(res => res.text())
+    .then(res => {
+      console.log('Fetch status:', res.status, res.ok);
+      return res.text();
+    })
     .then(parseTSV)
     .then(parsed => {
       data = parsed;
+      console.log('Parsed data count:', data.length);
       populateFilters();
       displayCards(data);
     })
-    .catch(console.error);
+    .catch(err => console.error('Fetch/parsing error:', err));
 });
 
 function parseTSV(tsv) {
@@ -74,6 +79,7 @@ function applyFilters() {
 function displayCards(filteredData) {
   const container = document.getElementById('cards-container');
   container.innerHTML = '';
+  console.log('Rendering cards:', filteredData.length);
   filteredData.forEach(entry => {
     const card = document.createElement('div');
     card.className = 'cliente-card ' + entry.Categoria.toLowerCase();
@@ -110,4 +116,8 @@ function aggiornaCarrello() {
   area.innerHTML = carrello.map(el => `<div>${el.id} - ${el.crediti} crediti</div>`).join('');
   const somma = carrello.reduce((sum, el) => sum + el.crediti, 0);
   totale.textContent = `Totale crediti: ${somma}`;
+}
+
+function openRicarica() {
+  // PayPal modal open logic...
 }

@@ -4,15 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css?v=1.1.2">
+  <!-- Base href for GitHub Pages -->
+  <base href="/IlTrovaClienti/">
 
-  <!-- ✅ Firebase compatibile con GitHub Pages -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script src="firebase-init.js"></script>
+  <link rel="stylesheet" href="./style.css?v=1.1.2">
 
-  <!-- ✅ PayPal Hosted Buttons -->
+  <!-- Firebase SDKs -->
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <!-- Firebase init -->
+  <script defer src="./firebase-init.js"></script>
+
+  <!-- Main script -->
+  <script defer src="./script.js?v=1.1.2"></script>
+
+  <!-- PayPal Hosted Buttons -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAiu7JnsVGsz3kMtSsDJJPkH_CdlneLTRk_yR9DV4uJZpkr8mb5-zyAtEusMwwRLGjgYJbrbySuivZ1WM&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
 </head>
 <body>
@@ -50,5 +58,5 @@
   </div>
 
   <div id="cards-container"></div>
-
-  <!-- ✅ M
+</body>
+</html>

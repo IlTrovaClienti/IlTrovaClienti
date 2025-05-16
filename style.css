@@ -71,6 +71,8 @@ body {
   padding: 6px 8px;
   border-radius: 6px;
   border: 1px solid #ccc;
+  position: relative;
+  z-index: 10;
 }
 
 .carrello {
