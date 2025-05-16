@@ -5,7 +5,7 @@ const cls = tipo.includes('lead') ? 'lead'
           : 'contratto';const card=document.createElement('div');card.className=`cliente-card ${cls}`;card.innerHTML=`<span class="badge ${cls}">${r.Categoria}</span><h3>${r.Tipo}</h3><p class="desc">${r.Descrizione}</p><p><strong>${r.Città}, ${r.Regione}</strong></p><p class="commission">Tel: ${r.Telefono} – Budget: €${r["Budget (€)"]} – Costo: ${r["Costo (crediti)"]} crediti</p><div class="actions"><button class="acquisisci" onclick="addToCart('${r.Telefono}',${r["Costo (crediti)"]})">Acquisisci</button><button class="annulla" onclick="removeFromCart('${r.Telefono}')">Annulla</button></div>`;main.appendChild(card);});}function addToCart(id, credStr){
   const cred = parseInt(credStr) || 0;  // trattativa riservata = 0
   if(!carrello.find(x=>x.id===id)){
-     carrello.push({id, crediti: cred}););
+     carrello.push({id, crediti: cred});
      aggiornaCarrello();
      if(cred===0){ displayPhone(id);} // trattativa gratis
   }
