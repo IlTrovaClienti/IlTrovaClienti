@@ -1,14 +1,13 @@
-// ⚠️ Sostituisci i valori con i tuoi del progetto Firebase
 const firebaseConfig = {
-  apiKey: "INSERISCI_API_KEY",
-  authDomain: "INSERISCI_AUTH_DOMAIN",
-  projectId: "INSERISCI_PROJECT_ID",
-  storageBucket: "INSERISCI_BUCKET",
-  messagingSenderId: "INSERISCI_MESSAGING_ID",
-  appId: "INSERISCI_APP_ID"
+  apiKey: "AIzaSyAbiSZaWGRWTxA5C15TYv3IiuCTyS6WaOA",
+  authDomain: "iltrovaclienti-948af.firebaseapp.com",
+  projectId: "iltrovaclienti-948af",
+  storageBucket: "iltrovaclienti-948af.appspot.com",
+  messagingSenderId: "774644367448",
+  appId: "1:774644367448:web:87bed07de4f922f959ca2d",
+  measurementId: "G-JF12YKNJX6"
 };
 
-// ✅ Inizializzazione corretta per browser
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
