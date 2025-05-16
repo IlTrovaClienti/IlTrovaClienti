@@ -5,11 +5,11 @@ const cls = tipo.includes('lead') ? 'lead'
           : 'contratto';const card=document.createElement('div');card.className=`cliente-card ${cls}`;card.innerHTML=`<span class="badge ${cls}">${r.Categoria}</span><h3>${r.Tipo}</h3><p class="desc">${r.Descrizione}</p><p><strong>${r.Città}, ${r.Regione}</strong></p><p class="commission">Tel: ${r.Telefono} – Budget: €${r["Budget (€)"]} – Costo: ${r["Costo (crediti)"]} crediti</p><div class="actions"><button class="acquisisci" onclick="addToCart('${r.Telefono}',${r["Costo (crediti)"]})">Acquisisci</button><button class="annulla" onclick="removeFromCart('${r.Telefono}')">Annulla</button></div>`;main.appendChild(card);});}function addToCart(id, credStr){
   const cred = parseInt(credStr) || 0;  // trattativa riservata = 0
   if(!carrello.find(x=>x.id===id)){
-     carrello.push({id, crediti: cred});
+     carrello.push({id, crediti: cred}););
      aggiornaCarrello();
      if(cred===0){ displayPhone(id);} // trattativa gratis
   }
-}),updateCart(); displayPhone(id);}function removeFromCart(id){carrello=carrello.filter(x=>x.id!==id),updateCart(); displayPhone(id);}function updateCart(){document.getElementById('carrello').innerHTML=carrello.map(x=>`<li>${x.id} – ${x.cred} crediti</li>`).join('');document.getElementById('totale').textContent=`Totale: €${carrello.reduce((s,x)=>s+x.cred,0)}`;}function resetFilters(){['regione','citta','categoria','tipo'].forEach(id=>document.getElementById(id).value='Tutti');drawCards(data);}function filterByCategoria(cat){drawCards(data.filter(r=>r.Categoria.includes(cat)));}function openRicarica(){alert('Apri ricarica PayPal');}
+}); displayPhone(id);}function removeFromCart(id){carrello=carrello.filter(x=>x.id!==id),updateCart(); displayPhone(id);}function updateCart(){document.getElementById('carrello').innerHTML=carrello.map(x=>`<li>${x.id} – ${x.cred} crediti</li>`).join('');document.getElementById('totale').textContent=`Totale: €${carrello.reduce((s,x)=>s+x.cred,0)}`;}function resetFilters(){['regione','citta','categoria','tipo'].forEach(id=>document.getElementById(id).value='Tutti');drawCards(data);}function filterByCategoria(cat){drawCards(data.filter(r=>r.Categoria.includes(cat)));}function openRicarica(){alert('Apri ricarica PayPal');}
 
 function displayPhone(id){
   const cards=document.querySelectorAll('.cliente-card');
