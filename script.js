@@ -1,27 +1,26 @@
 // script.js
-const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
-let data = [];
-let carrello = [];
+const sheetURL = 'https://docs.google.com/spreadsheets/d/e/.../pub?output=tsv';
+let data = [], carrello = [];
 
-// Mappatura precisa tra nome colonna e ID select
+// Qui la mappatura colonna TSV → ID esatto del <select>
 const filters = [
   { col: 'Regione',   id: 'regioneFilter' },
-  { col: 'Città',     id: 'cittaFilter' },
+  { col: 'Città',     id: 'cittaFilter'   },
   { col: 'Categoria', id: 'categoriaFilter' },
-  { col: 'Tipo',      id: 'tipoFilter' }
+  { col: 'Tipo',      id: 'tipoFilter'     },
 ];
 
 window.addEventListener('DOMContentLoaded', () => {
   fetch(sheetURL)
-    .then(res => res.text())
+    .then(r => r.text())
     .then(parseTSV)
     .then(parsed => {
       data = parsed;
       populateFilters();
       resetFilters();
     })
-    .catch(err => console.error('Errore fetch/parse:', err));
+    .catch(console.error);
 });
 
 function parseTSV(tsv) {
@@ -29,31 +28,30 @@ function parseTSV(tsv) {
   const headers = lines.shift().split('\t');
   return lines.map(line => {
     const vals = line.split('\t');
-    return Object.fromEntries(headers.map((h,i) => [h.trim(), vals[i]?.trim() || '']));
+    return Object.fromEntries(headers.map((h,i)=>[h.trim(), vals[i]?.trim()||'']));
   });
 }
 
 function populateFilters() {
   filters.forEach(({ col, id }) => {
     const sel = document.getElementById(id);
-    // rimuovi eventuali option già aggiunti (oltre al primo placeholder)
-    sel.querySelectorAll('option:not(:first-child)').forEach(o => o.remove());
-    // costruisci lista unici e ordinati
-    const unique = Array.from(new Set(data.map(r => r[col]))).sort();
-    unique.forEach(val => {
-      const o = document.createElement('option');
-      o.value = o.textContent = val;
-      sel.appendChild(o);
-    });
+    // rimuove opzioni vecchie (a parte il placeholder)
+    sel.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());
+    // crea opzioni uniche ordinate
+    [...new Set(data.map(r=>r[col]))]
+      .sort()
+      .forEach(v=>{
+        const o = document.createElement('option');
+        o.value = o.textContent = v;
+        sel.appendChild(o);
+      });
   });
-  // attiva il listener di cambio filtro
   document.querySelectorAll('.filters select')
-          .forEach(s => s.addEventListener('change', applyFilters));
+          .forEach(s=>s.addEventListener('change', applyFilters));
 }
 
 function resetFilters() {
-  // riporta tutti i select alla prima opzione
-  filters.forEach(({ id }) => {
+  filters.forEach(({ id })=>{
     document.getElementById(id).selectedIndex = 0;
   });
   setActiveTab('');
@@ -62,31 +60,29 @@ function resetFilters() {
 
 function filterByCategoria(cat) {
   setActiveTab(cat);
-  displayCards(data.filter(r => r.Categoria === cat));
+  displayCards(data.filter(r=>r.Categoria===cat));
 }
 
 function applyFilters() {
-  // raccogli i valori correnti
+  // raccoglie i valori correnti da ciascun <select>
   const criteria = {};
-  filters.forEach(({ col, id }) => {
+  filters.forEach(({ col, id })=>{
     criteria[col] = document.getElementById(id).value;
   });
-  setActiveTab('');  
-  // filtra per ogni riga, includendo solo quelle matching
-  const filtered = data.filter(r => {
-    return filters.every(({ col }) => {
-      const selVal = criteria[col];
-      // se è ancora il placeholder (es. "Regione"), ignoro
-      if (selVal === col) return true;
-      return r[col] === selVal;
+  setActiveTab('');
+  // filtra solo le righe che matchano tutti i campi selezionati
+  const filtered = data.filter(r=>{
+    return filters.every(({ col })=>{
+      const sel = criteria[col];
+      return sel===col || r[col]===sel;
     });
   });
   displayCards(filtered);
 }
 
 function setActiveTab(cat) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  switch (cat) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  switch(cat) {
     case 'Lead':
       document.getElementById('tab-leads').classList.add('active');
       break;
@@ -102,10 +98,10 @@ function setActiveTab(cat) {
 }
 
 function displayCards(list) {
-  const container = document.getElementById('cards-container');
-  container.innerHTML = '';
-  list.forEach(r => {
-    const div = document.createElement('div');
+  const c = document.getElementById('cards-container');
+  c.innerHTML = '';
+  list.forEach(r=>{
+    const div=document.createElement('div');
     div.className = 'cliente-card ' + r.Categoria.toLowerCase();
     div.innerHTML = `
       <span class="badge ${r.Categoria.toLowerCase()}">${r.Categoria}</span>
@@ -125,29 +121,29 @@ function displayCards(list) {
           Annulla
         </button>
       </div>`;
-    container.appendChild(div);
+    c.appendChild(div);
   });
 }
 
-function aggiungiACarrello(id, crediti) {
-  if (!carrello.find(x => x.id === id)) {
-    carrello.push({ id, crediti });
+function aggiungiACarrello(id, cred) {
+  if (!carrello.find(x=>x.id===id)) {
+    carrello.push({ id, crediti: cred });
     aggiornaCarrello();
   }
 }
 
 function rimuoviDalCarrello(id) {
-  carrello = carrello.filter(x => x.id !== id);
+  carrello = carrello.filter(x=>x.id!==id);
   aggiornaCarrello();
 }
 
 function aggiornaCarrello() {
   document.getElementById('carrello').innerHTML =
-    carrello.map(x => `<div>${x.id} – ${x.crediti} crediti</div>`).join('');
+    carrello.map(x=>`<div>${x.id} – ${x.crediti} crediti</div>`).join('');
   document.getElementById('totale').textContent =
-    `Totale: €${carrello.reduce((sum, x) => sum + x.crediti, 0)}`;
+    `Totale: €${carrello.reduce((s,x)=>s+x.crediti,0)}`;
 }
 
 function openRicarica() {
-  // Qui va la logica per il tuo modal PayPal
+  // logica per aprire il modal PayPal
 }
