@@ -41,24 +41,18 @@ body {
   font-size: 14px;
 }
 
-#btnLeads,
-.cliente-card.lead .acquisisci,
-.badge.lead {
-  background: #007BFF !important;
+#btnLeads, .cliente-card.lead .acquisisci, .badge.lead {
+  background: #003366 !important;
   color: #fff !important;
 }
 
-#btnAppuntamenti,
-.cliente-card.appuntamento .acquisisci,
-.badge.appuntamento {
-  background: #FF00FF !important;
+#btnAppuntamenti, .cliente-card.appuntamento .acquisisci, .badge.appuntamento {
+  background: #e91e63 !important;
   color: #fff !important;
 }
 
-#btnContratti,
-button.contratto,
-.badge.contratto {
-  background: #FFD700 !important;
+#btnContratti, button.contratto, .badge.contratto {
+  background: #fbc02d !important;
   color: #000 !important;
 }
 
@@ -70,11 +64,6 @@ button.contratto,
   display: flex;
   gap: 10px;
   margin-bottom: 10px;
-}
-
-.filter-row label {
-  margin-bottom: 4px;
-  font-size: 0.9em;
 }
 
 .filters select {
@@ -97,24 +86,119 @@ button.contratto,
 }
 
 .cliente-card {
-  background: #fff;
   padding: 10px;
-  position: relative;
-  border-left: 4px solid;
   border-radius: 8px;
   margin-bottom: 10px;
+  color: inherit;
 }
 
 .cliente-card.lead {
-  border-color: #007BFF;
+  background-color: #003366;
+  border-left: 5px solid #003366;
+  color: white;
 }
 
 .cliente-card.appuntamento {
-  border-color: #FF00FF;
+  background-color: #e91e63;
+  border-left: 5px solid #e91e63;
+  color: white;
 }
 
 .cliente-card.contratto {
-  border-color: #FFD700;
+  background-color: #fbc02d;
+  border-left: 5px solid #fbc02d;
+  color: black;
 }
 
 .badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 12px;
+  font-size: 0.8em;
+  margin-bottom: 6px;
+}
+
+.cliente-card h3 {
+  margin-bottom: 6px;
+  font-size: 1.1em;
+}
+
+.cliente-card .desc {
+  font-style: italic;
+  margin-bottom: 4px;
+}
+
+.cliente-card .commission {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.actions button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+button.annulla {
+  background: #dc3545;
+  color: #fff;
+}
+
+/* Modals */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 320px;
+  width: 90%;
+  text-align: center;
+}
+
+.modal-tabs button {
+  padding: 4px 8px;
+  margin: 4px;
+  font-size: 14px;
+}
+
+.modal form input {
+  width: 100%;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.modal form button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  background: #004080;
+  color: #fff;
+}
+
+.cancel-form {
+  margin-top: 8px;
+  background: #ccc;
+  color: #000;
+}
