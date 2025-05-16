@@ -23,19 +23,21 @@
 
   <nav class="section-buttons">
     <button id="btnTutti" onclick="resetFilters()">Tutti</button>
-    <button id="btnLeads" onclick="filterByCategoria('Lead')">Lead da chiamare</button>
-    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti fissati</button>
-    <button id="btnContratti" onclick="filterByCategoria('Contratto')">Contratti riservati</button>
+    <button id="btnLeads" onclick="filterByCategoria('Lead da chiamare')">Lead da chiamare</button>
+    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento fissato')">Appuntamenti fissati</button>
+    <button id="btnContratti" onclick="filterByCategoria('Contratto riservato')">Contratti riservati</button>
   </nav>
 
   <section class="filters">
     <div class="filter-row">
-      <label>Regione</label><select id="regione"><option>Tutti</option></select>
-      <label>Città</label><select id="citta"><option>Tutti</option></select>
+      <label>Regione</label><select id="regione"><option value="Tutti">Tutti</option></select>
+      <label>Città</label>   <select id="citta"><option value="Tutti">Tutti</option></select>
     </div>
     <div class="filter-row">
-      <label>Categoria</label><select id="categoria"><option>Tutti</option></select>
-      <label>Tipo</label><select id="tipo"><option>Tutti</option></select>
+      <label>Categoria</label>
+      <select id="categoria"><option value="Tutti">Tutti</option></select>
+      <label>Tipo</label>
+      <select id="tipo"><option value="Tutti">Tutti</option></select>
     </div>
   </section>
 
