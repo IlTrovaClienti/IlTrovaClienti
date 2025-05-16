@@ -6,3 +6,11 @@
 .cliente-card.contratto{border-left-color:#FFD700!important;background:#fff9d6;}
 
 .actions .acquisisci{background:#28a745!important;color:#fff!important;border:none!important;-webkit-tap-highlight-color:transparent;}
+
+/* Responsive filters: due campi per riga in mobile */
+@media (max-width: 600px){
+  .filter-row{flex-wrap:wrap;}
+  .filter-row label,
+  .filter-row select{width:48%;}
+  .filter-row label{margin-bottom:4px;}
+}
