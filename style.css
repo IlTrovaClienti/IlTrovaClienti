@@ -1,35 +1,76 @@
+/* style.css */
+
+/* RESET */
 * { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* BODY */
 body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
-.header { background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-.credit-display button { margin-left: 10px; padding: 4px 8px; border-radius: 12px; background: #004080; color: #fff; border: none; }
+
+/* HEADER */
+.header {
+  background: #fff; padding: 15px; border-radius: 8px;
+  margin-bottom: 10px; display: flex;
+  justify-content: space-between; align-items: center;
+}
+.credit-display button {
+  margin-left: 10px; padding: 4px 8px; border-radius: 12px;
+  background: #004080; color: #fff; border: none;
+}
+
+/* NAV TABS */
 .section-buttons { display: flex; gap: 5px; margin-bottom: 10px; }
-.section-buttons button { flex: 1; padding: 8px 12px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 14px; }
-#btnLeads { background: #0085FF; color: #fff; }
+.section-buttons button {
+  flex: 1; padding: 8px 12px; border: none; border-radius: 12px;
+  cursor: pointer; font-weight: bold; font-size: 14px;
+}
+#btnLeads        { background: #0085FF; color: #fff; }
 #btnAppuntamenti { background: #FF00FF; color: #fff; }
-#btnContratti { background: #FFD700; color: #000; }
+#btnContratti    { background: #FFD700; color: #000; }
+
+/* FILTRI */
 .filters { margin-bottom: 15px; }
 .filter-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 .filter-row label { min-width: 70px; font-size: 0.9em; }
-.filters select { flex: 1; padding: 6px 8px; border-radius: 6px; border: 1px solid #ccc; }
+.filters select { flex: 1; padding: 6px 8px; border: 1px solid #ccc; border-radius: 6px; }
+
+/* CARRELLO */
 .carrello { background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px; }
 .carrello h2 { margin-bottom: 6px; }
 #carrello li { margin-bottom: 4px; }
 #totale { margin-top: 8px; font-weight: bold; }
-.cliente-card { background: #fff; border-left: 4px solid transparent; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.cliente-card.lead { border-left: 4px solid #0085FF !important; }
-.cliente-card.appuntamento { border-left: 4px solid #FF00FF !important; }
-.cliente-card.contratto { border-left: 4px solid #FFD700 !important; }
-.badge { display: inline-block; padding: 2px 6px; border-radius: 12px; font-size: 0.8em; margin-bottom: 6px; color: #fff; }
-.badge.lead { background: #0085FF; }
+
+/* CARDS CLIENTE */
+.cliente-card {
+  background: #fff; /* il bordo sarà impostato inline via JS */
+  border-left: 4px solid transparent;
+  border-radius: 8px; padding: 12px; margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* BADGE */
+.badge {
+  display: inline-block; padding: 2px 6px; border-radius: 12px;
+  font-size: 0.8em; margin-bottom: 6px; color: #fff;
+}
+.badge.lead         { background: #0085FF; }
 .badge.appuntamento { background: #FF00FF; }
-.badge.contratto { background: #FFD700; color: #000; }
+.badge.contratto    { background: #FFD700; color: #000; }
+
+/* DETTAGLI CARD */
 .cliente-card h3 { margin-bottom: 6px; font-size: 1.1em; }
 .cliente-card .desc { font-style: italic; margin-bottom: 4px; }
 .cliente-card .commission { font-weight: bold; margin-bottom: 6px; }
+
+/* AZIONI */
 .actions { display: flex; gap: 6px; margin-top: 8px; }
-.actions button { padding: 4px 8px; font-size: 12px; border: none; border-radius: 12px; cursor: pointer; }
+.actions button {
+  padding: 4px 8px; font-size: 12px; border: none; border-radius: 12px;
+  cursor: pointer;
+}
 .actions .acquisisci { background: #0085FF; color: #fff; }
-.actions .annulla { background: #dc3545; color: #fff; }
+.actions .annulla    { background: #dc3545; color: #fff; }
+
+/* MOBILE */
 @media (max-width: 600px) {
   .filter-row { flex-direction: column; align-items: stretch; }
   .section-buttons { flex-direction: column; }
