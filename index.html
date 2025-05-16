@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css?v=1.1.0">
+  <link rel="stylesheet" href="style.css?v=1.1.1">
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
@@ -24,67 +24,4 @@
   <div class="section-buttons">
     <button id="btnTutti" onclick="resetFilters()">Tutti</button>
     <button id="btnLeads" onclick="filterByCategoria('Lead')">Leads</button>
-    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti</button>
-    <button id="btnContratti" onclick="filterByCategoria('Contratto')">Contratti</button>
-  </div>
-
-  <div class="filters">
-    <div class="filter-row">
-      <select id="regioneFilter"><option>Regione</option></select>
-      <select id="cittaFilter"><option>Città</option></select>
-    </div>
-    <div class="filter-row">
-      <select id="categoriaFilter"><option>Categoria</option></select>
-      <select id="tipoFilter"><option>Tipo</option></select>
-    </div>
-  </div>
-
-  <div class="carrello">
-    <div>Carrello:</div>
-    <div id="carrello"></div>
-    <div id="totale"></div>
-  </div>
-
-  <div id="cards-container"></div>
-
-  <div class="modal-overlay" id="modalRicarica">
-    <div class="modal">
-      <h3>Ricarica Crediti</h3>
-      <div id="paypal-container-GV24GTAGCQCC4"></div>
-      <button class="cancel-form" onclick="closeRicarica()">Chiudi</button>
-    </div>
-  </div>
-
-  <script src="script.js?v=1.1.0" defer></script>
-  <script>
-    paypal.HostedButtons({
-      hostedButtonId: "GV24GTAGCQCC4",
-    }).render("#paypal-container-GV24GTAGCQCC4");
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const observer = new MutationObserver(() => {
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            const uid = user.uid;
-            const userRef = firebase.firestore().collection("utenti").doc(uid);
-            userRef.update({
-              crediti: firebase.firestore.FieldValue.increment(1)
-            }).then(() => {
-              alert("Hai ricevuto 1 credito!");
-            }).catch(console.error);
-          }
-        });
-      });
-      observer.observe(document.getElementById('paypal-container-GV24GTAGCQCC4'), { childList: true, subtree: true });
-    });
-
-    function openRicarica() {
-      document.getElementById('modalRicarica').style.display = 'flex';
-    }
-
-    function closeRicarica() {
-      document.getElementById('modalRicarica').style.display = 'none';
-    }
-  </script>
-</body>
-</html>
+    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti<
