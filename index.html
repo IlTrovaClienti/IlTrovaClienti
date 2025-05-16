@@ -4,27 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <!-- Base href for GitHub Pages -->
   <base href="/IlTrovaClienti/">
-
-  <link rel="stylesheet" href="./style.css?v=1.1.2">
-
-  <!-- Firebase SDKs -->
+  <link rel="stylesheet" href="./style.css">
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-  <!-- Firebase init -->
   <script defer src="./firebase-init.js"></script>
-
-  <!-- Main script -->
-  <script defer src="./script.js?v=1.1.2"></script>
-
-  <!-- PayPal Hosted Buttons -->
+  <script defer src="./script.js"></script>
   <script src="https://www.paypal.com/sdk/js?client-id=BAAiu7JnsVGsz3kMtSsDJJPkH_CdlneLTRk_yR9DV4uJZpkr8mb5-zyAtEusMwwRLGjgYJbrbySuivZ1WM&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
 </head>
 <body>
-
   <div class="header">
     <h2>IlTrovaClienti</h2>
     <div class="credit-display">
@@ -32,14 +21,12 @@
       <button onclick="openRicarica()">Ricarica</button>
     </div>
   </div>
-
-  <div class="section-buttons">
-    <button id="btnTutti" onclick="resetFilters()">Tutti</button>
-    <button id="btnLeads" onclick="filterByCategoria('Lead')">Leads</button>
-    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti</button>
-    <button id="btnContratti" onclick="filterByCategoria('Contratto')">Contratti</button>
+  <div class="tabs">
+    <div id="tab-tutti" class="tab active" onclick="resetFilters()">Tutti</div>
+    <div id="tab-leads" class="tab" onclick="filterByCategoria('Lead')">Lead da chiamare</div>
+    <div id="tab-appuntamenti" class="tab" onclick="filterByCategoria('Appuntamento')">Appuntamenti fissati</div>
+    <div id="tab-contratti" class="tab" onclick="filterByCategoria('Contratto')">Contratti riservati</div>
   </div>
-
   <div class="filters">
     <div class="filter-row">
       <select id="regioneFilter"><option>Regione</option></select>
@@ -50,13 +37,11 @@
       <select id="tipoFilter"><option>Tipo</option></select>
     </div>
   </div>
-
   <div class="carrello">
     <div>Carrello:</div>
     <div id="carrello"></div>
     <div id="totale"></div>
   </div>
-
   <div id="cards-container"></div>
 </body>
 </html>

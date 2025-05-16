@@ -1,123 +1,17 @@
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 let data = [], carrello = [];
-
 window.addEventListener('DOMContentLoaded', () => {
-  console.log('DOM ready, fetching TSV...');
-  fetch(sheetURL)
-    .then(res => {
-      console.log('Fetch status:', res.status, res.ok);
-      return res.text();
-    })
-    .then(parseTSV)
-    .then(parsed => {
-      data = parsed;
-      console.log('Parsed data count:', data.length);
-      populateFilters();
-      displayCards(data);
-    })
-    .catch(err => console.error('Fetch/parsing error:', err));
+  fetch(sheetURL).then(r=>r.text()).then(parseTSV).then(parsed=>{data=parsed;populateFilters();resetFilters();}).catch(console.error);
 });
-
-function parseTSV(tsv) {
-  const lines = tsv.trim().split('\n');
-  const headers = lines.shift().split('\t');
-  return lines.map(line => {
-    const values = line.split('\t');
-    return Object.fromEntries(headers.map((h, i) => [h.trim(), values[i]?.trim() || '']));
-  });
-}
-
-function populateFilters() {
-  fillSelect('regioneFilter', [...new Set(data.map(d => d.Regione))]);
-  fillSelect('cittaFilter', [...new Set(data.map(d => d.Città))]);
-  fillSelect('categoriaFilter', [...new Set(data.map(d => d.Categoria))]);
-  fillSelect('tipoFilter', [...new Set(data.map(d => d.Tipo))]);
-
-  document.querySelectorAll('.filters select').forEach(select => {
-    select.addEventListener('change', applyFilters);
-  });
-}
-
-function fillSelect(id, values) {
-  const select = document.getElementById(id);
-  values.sort().forEach(val => {
-    const opt = document.createElement('option');
-    opt.value = opt.textContent = val;
-    select.appendChild(opt);
-  });
-}
-
-function resetFilters() {
-  ['regioneFilter', 'cittaFilter', 'categoriaFilter', 'tipoFilter'].forEach(id => {
-    const el = document.getElementById(id);
-    el.selectedIndex = 0;
-  });
-  displayCards(data);
-}
-
-function filterByCategoria(cat) {
-  const filtered = data.filter(entry => entry.Categoria.toLowerCase().includes(cat.toLowerCase()));
-  displayCards(filtered);
-}
-
-function applyFilters() {
-  const regione = document.getElementById('regioneFilter').value;
-  const citta = document.getElementById('cittaFilter').value;
-  const categoria = document.getElementById('categoriaFilter').value;
-  const tipo = document.getElementById('tipoFilter').value;
-
-  const filtered = data.filter(entry =>
-    (regione === "Regione" || entry.Regione === regione) &&
-    (citta === "Città" || entry.Città === citta) &&
-    (categoria === "Categoria" || entry.Categoria === categoria) &&
-    (tipo === "Tipo" || entry.Tipo === tipo)
-  );
-
-  displayCards(filtered);
-}
-
-function displayCards(filteredData) {
-  const container = document.getElementById('cards-container');
-  container.innerHTML = '';
-  console.log('Rendering cards:', filteredData.length);
-  filteredData.forEach(entry => {
-    const card = document.createElement('div');
-    card.className = 'cliente-card ' + entry.Categoria.toLowerCase();
-    card.innerHTML = `
-      <span class="badge ${entry.Categoria.toLowerCase()}">${entry.Categoria}</span>
-      <h3>${entry.Tipo}</h3>
-      <p class="desc">${entry.Descrizione}</p>
-      <p><strong>${entry.Città}, ${entry.Regione}</strong></p>
-      <p class="commission">Tel: ${entry.Telefono} - Budget: €${entry["Budget (€)"]} - Costo: ${entry["Costo (crediti)"]} crediti</p>
-      <div class="actions">
-        <button class="acquisisci ${entry.Categoria.toLowerCase()}" onclick="aggiungiACarrello('${entry.Telefono}', ${entry["Costo (crediti)"]})">Aggiungi</button>
-        <button class="annulla" onclick="rimuoviDalCarrello('${entry.Telefono}')">Annulla</button>
-      </div>
-    `;
-    container.appendChild(card);
-  });
-}
-
-function aggiungiACarrello(id, crediti) {
-  if (!carrello.find(el => el.id === id)) {
-    carrello.push({ id, crediti });
-    aggiornaCarrello();
-  }
-}
-
-function rimuoviDalCarrello(id) {
-  carrello = carrello.filter(el => el.id !== id);
-  aggiornaCarrello();
-}
-
-function aggiornaCarrello() {
-  const area = document.getElementById('carrello');
-  const totale = document.getElementById('totale');
-  area.innerHTML = carrello.map(el => `<div>${el.id} - ${el.crediti} crediti</div>`).join('');
-  const somma = carrello.reduce((sum, el) => sum + el.crediti, 0);
-  totale.textContent = `Totale crediti: ${somma}`;
-}
-
-function openRicarica() {
-  // PayPal modal open logic...
-}
+function setActiveTab(cat){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));switch(cat){case 'Lead':document.getElementById('tab-leads').classList.add('active');break;case 'Appuntamento':document.getElementById('tab-appuntamenti').classList.add('active');break;case 'Contratto':document.getElementById('tab-contratti').classList.add('active');break;default:document.getElementById('tab-tutti').classList.add('active');}}
+function parseTSV(tsv){const lines=tsv.trim().split('
+');const headers=lines.shift().split('	');return lines.map(line=>Object.fromEntries(headers.map((h,i)=>[h.trim(),line.split('	')[i]?.trim()||''])));}
+function populateFilters(){['Regione','Città','Categoria','Tipo'].forEach(k=>{const sel=document.getElementById(k.toLowerCase()+'Filter');[...new Set(data.map(d=>d[k]))].sort().forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;sel.appendChild(o);});});document.querySelectorAll('.filters select').forEach(s=>s.addEventListener('change',applyFilters));}
+function resetFilters(){['regione','citta','categoria','tipo'].forEach(id=>document.getElementById(id+'Filter').selectedIndex=0);setActiveTab('');displayCards(data);}
+function filterByCategoria(cat){setActiveTab(cat);displayCards(data.filter(e=>e.Categoria===cat));}
+function applyFilters(){const [r,c,ca,t]=['regione','citta','categoria','tipo'].map(id=>document.getElementById(id+'Filter').value);setActiveTab('');displayCards(data.filter(e=>(r==='Regione'||e.Regione===r)&&(c==='Città'||e.Città===c)&&(ca==='Categoria'||e.Categoria===ca)&&(t==='Tipo'||e.Tipo===t)));}
+function displayCards(list){const cont=document.getElementById('cards-container');cont.innerHTML='';list.forEach(e=>{const div=document.createElement('div');div.className='cliente-card '+e.Categoria.toLowerCase();div.innerHTML=`<span class="badge ${e.Categoria.toLowerCase()}">${e.Categoria}</span><h3>${e.Tipo}</h3><p class="desc">${e.Descrizione}</p><p><strong>${e.Città}, ${e.Regione}</strong></p><p class="commission">Tel: ${e.Telefono} – Budget: €${e["Budget (€)"]} – Costo: ${e["Costo (crediti)"]} crediti</p><div class="actions"><button class="acquisisci ${e.Categoria.toLowerCase()}" onclick="aggiungiACarrello('${e.Telefono}',${e["Costo (crediti)"]})">Acquisisci</button><button class="annulla" onclick="rimuoviDalCarrello('${e.Telefono}')">Annulla</button></div>`;cont.appendChild(div);});}
+function aggiungiACarrello(id,cred){if(!carrello.find(x=>x.id===id)){carrello.push({id,cred});aggiornaCarrello();}}
+function rimuoviDalCarrello(id){carrello=carrello.filter(x=>x.id!==id);aggiornaCarrello();}
+function aggiornaCarrello(){document.getElementById('carrello').innerHTML=carrello.map(x=>`<div>${x.id} – ${x.cred} crediti</div>`).join('');document.getElementById('totale').textContent=`Totale: €${carrello.reduce((s,x)=>s+x.cred,0)}`;}
+function openRicarica(){}
