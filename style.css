@@ -101,25 +101,25 @@ body {
 }
 
 /* CARDS CLIENTE */
-/* cliente-card base: bordo sinistro trasparente di 4px */
+/* base senza bordo visibile */
 .cliente-card {
   background: #fff;
-  border-left: 4px solid transparent;
+  /* rimuoviamo il bordo sinistro trasparente */
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-/* override colore bordo sinistro per ciascuna categoria */
+/* bordi colorati forzati per categoria */
 .cliente-card.lead {
-  border-left-color: #0085FF;
+  border-left: 4px solid #0085FF !important;
 }
 .cliente-card.appuntamento {
-  border-left-color: #FF00FF;
+  border-left: 4px solid #FF00FF !important;
 }
 .cliente-card.contratto {
-  border-left-color: #FFD700;
+  border-left: 4px solid #FFD700 !important;
 }
 
 /* BADGE */
