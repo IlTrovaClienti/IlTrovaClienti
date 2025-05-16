@@ -27,6 +27,10 @@ function populateFilters() {
   fillSelect('cittaFilter', [...new Set(data.map(d => d.Città))]);
   fillSelect('categoriaFilter', [...new Set(data.map(d => d.Categoria))]);
   fillSelect('tipoFilter', [...new Set(data.map(d => d.Tipo))]);
+
+  document.querySelectorAll('.filters select').forEach(select => {
+    select.addEventListener('change', applyFilters);
+  });
 }
 
 function fillSelect(id, values) {
@@ -48,6 +52,22 @@ function resetFilters() {
 
 function filterByCategoria(cat) {
   const filtered = data.filter(entry => entry.Categoria.toLowerCase().includes(cat.toLowerCase()));
+  displayCards(filtered);
+}
+
+function applyFilters() {
+  const regione = document.getElementById('regioneFilter').value;
+  const citta = document.getElementById('cittaFilter').value;
+  const categoria = document.getElementById('categoriaFilter').value;
+  const tipo = document.getElementById('tipoFilter').value;
+
+  const filtered = data.filter(entry =>
+    (regione === "Regione" || entry.Regione === regione) &&
+    (citta === "Città" || entry.Città === citta) &&
+    (categoria === "Categoria" || entry.Categoria === categoria) &&
+    (tipo === "Tipo" || entry.Tipo === tipo)
+  );
+
   displayCards(filtered);
 }
 
