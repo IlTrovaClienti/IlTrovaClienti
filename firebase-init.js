@@ -1,3 +1,4 @@
+// ⚠️ Sostituisci i valori con i tuoi del progetto Firebase
 const firebaseConfig = {
   apiKey: "INSERISCI_API_KEY",
   authDomain: "INSERISCI_AUTH_DOMAIN",
@@ -7,6 +8,7 @@ const firebaseConfig = {
   appId: "INSERISCI_APP_ID"
 };
 
+// ✅ Inizializzazione corretta per browser
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
