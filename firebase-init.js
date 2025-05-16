@@ -5,7 +5,7 @@ const firebaseConfig = {
   storageBucket: "iltrovaclienti-948af.appspot.com",
   messagingSenderId: "774644367448",
   appId: "1:774644367448:web:87bed07de4f922f959ca2d",
-  measurementId: "G-JF12YKNJX6"
+  measurementId: "G-JF12YKNX6"
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
