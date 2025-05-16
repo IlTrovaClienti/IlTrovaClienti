@@ -1,3 +1,4 @@
+/* style.css */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 
@@ -33,7 +34,9 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 
 /* FILTRI */
 .filters { margin-bottom: 15px; }
-.filter-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.filter-row {
+  display: flex; gap: 10px; margin-bottom: 10px;
+}
 .filters select {
   width: 100%; padding: 6px 8px;
   border: 1px solid #ccc; border-radius: 6px;
@@ -45,20 +48,20 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
   background: #fff; padding: 10px; border-radius: 8px;
   margin-bottom: 10px;
 }
+.carrello > div:first-child { font-weight: bold; margin-bottom: 6px; }
 #totale { margin-top: 8px; font-weight: bold; }
 
-/* CARDS CLIENTE */
+/* CARD CLIENTE */
 .cliente-card {
   background: #fff;
   border-left: 5px solid transparent;
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 12px; margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-.cliente-card.lead           { border-color: #0085FF; }
-.cliente-card.appuntamento   { border-color: #FF00FF; }
-.cliente-card.contratto      { border-color: #FFCC00; }
+.cliente-card.lead          { border-color: #0085FF; }
+.cliente-card.appuntamento  { border-color: #FF00FF; }
+.cliente-card.contratto     { border-color: #FFCC00; }
 
 /* BADGE */
 .badge {
@@ -70,17 +73,20 @@ body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 .badge.appuntamento { background: #FF00FF; }
 .badge.contratto    { background: #FFCC00; color: #000; }
 
-/* DETTAGLI CARD */
+/* DETTAGLI */
 .cliente-card h3 { margin-bottom: 6px; font-size: 1.2em; }
 .cliente-card .desc { font-style: italic; margin-bottom: 6px; }
 .cliente-card p { margin-bottom: 4px; }
 .cliente-card .commission { font-weight: bold; }
 
-/* PULSANTI ACQUISISCI/ANNULLA */
-.actions { margin-top: 10px; display: flex; gap: 8px; }
+/* PULSANTI AZIONE */
+.actions {
+  margin-top: 10px; display: flex; gap: 8px;
+}
 .actions button {
   padding: 6px 12px; border: none;
-  border-radius: 12px; font-size: 0.9em; cursor: pointer; color: #fff;
+  border-radius: 12px; font-size: 0.9em;
+  cursor: pointer; color: #fff;
 }
 .actions .acquisisci.lead         { background: #0085FF; }
 .actions .acquisisci.appuntamento { background: #FF00FF; }
