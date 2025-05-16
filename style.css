@@ -1,54 +1,16 @@
-/* VERSIONE 3.6 - aggiornata il 2025-05-16 00:01 */
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background: #f4f4f4;
-}
-
-header {
-  background-color: #003366;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
-.filters-container,
-#crediti,
-#carrello,
-#login-register {
-  padding: 15px;
-  margin: 10px;
-  background: white;
-  border-radius: 6px;
-}
-
-select, button, input {
-  margin: 5px;
-  padding: 8px;
-  border-radius: 6px;
-}
-
-#cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 15px;
-}
+/* VERSIONE 3.7 - aggiornata il 2025-05-16 */
 
 .card {
-  width: 100%;
-  max-width: 400px;
-  padding: 15px;
-  border-radius: 12px;
-  background-color: #fff;
-  color: #000 !important;
+  background-color: #ffffff;
   border: 3px solid #ccc;
+  border-radius: 12px;
+  padding: 15px;
+  color: #000000 !important;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .card * {
-  color: #000 !important;
+  color: #000000 !important;
 }
 
 .card-lead {
@@ -74,42 +36,6 @@ select, button, input {
 }
 
 .btn-contratti {
-  background-color: #fbc02d;
-  color: black;
-}
-
-button {
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-}
-
-button:hover {
-  opacity: 0.9;
-}
-
-#crediti button,
-#filters button {
-  border-radius: 6px;
-  font-weight: bold;
-}
-
-.btn-green {
-  background-color: #4caf50;
-  color: white;
-}
-
-.btn-blue {
-  background-color: #003366;
-  color: white;
-}
-
-.btn-pink {
-  background-color: #e91e63;
-  color: white;
-}
-
-.btn-yellow {
   background-color: #fbc02d;
   color: black;
 }
