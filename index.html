@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="./favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script defer src="./firebase-init.js"></script>
-  <script defer src="./script.js"></script>
+  <script defer src="firebase-init.js"></script>
+  <script defer src="script.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=BAAiu7JnsVGsz3kMtSsDJJPkH_CdlneLTRk_yR9DV4uJZpkr8mb5-zyAtEusMwwRLGjgYJbrbySuivZ1WM&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
 </head>
 <body>
   <header class="header">
@@ -20,35 +21,26 @@
       <button onclick="openRicarica()">Ricarica</button>
     </div>
   </header>
-
   <nav class="section-buttons">
     <button id="btnTutti" onclick="resetFilters()">Tutti</button>
-    <button id="btnLeads" onclick="filterByCategoria('Lead')">Lead da chiamare</button>
-    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti fissati</button>
-    <button id="btnContratti" onclick="filterByCategoria('Contratto')">Contratti riservati</button>
+    <button id="btnLeads" onclick="filterByCategoria('Lead da chiamare')">Lead da chiamare</button>
+    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento fissato')">Appuntamenti fissati</button>
+    <button id="btnContratti" onclick="filterByCategoria('Contratto riservato')">Contratti riservati</button>
   </nav>
-
   <section class="filters">
     <div class="filter-row">
-      <label>Regione</label>
-      <select id="regione"><option>Tutti</option></select>
-      <label>Città</label>
-      <select id="citta"><option>Tutti</option></select>
+      <label>Regione</label><select id="regione"><option>Tutti</option></select>
+      <label>Città</label><select id="citta"><option>Tutti</option></select>
     </div>
     <div class="filter-row">
-      <label>Categoria</label>
-      <select id="categoria"><option>Tutti</option></select>
-      <label>Tipo</label>
-      <select id="tipo"><option>Tutti</option></select>
+      <label>Categoria</label><select id="categoria"><option>Tutti</option></select>
+      <label>Tipo</label><select id="tipo"><option>Tutti</option></select>
     </div>
   </section>
-
   <section class="carrello">
-    <h2>Carrello</h2>
-    <ul id="carrello"></ul>
-    <div id="totale">Totale: €0.00</div>
+    <h2>Carrello</h2><ul id="carrello"></ul><div id="totale">Totale: €0.00</div>
   </section>
-
+  <div id="paypal-button-container"></div>
   <main id="clienti"></main>
 </body>
 </html>
