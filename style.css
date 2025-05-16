@@ -4,3 +4,5 @@
 .cliente-card.lead{border-left-color:#0085FF!important;background:#e6f3ff;}
 .cliente-card.appuntamento{border-left-color:#FF00FF!important;background:#ffe6ff;}
 .cliente-card.contratto{border-left-color:#FFD700!important;background:#fff9d6;}
+
+.actions .acquisisci{background:#28a745!important;color:#fff!important;border:none!important;-webkit-tap-highlight-color:transparent;}
