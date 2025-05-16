@@ -2,52 +2,86 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style-v3.7.css">
-  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
-  <script defer src="firebase-init.js"></script>
-  <script defer src="script.js"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
+  <header class="header">
     <h1>IlTrovaClienti</h1>
-    <div id="user-section">
-      <span id="user-email"></span>
-      <button id="logout-btn">Logout</button>
+    <div class="credit-display">
+      Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)
+      <button id="ricarica">Ricarica</button>
     </div>
   </header>
-
-  <section id="login-register">
-    <h2>Accedi o Registrati</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button id="login-btn">Login</button>
-    <button id="register-btn">Registrati</button>
-    <p id="auth-msg"></p>
+  <nav class="section-buttons">
+    <button id="btnLeads">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
+  </nav>
+  <section class="filters">
+    <div class="filter-row">
+      <label for="regione">Regione</label>
+      <select id="regione"></select>
+      <label for="citta">Città</label>
+      <select id="citta"></select>
+    </div>
+    <div class="filter-row">
+      <label for="categoria">Categoria</label>
+      <select id="categoria"></select>
+      <label for="tipo">Tipo</label>
+      <select id="tipo"></select>
+    </div>
   </section>
-
-  <section id="filters" class="filters-container">
-    <select id="regioneFilter"><option value="">Tutte le Regioni</option></select>
-    <select id="cittaFilter"><option value="">Tutte le Città</option></select>
-    <select id="categoriaFilter"><option value="">Tutte le Categorie</option></select>
-    <select id="tipoFilter"><option value="">Tutti i Tipi</option></select>
-    <button id="resetFilters">Reset filtri</button>
+  <section class="carrello">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0.00</div>
   </section>
+  <main id="clienti"></main>
 
-  <section id="crediti">
-    Crediti disponibili: <span id="crediti-utente">0</span>
-    <button id="ricarica-btn">Ricarica +10</button>
-  </section>
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login">Accedi</button>
+        <button id="show-register">Registrati</button>
+        <button id="show-recover">Recupera password</button>
+      </div>
+      <form id="login-form" style="display:block">
+        <input type="email" id="login-email" placeholder="Email"><br>
+        <input type="password" id="login-password" placeholder="Password"><br>
+        <button type="button" id="btnLogin">Accedi</button>
+      </form>
+      <form id="register-form" style="display:none">
+        <input type="text" id="register-name" placeholder="Nome"><br>
+        <input type="text" id="register-surname" placeholder="Cognome"><br>
+        <input type="tel" id="register-phone" placeholder="Telefono"><br>
+        <input type="email" id="register-email" placeholder="Email"><br>
+        <input type="password" id="register-password" placeholder="Password"><br>
+        <input type="password" id="register-password2" placeholder="Ripeti Password"><br>
+        <label>Quanto fa 2+3? <input type="text" id="captcha" placeholder="Risposta"></label><br>
+        <button type="button" id="btnRegister">Registrati</button>
+      </form>
+      <form id="recover-password-form" style="display:none">
+        <input type="email" id="recover-email" placeholder="Email"><br>
+        <button type="button" id="btnRecoverPassword">Recupera</button>
+      </form>
+      <button id="close-auth" class="cancel-form">Chiudi</button>
+    </div>
+  </div>
 
-  <section id="cards-container"></section>
+  <!-- Payment Modal -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Scegli metodo di pagamento</h3>
+      <button id="pay-paypal">PayPal</button>
+      <button id="pay-card">Carta di credito</button>
+      <button id="pay-bank">Bonifico bancario</button>
+      <button id="close-payment" class="cancel-form">Chiudi</button>
+    </div>
+  </div>
 
-  <section id="carrello">
-    <h3>Carrello</h3>
-    <ul id="carrello-lista"></ul>
-    <p>Totale crediti: <span id="totale-crediti">0</span></p>
-  </section>
+  <script src="script.js"></script>
 </body>
 </html>
