@@ -2,144 +2,77 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 /* BODY */
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f2f5;
-  padding: 10px;
-}
+body { font-family: Arial, sans-serif; background: #f0f2f5; padding: 10px; }
 
 /* HEADER */
 .header {
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: #fff; padding: 15px; border-radius: 8px;
+  margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
 }
 .credit-display button {
-  margin-left: 10px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  background: #004080;
-  color: #fff;
-  border: none;
+  margin-left: 10px; padding: 4px 8px; border-radius: 12px; background: #004080; color: #fff; border: none;
 }
 
 /* NAV BUTTONS */
-.section-buttons {
-  display: flex;
-  gap: 5px;
-  margin-bottom: 10px;
-}
+.section-buttons { display: flex; gap: 5px; margin-bottom: 10px; }
 .section-buttons button {
-  flex: 1;
-  padding: 8px;
-  border: none;
-  border-radius: 12px;
-  font-weight: bold;
-  cursor: pointer;
+  flex: 1; padding: 8px; border: none; border-radius: 12px;
+  font-weight: bold; cursor: pointer;
 }
-#btnTutti         { background: #ddd; color: #000; }
-#btnLeads         { background: #0085FF; color: #fff; }
-#btnAppuntamenti  { background: #FF00FF; color: #fff; }
-#btnContratti     { background: #FFD700; color: #000; }
+#btnTutti        { background: #ddd; color: #000; }
+#btnLeads        { background: #0085FF; color: #fff; }
+#btnAppuntamenti { background: #FF00FF; color: #fff; }
+#btnContratti    { background: #FFD700; color: #000; }
 
 /* FILTERS */
-.filters {
-  margin-bottom: 15px;
-}
-.filter-row {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-  align-items: center;
-}
+.filters { margin-bottom: 15px; }
+.filter-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 .filters select {
-  flex: 1;
-  padding: 6px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
+  flex: 1; padding: 6px; border-radius: 6px; border: 1px solid #ccc;
 }
 
 /* CART */
 .carrello {
-  background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
+  background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 10px;
 }
-.carrello h2 {
-  margin-bottom: 6px;
-}
-#carrello li {
-  margin-bottom: 4px;
-}
-#totale {
-  margin-top: 8px;
-  font-weight: bold;
-}
+.carrello h2 { margin-bottom: 6px; }
+#carrello li { margin-bottom: 4px; }
+#totale { margin-top: 8px; font-weight: bold; }
 
 /* CARD */
 .cliente-card {
-  background: #fff;
-  border-left: 4px solid transparent; /* sarà sovrascritto */
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 10px;
+  background: #fff; border-left: 4px solid transparent;
+  border-radius: 8px; padding: 12px; margin-bottom: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  position: relative;
 }
 
 /* BADGE */
 .badge {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 12px;
-  font-size: 0.8em;
-  margin-bottom: 6px;
-  color: #fff;
+  display: inline-block; padding: 2px 6px; border-radius: 12px;
+  font-size: 0.8em; margin-bottom: 6px; color: #fff;
 }
-.badge.lead          { background: #0085FF; }
-.badge.appuntamento  { background: #FF00FF; }
-.badge.contratto     { background: #FFD700; color: #000; }
+.badge.lead         { background: #0085FF; }
+.badge.appuntamento { background: #FF00FF; }
+.badge.contratto    { background: #FFD700; color: #000; }
 
 /* CARD CONTENT */
 .cliente-card h3 {
-  margin-bottom: 6px;
-  font-size: 1.1em;
+  margin-bottom: 6px; font-size: 1.1em;
 }
-.cliente-card .desc {
-  font-style: italic;
-  margin-bottom: 4px;
-}
-.cliente-card .commission {
-  font-weight: bold;
-  margin-bottom: 6px;
-}
+.cliente-card .desc { font-style: italic; margin-bottom: 4px; }
+.cliente-card .commission { font-weight: bold; margin-bottom: 6px; }
 
-/* ACTION BUTTONS */
-.actions {
-  display: flex;
-  gap: 6px;
-}
+/* ACTIONS */
+.actions { display: flex; gap: 6px; }
 .actions button {
-  padding: 4px 8px;
-  border: none;
-  border-radius: 12px;
-  font-size: 12px;
-  cursor: pointer;
+  padding: 4px 8px; border: none; border-radius: 12px;
+  font-size: 12px; cursor: pointer;
 }
 .actions .acquisisci { background: #0085FF; color: #fff; }
 .actions .annulla    { background: #dc3545; color: #fff; }
 
 /* RESPONSIVE */
 @media (max-width: 600px) {
-  .filter-row {
-    flex-direction: column;
-  }
-  .section-buttons {
-    flex-direction: column;
-  }
+  .filter-row { flex-direction: column; }
+  .section-buttons { flex-direction: column; }
 }
