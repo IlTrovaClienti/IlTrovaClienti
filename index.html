@@ -42,5 +42,22 @@
   </section>
   <div id="paypal-button-container"></div>
   <main id="clienti"></main>
+
+  <!-- Modal Trattativa Riservata -->
+  <div id="form-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Richiedi Trattativa Riservata</h3>
+      <form id="reserve-form">
+        <input type="text"  id="f-name"  placeholder="Nome e cognome" required>
+        <input type="tel"   id="f-phone" placeholder="Telefono"       required>
+        <input type="text"  id="f-loc"   placeholder="Località"       required>
+        <input type="email" id="f-mail"  placeholder="Email"          required>
+        <textarea id="f-msg" placeholder="Messaggio" rows="4"></textarea>
+        <button type="submit">Invia richiesta</button>
+        <button type="button" class="cancel-form" onclick="closeFormModal()">Annulla</button>
+      </form>
+    </div>
+  </div>
+
 </body>
 </html>

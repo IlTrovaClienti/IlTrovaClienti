@@ -1,3 +1,4 @@
+let userCrediti=5;
 const sheetURL='https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';let data=[],carrello=[];const cols=['Regione','Città','Categoria','Tipo'],sids=['regione','citta','categoria','tipo'];window.addEventListener('DOMContentLoaded',()=>{fetch(sheetURL).then(r=>r.text()).then(parseTSV).then(parsed=>{data=parsed;setupFilters();drawCards(data);paypal.Buttons().render('#paypal-button-container');}).catch(console.error);});function parseTSV(tsv){const lines=tsv.trim().split('\n'),headers=lines.shift().split('\t');return lines.map(l=>{const v=l.split('\t');return Object.fromEntries(headers.map((h,i)=>[h.trim(),v[i]?.trim()||'']));});}function setupFilters(){cols.forEach((c,i)=>{const sel=document.getElementById(sids[i]);sel.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());[...new Set(data.map(r=>r[c]))].sort().forEach(v=>{const o=document.createElement('option');o.value=o.textContent=v;sel.appendChild(o);});sel.addEventListener('change',()=>drawCards(applyFilters()));});}function applyFilters(){const crit={};cols.forEach((c,i)=>crit[c]=document.getElementById(sids[i]).value);return data.filter(r=>cols.every(c=>crit[c]==='Tutti'||r[c]===crit[c]));}function drawCards(list){const main=document.getElementById('clienti');main.innerHTML='';list.forEach(r=>{const tipo = r.Tipo.toLowerCase();
 const cls = tipo.includes('lead') ? 'lead'
           : tipo.includes('appuntamento') ? 'appuntamento'
@@ -18,3 +19,19 @@ function displayPhone(id){
      }
   });
 }
+
+function openFormModal(id){
+  document.getElementById('form-modal').style.display='flex';
+  document.getElementById('reserve-form').dataset.phone=id;
+}
+function closeFormModal(){
+  document.getElementById('form-modal').style.display='none';
+}
+document.getElementById('reserve-form').addEventListener('submit',e=>{
+  e.preventDefault();
+  const phone=e.target.dataset.phone;
+  // Save request or send email (stub)
+  alert('Richiesta inviata! Verrai ricontattato.');
+  closeFormModal();
+  displayPhone(phone); // opzionale mostra numero
+});
