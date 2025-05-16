@@ -1,56 +1,55 @@
-<link rel="icon" href="./favicon.ico" type="image/x-icon">
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IlTrovaClienti</title>
-  <base href="/IlTrovaClienti/">
-  <link rel="stylesheet" href="./style.css">
+  <link rel="icon" href="./favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css">
   <!-- Firebase SDKs -->
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <!-- Inizializzazione Firebase -->
-  <script defer src="./firebase-init.js"></script>
-  <!-- Main script -->
-  <script defer src="./script.js"></script>
-  <!-- PayPal Hosted Buttons -->
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAiu7JnsVGsz3kMtSsDJJPkH_CdlneLTRk_yR9DV4uJZpkr8mb5-zyAtEusMwwRLGjgYJbrbySuivZ1WM&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  <script defer src="firebase-init.js"></script>
 </head>
 <body>
-  <div class="header">
-    <h2>IlTrovaClienti</h2>
+  <header class="header">
+    <h1>IlTrovaClienti</h1>
     <div class="credit-display">
-      Crediti: <span id="user-credits">0</span>
-      <button onclick="openRicarica()">Ricarica</button>
+      Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)
+      <button id="ricarica">Ricarica</button>
     </div>
-  </div>
+  </header>
 
-  <div class="tabs">
-    <div id="tab-tutti" class="tab active" onclick="resetFilters()">Tutti</div>
-    <div id="tab-leads" class="tab" onclick="filterByCategoria('Lead')">Lead da chiamare</div>
-    <div id="tab-appuntamenti" class="tab" onclick="filterByCategoria('Appuntamento')">Appuntamenti fissati</div>
-    <div id="tab-contratti" class="tab" onclick="filterByCategoria('Contratto')">Contratti riservati</div>
-  </div>
+  <nav class="section-buttons">
+    <button id="btnLeads">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
+  </nav>
 
-  <div class="filters">
+  <section class="filters">
     <div class="filter-row">
-      <select id="regioneFilter"><option>Regione</option></select>
-      <select id="cittaFilter"><option>Città</option></select>
+      <label for="regione">Regione</label>
+      <select id="regione"><option>Tutti</option></select>
+      <label for="citta">Città</label>
+      <select id="citta"><option>Tutti</option></select>
     </div>
     <div class="filter-row">
-      <select id="categoriaFilter"><option>Categoria</option></select>
-      <select id="tipoFilter"><option>Tipo</option></select>
+      <label for="categoria">Categoria</label>
+      <select id="categoria"><option>Tutti</option></select>
+      <label for="tipo">Tipo</label>
+      <select id="tipo"><option>Tutti</option></select>
     </div>
-  </div>
+  </section>
 
-  <div class="carrello">
-    <div>Carrello:</div>
-    <div id="carrello"></div>
-    <div id="totale"></div>
-  </div>
+  <section class="carrello">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0.00</div>
+  </section>
 
-  <div id="cards-container"></div>
+  <main id="clienti"></main>
+
+  <script src="script.js"></script>
 </body>
 </html>
