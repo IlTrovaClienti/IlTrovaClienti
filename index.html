@@ -10,34 +10,32 @@
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script defer src="./firebase-init.js"></script>
+  <script defer src="./script.js"></script>
 </head>
 <body>
   <header class="header">
     <h1>IlTrovaClienti</h1>
     <div class="credit-display">
-      Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)
-      <button id="ricarica">Ricarica</button>
+      Crediti: <span id="crediti">0</span> (<span id="euro">€0.00</span>)
+      <button onclick="openRicarica()">Ricarica</button>
     </div>
   </header>
 
   <nav class="section-buttons">
-    <button id="btnLeads">Lead da chiamare</button>
-    <button id="btnAppuntamenti">Appuntamenti fissati</button>
-    <button id="btnContratti">Contratti riservati</button>
+    <button id="btnTutti" onclick="resetFilters()">Tutti</button>
+    <button id="btnLeads" onclick="filterByCategoria('Lead')">Lead da chiamare</button>
+    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti fissati</button>
+    <button id="btnContratti" onclick="filterByCategoria('Contratto')">Contratti riservati</button>
   </nav>
 
   <section class="filters">
     <div class="filter-row">
-      <label for="regione">Regione</label>
-      <select id="regione"><option>Tutti</option></select>
-      <label for="citta">Città</label>
-      <select id="citta"><option>Tutti</option></select>
+      <label>Regione</label><select id="regione"><option>Tutti</option></select>
+      <label>Città</label><select id="citta"><option>Tutti</option></select>
     </div>
     <div class="filter-row">
-      <label for="categoria">Categoria</label>
-      <select id="categoria"><option>Tutti</option></select>
-      <label for="tipo">Tipo</label>
-      <select id="tipo"><option>Tutti</option></select>
+      <label>Categoria</label><select id="categoria"><option>Tutti</option></select>
+      <label>Tipo</label><select id="tipo"><option>Tutti</option></select>
     </div>
   </section>
 
@@ -48,7 +46,5 @@
   </section>
 
   <main id="clienti"></main>
-
-  <script src="./script.js"></script>
 </body>
 </html>
