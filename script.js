@@ -29,9 +29,7 @@ function parseTSV(tsv) {
 function setupFilters() {
   cols.forEach((col,idx) => {
     const sel = document.getElementById(ids[idx]);
-    // pulisci opzioni precedenti
     sel.querySelectorAll('option:not(:first-child)').forEach(o=>o.remove());
-    // aggiungi uniche ordinate
     [...new Set(data.map(r=>r[col]))].sort().forEach(val=>{
       const o = document.createElement('option');
       o.value = o.textContent = val;
@@ -54,11 +52,12 @@ function displayCards(list) {
   const main = document.getElementById('clienti');
   main.innerHTML = '';
   list.forEach(r => {
-    // mappa Categoria su classe breve
+    // assegna classe breve per bordi
     let cls = '';
-    if (r.Categoria.toLowerCase().includes('lead'))          cls = 'lead';
-    else if (r.Categoria.toLowerCase().includes('appuntamento')) cls = 'appuntamento';
-    else if (r.Categoria.toLowerCase().includes('contratto'))   cls = 'contratto';
+    const cat = r.Categoria.toLowerCase();
+    if (cat.includes('lead'))          cls = 'lead';
+    else if (cat.includes('appuntamento')) cls = 'appuntamento';
+    else if (cat.includes('contratto'))   cls = 'contratto';
 
     const card = document.createElement('div');
     card.className = `cliente-card ${cls}`;
@@ -85,12 +84,10 @@ function addToCart(id, cred) {
     updateCart();
   }
 }
-
 function removeFromCart(id) {
   carrello = carrello.filter(x => x.id !== id);
   updateCart();
 }
-
 function updateCart() {
   document.getElementById('carrello').innerHTML =
     carrello.map(x => `<li>${x.id} – ${x.cred} crediti</li>`).join('');
