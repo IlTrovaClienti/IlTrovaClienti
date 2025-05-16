@@ -4,11 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css?v=1.1.1">
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+  <link rel="stylesheet" href="style.css?v=1.1.2">
+
+  <!-- ✅ Firebase compatibile con GitHub Pages -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
   <script src="firebase-init.js"></script>
+
+  <!-- ✅ PayPal Hosted Buttons -->
   <script src="https://www.paypal.com/sdk/js?client-id=BAAiu7JnsVGsz3kMtSsDJJPkH_CdlneLTRk_yR9DV4uJZpkr8mb5-zyAtEusMwwRLGjgYJbrbySuivZ1WM&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
 </head>
 <body>
@@ -24,4 +28,27 @@
   <div class="section-buttons">
     <button id="btnTutti" onclick="resetFilters()">Tutti</button>
     <button id="btnLeads" onclick="filterByCategoria('Lead')">Leads</button>
-    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti<
+    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento')">Appuntamenti</button>
+    <button id="btnContratti" onclick="filterByCategoria('Contratto')">Contratti</button>
+  </div>
+
+  <div class="filters">
+    <div class="filter-row">
+      <select id="regioneFilter"><option>Regione</option></select>
+      <select id="cittaFilter"><option>Città</option></select>
+    </div>
+    <div class="filter-row">
+      <select id="categoriaFilter"><option>Categoria</option></select>
+      <select id="tipoFilter"><option>Tipo</option></select>
+    </div>
+  </div>
+
+  <div class="carrello">
+    <div>Carrello:</div>
+    <div id="carrello"></div>
+    <div id="totale"></div>
+  </div>
+
+  <div id="cards-container"></div>
+
+  <!-- ✅ M
