@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
   <link rel="icon" href="favicon.ico">
-  <link rel="stylesheet" href="style.css?v=2.1.0">
-  <script defer src="script.js?v=2.1.0"></script>
+  <link rel="stylesheet" href="style.css?v=2.2.0">
+  <script defer src="script.js?v=2.2.0"></script>
 </head>
 <body>
   <header class="topbar">
     <h1>IlTrovaClienti</h1>
-    <div class="credit-box">Crediti: <span id="crediti">0</span> (€<span id="euroCrediti">0</span>)
+    <div class="credit-box">
+      Crediti: <span id="crediti">0</span> (€<span id="euroCrediti">0</span>)
       <button id="btnRicarica" class="btn btn-yellow small">Ricarica</button>
     </div>
   </header>
@@ -43,16 +44,25 @@
   <div id="modalPay" class="modal hidden">
     <h3>Crediti insufficienti</h3>
     <p>Scegli un metodo per ricaricare:</p>
+
     <button id="payRevolut" class="btn btn-blue full">Carta (Revolut)</button>
+
     <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin:8px 0;">
       <input type="hidden" name="cmd" value="_s-xclick">
       <input type="hidden" name="hosted_button_id" value="YOUR_BUTTON_ID">
       <button class="btn btn-yellow full" type="submit">PayPal</button>
     </form>
+
     <button id="showIban" class="btn btn-green full">Bonifico bancario</button>
-    <div id="ibanBox" class="hidden" style="margin-top:8px;font-size:0.9rem;">
-      IBAN: <b>IT00X0542811101000000123456</b><br> Causale: <i>Ricarica crediti IlTrovaClienti</i>
+    <div id="ibanBox" class="hidden iban-box">
+
+<p><b>Beneficiario:</b> Cristian Di Bella</p>
+<p><b>IBAN:</b> LT67 3250 0328 0923 7250</p>
+<p><b>BIC/SWIFT:</b> REVOLT21</p>
+<p><b>Banca:</b> Revolut Bank UAB – Konstitucijos ave. 21B, 08130 Vilnius (LT)</p>
+
     </div>
+
     <button id="closeModal" class="btn btn-grey small" style="margin-top:10px;">Chiudi</button>
   </div>
 </body>
