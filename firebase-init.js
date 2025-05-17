@@ -1,5 +1,3 @@
-// firebase-init.js
-
 const firebaseConfig = {
   apiKey:            "AIzaSyAb1SzaWGRWTxa5C1STYv3IiuCTyS6WaOA",
   authDomain:        "iltrovaclienti-948af.firebaseapp.com",
