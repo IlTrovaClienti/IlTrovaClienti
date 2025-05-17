@@ -27,9 +27,9 @@ h1{margin:0;font-size:28px}
 
 .cards{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
 .card{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:12px;display:flex;flex-direction:column;border-left:8px solid #999}
-.card.lead{border-color:var(--blue)}
-.card.app{border-color:var(--pink)}
-.card.contr{border-color:var(--yellow)}
+.card.lead{border-color:var(--blue);}
+.card.app {border-color:var(--pink);}
+.card.contr{border-color:var(--yellow);}
 .card h4{margin:0 0 6px 0;font-size:1rem}
 .card small{color:#555}
 .card button{margin-top:auto}
