@@ -1,76 +1,225 @@
-:root{
+:root {
   --green:   #28a745;
   --blue:    #0076ff;
   --pink:    #e5008a;
   --yellow:  #ffcc00;
 }
-*{box-sizing:border-box}
-html,body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f4f6}
-
-/* Bottoni */
-.btn{border:none;border-radius:30px;padding:10px 16px;font-weight:bold;cursor:pointer}
-.btn.small{padding:6px 12px;font-size:.85rem}
-.btn.full{width:100%;margin:6px 0}
-.btn-green{background:var(--green);color:#fff}
-.btn-blue {background:var(--blue); color:#fff}
-.btn-pink {background:var(--pink); color:#fff}
-.btn-yellow{background:var(--yellow);color:#000}
-.btn-grey{background:#ccc;color:#000}
-
-/* Header */
-.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.1);position:sticky;top:0;z-index:10}
-
-/* Tabs pillola */
-.tabs{display:flex;flex-wrap:wrap;gap:8px;background:#fff;padding:10px;justify-content:center;z-index:9}
-.tab{
-  flex:1 1 auto;
-  min-width:120px;      /* garantisce leggibilità */
-  text-align:center;
-  font-weight:bold;
-  border-radius:30px;
-  padding:12px 16px;
-  color:#fff;
-  cursor:pointer;
-}
-.tab.active{outline:3px solid #333}
-
-/* MOBILE: tabs in colonna piena larghezza */
-@media(max-width:600px){
-  .tabs{flex-direction:column;align-items:stretch;}
-  .tab{width:100%!important; margin:4px 0;}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f3f4f6;
 }
 
-/* Filtri */
-.filters{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:#fff;z-index:8}
-.filters select{flex:1 1 150px;padding:8px;border-radius:8px;border:1px solid #ccc}
+/* -------------------------
+   GENERALE BOTTONI
+   ------------------------- */
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  line-height: 1.2;
+  transition: background .2s;
+}
+.btn.small {
+  padding: 8px 16px;
+  font-size: .85rem;
+}
+.btn.full {
+  width: 100%;
+  margin: 8px 0;
+}
+.btn-green  { background: var(--green);  color: #fff; }
+.btn-blue   { background: var(--blue);   color: #fff; }
+.btn-pink   { background: var(--pink);   color: #fff; }
+.btn-yellow { background: var(--yellow); color: #000; }
+.btn-grey   { background: #ccc;          color: #000; }
 
-/* Card */
-.cards{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.card{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:14px;display:flex;flex-direction:column;border-left:10px solid #999}
-.card.lead {border-color:var(--blue)}
-.card.app  {border-color:var(--pink)}
-.card.contr{border-color:var(--yellow)}
-.card h4{margin:0 0 6px 0;font-size:1rem}
-.card small{color:#555}
-.card p{margin:6px 0}
+/* Aggiunge piena larghezza ai bottoni all'interno delle card */
+.card button {
+  width: 100%;
+  margin-top: auto;
+}
 
-/* Badge */
-.badge{display:inline-block;font-size:.75rem;padding:2px 8px;border-radius:12px;margin-bottom:6px;color:#fff}
-.badge.lead {background:var(--blue)}
-.badge.app  {background:var(--pink)}
-.badge.contr{background:var(--yellow);color:#000}
+/* -------------------------
+   HEADER
+   ------------------------- */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  position: sticky; top: 0;
+  z-index: 10;
+}
 
-/* Carrello */
-#cart{padding:14px;background:#fff;border-top:3px solid #ccc;position:sticky;bottom:0;z-index:7}
-#cart h2{margin:0 0 8px}
-#cartList{list-style:none;padding:0;margin:0 0 8px 0}
-#cartList li{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+/* -------------------------
+   TABS
+   ------------------------- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  background: #fff;
+  padding: 10px;
+  justify-content: center;
+  z-index: 9;
+}
+.tab {
+  flex: 1 1 auto;
+  min-width: 120px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 30px;
+  padding: 12px 16px;
+  color: #fff;
+  cursor: pointer;
+}
+.tab.active {
+  outline: 3px solid #333;
+}
 
-/* Modali */
-.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:20}
-.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.35);min-width:280px;display:none;z-index:21}
-.modal.open,.modal-mask.open{display:block}
+/* -------------------------
+   FILTRI
+   ------------------------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px;
+  background: #fff;
+  z-index: 8;
+}
+.filters select {
+  flex: 1 1 150px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #fff;
+}
 
-/* Input modali */
-#loginModal input, #resModal input, #resModal textarea{width:100%;margin:6px 0;padding:8px;border:1px solid #ccc;border-radius:6px}
-#ibanBox{padding:8px 0}
+/* -------------------------
+   CARD
+   ------------------------- */
+.cards {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  gap: 16px;
+}
+.card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.15);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  border-left: 10px solid #999;
+}
+.card.lead  { border-color: var(--blue); }
+.card.app   { border-color: var(--pink); }
+.card.contr { border-color: var(--yellow); }
+.card h4    { margin: 0 0 6px; font-size: 1rem; }
+.card small { color: #555; }
+.card p     { margin: 6px 0; }
+
+/* Badge interno */
+.badge {
+  display: inline-block;
+  font-size: .75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-bottom: 6px;
+  color: #fff;
+}
+.badge.lead  { background: var(--blue); }
+.badge.app   { background: var(--pink); }
+.badge.contr { background: var(--yellow); color: #000; }
+
+/* -------------------------
+   CARRELLO
+   ------------------------- */
+#cart {
+  padding: 14px;
+  background: #fff;
+  border-top: 3px solid #ccc;
+  position: sticky; bottom: 0;
+  z-index: 7;
+}
+#cart h2 { margin: 0 0 8px; }
+#cartList {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+#cartList li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+}
+
+/* -------------------------
+   MODALI
+   ------------------------- */
+.modal-mask {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.6);
+  display: none;
+  z-index: 20;
+}
+.modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  background: #fff;
+  padding: 22px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+  min-width: 280px;
+  display: none;
+  z-index: 21;
+}
+.modal.open,
+.modal-mask.open {
+  display: block;
+}
+#loginModal input,
+#resModal input,
+#resModal textarea {
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+#ibanBox { padding: 8px 0; }
+
+/* -------------------------
+   RESPONSIVE MOBILE
+   ------------------------- */
+@media (max-width: 600px) {
+  /* Tabs verticali full-width */
+  .tabs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .tab {
+    width: 100% !important;
+    margin: 4px 0;
+  }
+  /* Filtri e select full-width */
+  .filters {
+    flex-direction: column;
+  }
+  .filters select {
+    width: 100%;
+  }
+}
