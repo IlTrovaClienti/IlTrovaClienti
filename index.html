@@ -5,20 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
   <link rel="icon" href="favicon.ico">
-  <link rel="stylesheet" href="style.css?v=2.0.0">
-  <script defer src="script.js?v=2.0.0"></script>
+  <link rel="stylesheet" href="style.css?v=2.1.0">
+  <script defer src="script.js?v=2.1.0"></script>
 </head>
 <body>
   <header class="topbar">
     <h1>IlTrovaClienti</h1>
-    <div class="credit-box">
-      Crediti: <span id="crediti">5</span> (€<span id="euroCrediti">200</span>)
+    <div class="credit-box">Crediti: <span id="crediti">0</span> (€<span id="euroCrediti">0</span>)
       <button id="btnRicarica" class="btn btn-yellow small">Ricarica</button>
     </div>
   </header>
 
   <nav class="tabs">
-    <button class="tab btn-green active" data-type="">Mostra tutti</button>
+    <button class="tab btn-green active" data-type="">Tutti</button>
     <button class="tab btn-blue"  data-type="Lead">Lead da chiamare</button>
     <button class="tab btn-pink"  data-type="Appuntamento">Appuntamenti fissati</button>
     <button class="tab btn-yellow" data-type="Contratto">Contratti riservati</button>
@@ -36,20 +35,25 @@
   <aside id="cart">
     <h2>Carrello</h2>
     <ul id="cartList"></ul>
-    <p>Totale: €<span id="cartTotal">0.00</span></p>
+    <p>Totale crediti: <span id="cartTotal">0</span></p>
   </aside>
 
-  <!-- Modal Ricarica -->
-  <div id="modalMask" class="modal-mask hidden"></div>
+  <!-- Modal pagamento -->
+  <div id="mask" class="modal-mask hidden"></div>
   <div id="modalPay" class="modal hidden">
-    <h3>Ricarica crediti</h3>
-    <!-- PayPal form placeholder -->
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+    <h3>Crediti insufficienti</h3>
+    <p>Scegli un metodo per ricaricare:</p>
+    <button id="payRevolut" class="btn btn-blue full">Carta (Revolut)</button>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" style="margin:8px 0;">
       <input type="hidden" name="cmd" value="_s-xclick">
       <input type="hidden" name="hosted_button_id" value="YOUR_BUTTON_ID">
-      <button class="btn btn-green" type="submit">Paga con PayPal</button>
+      <button class="btn btn-yellow full" type="submit">PayPal</button>
     </form>
-    <button class="btn btn-grey small" id="closeModal">Chiudi</button>
+    <button id="showIban" class="btn btn-green full">Bonifico bancario</button>
+    <div id="ibanBox" class="hidden" style="margin-top:8px;font-size:0.9rem;">
+      IBAN: <b>IT00X0542811101000000123456</b><br> Causale: <i>Ricarica crediti IlTrovaClienti</i>
+    </div>
+    <button id="closeModal" class="btn btn-grey small" style="margin-top:10px;">Chiudi</button>
   </div>
 </body>
 </html>
