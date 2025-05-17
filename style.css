@@ -1,55 +1,54 @@
+/* === PALETTE (satura) === */
 :root{
-  --green:#00a84f;   /* verde brillante  */
-  --blue: #0076ff;   /* blu acceso       */
-  --pink: #e5008a;   /* fucsia vivo      */
-  --yellow:#ffcc00;  /* giallo intenso   */
+  --green:  #00a84f;
+  --blue:   #0076ff;
+  --pink:   #e5008a;
+  --yellow: #ffcc00;
 }
+
+/* === CORE === */
 html,body{margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;background:#f3f4f6}
 h1{margin:0;font-size:28px}
-.btn{border:none;border-radius:6px;padding:8px 14px;font-weight:bold;cursor:pointer}
-.btn.small{padding:4px 10px;font-size:0.85rem}
+.btn{border:none;border-radius:30px;padding:10px 18px;font-weight:bold;cursor:pointer}
+.btn.small{padding:6px 12px;font-size:0.85rem}
 .btn-green{background:var(--green);color:#fff}
-.btn-blue{background:var(--blue);color:#fff}
-.btn-pink{background:var(--pink);color:#fff}
+.btn-blue {background:var(--blue); color:#fff}
+.btn-pink {background:var(--pink); color:#fff}
 .btn-yellow{background:var(--yellow);color:#000}
-.btn-grey{background:#ccc;color:#000}
 
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.1);position:sticky;top:0;z-index:20}
-.credit-box{display:flex;align-items:center;gap:8px;font-size:0.9rem}
 
-.tabs{display:flex;flex-direction:column;gap:6px;background:#fff;padding:10px}
+/* === TABS a pillola === */
+.tabs{display:flex;flex-direction:column;gap:8px;background:#fff;padding:10px}
 @media(min-width:600px){.tabs{flex-direction:row}}
-.tab{flex:1;border:none;padding:10px;border-radius:30px;font-weight:bold}
+.tab{flex:1;border:none;font-weight:bold;border-radius:30px;padding:12px 16px;color:#fff}
 .tab.active{outline:3px solid #333}
+.tab[data-type=""]              {background:var(--green)}
+.tab[data-type="Lead"]          {background:var(--blue)}
+.tab[data-type="Appuntamento"]  {background:var(--pink)}
+.tab[data-type="Contratto"]     {background:var(--yellow);color:#000}
 
+/* === FILTRI === */
 .filters{display:flex;flex-wrap:wrap;gap:6px;padding:10px;background:#fff}
-.filters select{flex:1 1 150px;padding:6px;border-radius:6px;border:1px solid #ccc}
+.filters select{flex:1 1 150px;padding:8px;border-radius:8px;border:1px solid #ccc}
 
-.cards{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.card{background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:12px;display:flex;flex-direction:column;border-left:8px solid #999}
-.card.lead{border-color:var(--blue);}
-.card.app {border-color:var(--pink);}
-.card.contr{border-color:var(--yellow);}
+/* === CARD === */
+.cards{padding:12px;display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.card{background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.15);padding:14px;display:flex;flex-direction:column;border-left:10px solid #999}
+.card.lead {border-color:var(--blue)}
+.card.app  {border-color:var(--pink)}
+.card.contr{border-color:var(--yellow)}
 .card h4{margin:0 0 6px 0;font-size:1rem}
 .card small{color:#555}
 .card button{margin-top:auto}
 
-#cart{position:sticky;bottom:0;padding:12px;background:#fff;border-top:3px solid #ccc}
-#cart h2{margin:0 0 8px 0}
+/* === CARRELLO === */
+#cart{padding:14px;background:#fff;border-top:3px solid #ccc;position:sticky;bottom:0}
 #cartList{list-style:none;padding:0;margin:0 0 8px 0}
-#cartList li{display:flex;justify-content:space-between;align-items:center;padding:4px 0}
+#cartList li{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
+#cartList button{border-radius:30px}
 
-.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.6)}
-.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.3);min-width:280px;z-index:30}
-.hidden{display:none}
-/* mappa le classi nuove ai bottoni attuali */
-.tab[data-type="Lead"]          { background:#004080;color:#fff; }
-.tab[data-type="Appuntamento"]  { background:#FF00FF;color:#fff; }
-.tab[data-type="Contratto"]     { background:#FFD700;color:#000; }
-.tab.active { outline:3px solid #333; }
-.cliente-card.lead       { border-left: 4px solid #004080; }
-.cliente-card.appuntamento{ border-left: 4px solid #FF00FF; }
-.cliente-card.contratto  { border-left: 4px solid #FFD700; }
-.card.lead  { border-left-color: #004080; }
-.card.app   { border-left-color: #FF00FF; }
-.card.contr { border-left-color: #FFD700; }
+/* === MODALE === */
+.modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none}
+.modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:22px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,.35);min-width:280px;display:none}
+.modal.open,.modal-mask.open{display:block}
