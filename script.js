@@ -1,94 +1,202 @@
+/* IlTrovaClienti 1.1.0 */
 
-/* IlTrovaClienti v1.0.5 */
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv&gid=71180301";
-let userCrediti = 5;
-const EURO_PER_CREDITO = 40;
+// ====== CONFIG ======
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv";
+const CREDITS_PER_TEST_RECHARGE = 10;
 
-let data = [];
-let carrello = [];
-let nascosti = new Set();
+// ====== STATE ======
+let rawData = [];
+let currentUser = null;
+let userCredits = 0;
+let cart = [];
 
-const COLS = ['Regione', 'Città', 'Categoria', 'Tipo'];
-const IDS  = ['regione', 'citta', 'categoria', 'tipo'];
+// ====== DOM ======
+const regioneSel = document.getElementById("regioneFilter");
+const cittaSel   = document.getElementById("cittaFilter");
+const catSel     = document.getElementById("categoriaFilter");
+const tipoSel    = document.getElementById("tipoFilter");
+const resetBtn   = document.getElementById("resetFilters");
 
-const cardsEl = document.getElementById('cards');
-const creditiEl = document.getElementById('crediti');
-const euroCreditiEl = document.getElementById('euroCrediti');
-const totaleCarrelloEl = document.getElementById('totaleCarrello');
-const carrelloListEl = document.getElementById('carrelloList');
+const cardsEl    = document.getElementById("cards");
+const cartListEl = document.getElementById("cartList");
+const cartTotal  = document.getElementById("cartTotal");
+const creditsEl  = document.getElementById("credits");
+const welcomeEl  = document.getElementById("welcome");
 
-creditiEl.textContent = userCrediti;
-euroCreditiEl.textContent = (userCrediti * EURO_PER_CREDITO).toFixed(2);
+const loginModal     = document.getElementById("loginModal");
+const rechargeModal  = document.getElementById("rechargeModal");
 
-// fetch
-async function fetchData() {{
-  const res = await fetch(SHEET_URL);
-  if(!res.ok) throw new Error('Fetch ' + res.status);
-  const tsv = await res.text();
-  const rows = tsv.trim().split('\n').map(r=>r.split('\t'));
-  const headers = rows.shift();
-  data = rows.map((r,i)=>{{
-    let obj={{}};
-    headers.forEach((h,idx)=>obj[h.trim()]=r[idx]||'');
-    obj.__id='row'+i;
-    return obj;
-  }});
-  renderFilters();
-  renderCards();
-}}
-fetchData().catch(console.error);
+// ====== FIREBASE PLACEHOLDER ======
+// firebase-init.js must export: firebaseConfig
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
 
-// filters
-function renderFilters() {{
-  COLS.forEach((col,i)=>{{
-    const sel=document.getElementById(IDS[i]);
-    const vals=[...new Set(data.map(d=>d[col]).filter(Boolean))].sort();
-    sel.innerHTML='<option value="">Tutti</option>' + vals.map(v=>`<option value="${{v}}">${{v}}</option>`).join('');
-    sel.onchange=renderCards;
-  }});
-}}
+// ====== AUTH ======
+auth.onAuthStateChanged(user => {
+    currentUser = user;
+    if(user){
+        welcomeEl.textContent = `Ciao, ${user.email}`;
+        document.getElementById("loginBtn").style.display='none';
+        document.getElementById("logoutBtn").style.display='inline-block';
+        loadCredits();
+    }else{
+        welcomeEl.textContent = '';
+        document.getElementById("loginBtn").style.display='inline-block';
+        document.getElementById("logoutBtn").style.display='none';
+        userCredits = 0;
+        updateCreditsUI();
+    }
+});
 
-function renderCards() {{
-  const f={{regione:regione.value,citta:citta.value,categoria:categoria.value,tipo:tipo.value}};
-  const vis=data.filter(d=>
-    (!f.regione||d.Regione===f.regione)&&
-    (!f.citta||d.Città===f.citta)&&
-    (!f.categoria||d.Categoria===f.categoria)&&
-    (!f.tipo||d.Tipo===f.tipo)&&
-    !nascosti.has(d.__id)
-  );
-  cardsEl.innerHTML=vis.map(cardHTML).join('');
-}}
+document.getElementById("loginBtn").onclick = () => openModal(loginModal);
+document.getElementById("logoutBtn").onclick = () => auth.signOut();
+document.getElementById("doLogin").onclick = async () => {
+    const email = document.getElementById("authEmail").value;
+    const pass  = document.getElementById("authPass").value;
+    try {
+        await auth.signInWithEmailAndPassword(email,pass);
+        closeModals();
+    }catch(err){alert(err.message);}
+};
+document.getElementById("doRegister").onclick = async () => {
+    const email = document.getElementById("authEmail").value;
+    const pass  = document.getElementById("authPass").value;
+    try {
+        await auth.createUserWithEmailAndPassword(email,pass);
+        await db.collection('users').doc(auth.currentUser.uid).set({credits:0});
+        closeModals();
+    }catch(err){alert(err.message);}
+};
 
-function cardHTML(d){{
-  const cls=d.Tipo==='Lead'?'lead':(d.Tipo==='Appuntamento'?'app':'contratto');
-  const prezzo=Number(d.Prezzo||0).toFixed(0);
-  return `<div class="card ${{cls}}">
-    <strong>${{d.Descrizione||''}}</strong><br>
-    <small>${{d.Regione}} / ${{d.Città}} – ${{d.Categoria}}</small><br>
-    <b>Prezzo: €${{prezzo}}</b><br>
-    <button onclick="addToCart('${{d.__id}}',${{prezzo}})">Acquisisci</button>
-  </div>`;
-}}
+// ====== CREDITS ======
+async function loadCredits(){
+    const snap = await db.collection('users').doc(currentUser.uid).get();
+    userCredits = snap.exists ? snap.data().credits : 0;
+    updateCreditsUI();
+}
+function updateCredits(n){
+    userCredits = n;
+    updateCreditsUI();
+    if(currentUser){
+        db.collection('users').doc(currentUser.uid).set({credits:userCredits});
+    }
+}
+function updateCreditsUI(){
+    creditsEl.textContent = userCredits;
+}
 
-function addToCart(id, prezzo){{
-  if(userCrediti<=0){{alert('Crediti esauriti');return;}}
-  nascosti.add(id);
-  carrello.push({{id,prezzo:Number(prezzo)}});
-  userCrediti--; updateUI();
-}}
+// ====== RECHARGE TEST ======
+document.getElementById("rechargeBtn").onclick = ()=>openModal(rechargeModal);
+document.getElementById("addCredits").onclick = () => {
+    updateCredits(userCredits + CREDITS_PER_TEST_RECHARGE);
+    closeModals();
+};
 
-function removeFromCart(i){{
-  const item=carrello[i];
-  nascosti.delete(item.id);
-  carrello.splice(i,1);
-  userCrediti++; updateUI();
-}}
+// ====== FILTERS ======
+resetBtn.onclick = () => {
+    [regioneSel,cittaSel,catSel,tipoSel].forEach(sel=>sel.value='');
+    renderCards();
+};
+[regioneSel,cittaSel,catSel,tipoSel].forEach(sel=>sel.onchange = renderCards);
 
-function updateUI(){{
-  creditiEl.textContent=userCrediti;
-  euroCreditiEl.textContent=(userCrediti*EURO_PER_CREDITO).toFixed(2);
-  totaleCarrelloEl.textContent=carrello.reduce((s,c)=>s+c.prezzo,0).toFixed(2);
-  carrelloListEl.innerHTML=carrello.map((c,i)=>`<li>#${{i+1}} €${{c.prezzo}} <button onclick="removeFromCart(${{i}})">Annulla</button></li>`).join('');
-  renderCards();
-}}
+// ====== TABS ======
+document.querySelectorAll(".tabs .tab").forEach(btn=>btn.onclick = (e)=>{
+    document.querySelectorAll(".tabs .tab").forEach(b=>b.classList.remove("active"));
+    e.currentTarget.classList.add("active");
+    tipoSel.value = e.currentTarget.dataset.type;
+    renderCards();
+});
+
+// ====== TSV LOADING ======
+fetch(SHEET_URL)
+    .then(r=>r.text())
+    .then(tsv=>parseTSV(tsv))
+    .then(data=>{
+        rawData = data;
+        populateSelects();
+        renderCards();
+    })
+    .catch(err=>console.error(err));
+
+function parseTSV(tsv){
+    const rows = tsv.trim().split('\n').map(r=>r.split('\t'));
+    const headers = rows.shift();
+    return rows.map((r,i)=>{
+        const obj = {};
+        headers.forEach((h,idx)=>obj[h.trim()] = r[idx] || '');
+        obj.__id = 'row'+i;
+        return obj;
+    });
+}
+
+// ====== UI RENDER ======
+function populateSelects(){
+    const regs = unique(rawData.map(d=>d.Regione));
+    const cities = unique(rawData.map(d=>d.Città));
+    const cats = unique(rawData.map(d=>d.Categoria));
+    const types = unique(rawData.map(d=>d.Tipo));
+
+    fillSelect(regioneSel, regs);
+    fillSelect(cittaSel, cities);
+    fillSelect(catSel, cats);
+    fillSelect(tipoSel, types);
+}
+function fillSelect(sel, arr){
+    sel.innerHTML = '<option value="">Tutti</option>' + arr.map(v=>`<option value="${v}">${v}</option>`).join('');
+}
+function unique(arr){
+    return [...new Set(arr.filter(Boolean))].sort();
+}
+
+function renderCards(){
+    const filt = {
+        reg: regioneSel.value,
+        cit: cittaSel.value,
+        cat: catSel.value,
+        tipo: tipoSel.value
+    };
+    const list = rawData.filter(d=>
+        (!filt.reg||d.Regione===filt.reg) &&
+        (!filt.cit||d.Città===filt.cit) &&
+        (!filt.cat||d.Categoria===filt.cat) &&
+        (!filt.tipo||d.Tipo===filt.tipo)
+    );
+    cardsEl.innerHTML = list.map(cardHTML).join('');
+}
+
+function cardHTML(d){
+    const cls = d.Tipo==='Lead'?'lead':(d.Tipo==='Appuntamenti'?'app':'contr');
+    const crediti = d['Costo (crediti)'] || 0;
+    return `<div class="card ${cls}">
+        <h4>${d.Categoria}</h4>
+        <small>${d.Tipo} – ${d.Città}, ${d.Regione}</small>
+        <p>${d.Descrizione}</p>
+        <p><b>Budget:</b> €${d['Budget (€)']}</p>
+        <p><b>Costo:</b> ${crediti} crediti</p>
+        <button class="btn btn-primary" onclick="addToCart('${d.__id}', ${crediti})">Aggiungi</button>
+    </div>`;
+}
+
+function addToCart(id, cost){
+    if(cost>userCredits){alert('Crediti insufficienti');return;}
+    if(cart.find(c=>c.id===id))return;
+    cart.push({id, cost});
+    updateCredits(userCredits - cost);
+    renderCart();
+}
+function removeFromCart(idx){
+    const item = cart[idx];
+    cart.splice(idx,1);
+    updateCredits(userCredits + item.cost);
+    renderCart();
+}
+function renderCart(){
+    cartListEl.innerHTML = cart.map((c,i)=>`<li>${c.id} – ${c.cost} <button class="btn btn-secondary small" onclick="removeFromCart(${i})">Annulla</button></li>`).join('');
+    cartTotal.textContent = cart.reduce((s,c)=>s+c.cost,0);
+}
+
+// ====== MODAL UTILS ======
+function openModal(m){m.classList.remove('hidden');}
+function closeModals(){document.querySelectorAll('.modal').forEach(m=>m.classList.add('hidden'));}
+document.querySelectorAll('[data-close]').forEach(btn=>btn.onclick = closeModals);
