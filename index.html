@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
   <link rel="icon" href="favicon.ico">
-  <link rel="stylesheet" href="style.css?v=2.3.0">
+  <link rel="stylesheet" href="style.css?v=2.3.2">
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script defer src="firebase-init.js"></script>
-  <script defer src="script.js?v=2.3.0"></script>
+  <script defer src="script.js?v=2.3.2"></script>
 </head>
 <body>
   <header class="topbar">
@@ -24,10 +24,10 @@
   </header>
 
   <nav class="tabs">
-    <button class="tab btn-green active"    data-type="">Tutti</button>
-    <button class="tab btn-blue"             data-type="Lead">Lead da chiamare</button>
-    <button class="tab btn-pink"             data-type="Appuntamento">Appuntamenti fissati</button>
-    <button class="tab btn-yellow"           data-type="Contratto">Contratti riservati</button>
+    <button class="tab btn-green active" data-filter="all">Tutti</button>
+    <button class="tab btn-blue"         data-filter="lead">Lead da chiamare</button>
+    <button class="tab btn-pink"         data-filter="app">Appuntamenti fissati</button>
+    <button class="tab btn-yellow"       data-filter="contr">Contratti riservati</button>
   </nav>
 
   <section class="filters">
@@ -45,7 +45,7 @@
     <p>Totale crediti: <span id="cartTotal">0</span></p>
   </aside>
 
-  <!-- Modale Login/Registrazione -->
+  <!-- Login Modal -->
   <div id="loginMask" class="modal-mask hidden"></div>
   <div id="loginModal" class="modal hidden">
     <h3>Login / Registrazione</h3>
@@ -56,7 +56,7 @@
     <button id="closeLogin"   class="btn btn-grey small">Chiudi</button>
   </div>
 
-  <!-- Modale Pagamento -->
+  <!-- Pay Modal -->
   <div id="payMask" class="modal-mask hidden"></div>
   <div id="payModal" class="modal hidden">
     <h3>Crediti insufficienti</h3>
@@ -76,7 +76,7 @@
     <button id="closePay" class="btn btn-grey small">Chiudi</button>
   </div>
 
-  <!-- Modale Riserva Contratto -->
+  <!-- Reserve Modal -->
   <div id="resMask" class="modal-mask hidden"></div>
   <div id="resModal" class="modal hidden">
     <h3>Riserva Contratto</h3>
