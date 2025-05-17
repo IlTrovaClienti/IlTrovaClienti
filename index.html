@@ -1,84 +1,48 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>IlTrovaClienti</title>
-
-    <!-- Styles -->
-    <link rel="stylesheet" href="style.css?v=1.1.0">
-    <link rel="icon" type="image/png" href="assets/favicon.png">
-
-    <!-- Firebase CDN -->
-    <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
-    <script defer src="firebase-init.js"></script>
-
-    <!-- Main logic -->
-    <script defer src="script.js?v=1.1.0"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IlTrovaClienti</title>
+  <link rel="stylesheet" href="style.css?v=1.1.1">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <!-- Firebase compat SDK (avoids 'export' error) -->
+  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth-compat.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore-compat.js"></script>
+  <script defer src="firebase-init.js"></script>
+  <script defer src="script.js?v=1.1.1"></script>
 </head>
 <body>
-    <header class="topbar">
-        <h1>IlTrovaClienti</h1>
-        <div id="userPanel">
-            <span id="welcome"></span>
-            <button id="loginBtn" class="btn btn-primary small">Login</button>
-            <button id="logoutBtn" class="btn btn-secondary small">Logout</button>
-            <span id="creditBox">Crediti: <span id="credits">0</span></span>
-            <button id="rechargeBtn" class="btn btn-success small">Ricarica</button>
-        </div>
-    </header>
-
-    <!-- Tabs -->
-    <nav class="tabs">
-        <button class="tab active" data-type="">Tutti</button>
-        <button class="tab lead" data-type="Lead">Lead da chiamare</button>
-        <button class="tab app" data-type="Appuntamenti">Appuntamenti fissati</button>
-        <button class="tab contr" data-type="Contratti">Contratti riservati</button>
-    </nav>
-
-    <!-- Filters -->
-    <section class="filters">
-        <select id="regioneFilter"></select>
-        <select id="cittaFilter"></select>
-        <select id="categoriaFilter"></select>
-        <select id="tipoFilter"></select>
-        <button id="resetFilters" class="btn btn-secondary small">Reset filtri</button>
-    </section>
-
-    <!-- Cards -->
-    <main>
-        <div id="cards" class="cards"></div>
-    </main>
-
-    <!-- Cart -->
-    <aside id="cart">
-        <h2>Carrello</h2>
-        <ul id="cartList"></ul>
-        <p>Totale crediti: <span id="cartTotal">0</span></p>
-    </aside>
-
-    <!-- Login modal -->
-    <div id="loginModal" class="modal hidden">
-        <div class="modal-content">
-            <h3>Login / Registrazione</h3>
-            <input type="email" id="authEmail" placeholder="Email">
-            <input type="password" id="authPass" placeholder="Password">
-            <button id="doLogin" class="btn btn-primary">Login</button>
-            <button id="doRegister" class="btn btn-secondary">Registrati</button>
-            <button class="modal-close" data-close>✕</button>
-        </div>
+  <header class="topbar">
+    <h1>IlTrovaClienti</h1>
+    <div id="creditiBox">Crediti: <span id="credits">0</span>
+      <button id="btnRicarica" class="btn btn-primary small">Ricarica</button>
     </div>
+  </header>
 
-    <!-- Recharge modal -->
-    <div id="rechargeModal" class="modal hidden">
-        <div class="modal-content">
-            <h3>Ricarica crediti</h3>
-            <p>Aggungi 10 crediti di test</p>
-            <button id="addCredits" class="btn btn-success">+10 Crediti</button>
-            <button class="modal-close" data-close>✕</button>
-        </div>
-    </div>
+  <nav class="tabs">
+    <button class="tab active" data-type="">Tutti</button>
+    <button class="tab lead" data-type="Lead">Lead da chiamare</button>
+    <button class="tab app" data-type="Appuntamenti">Appuntamenti fissati</button>
+    <button class="tab contr" data-type="Contratti">Contratti riservati</button>
+  </nav>
+
+  <section class="filters">
+    <select id="regioneFilter"></select>
+    <select id="cittaFilter"></select>
+    <select id="categoriaFilter"></select>
+    <select id="tipoFilter"></select>
+  </section>
+
+  <main>
+    <div id="cards" class="cards"></div>
+  </main>
+
+  <aside id="cart">
+    <h2>Carrello</h2>
+    <ul id="cartList"></ul>
+    <p>Totale: <span id="cartTotal">0</span> crediti</p>
+  </aside>
 </body>
 </html>
