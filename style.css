@@ -200,3 +200,16 @@ html, body {
   border-radius: 6px;
 }
 #ibanBox { padding: 8px 0; }
+}
+@media (max-width: 600px) {
+  .filters select {
+    /* rimuoviamo altezza fissa */
+    height: auto !important;
+    /* padding ridotto per renderli più bassi */
+    padding: 4px 8px !important;
+    /* font più compatto */
+    font-size: 0.9rem !important;
+    /* linea normale */
+    line-height: 1.2 !important;
+  }
+}
