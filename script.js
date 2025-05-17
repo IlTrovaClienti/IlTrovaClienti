@@ -9,7 +9,7 @@ let rows = [], bought = new Set();
 /* === DOM HELPERS === */
 const $ = id => document.getElementById(id);
 
-/* === Firebase Auth State === */
+/* === Auth State === */
 let currentUser = null;
 firebase.auth().onAuthStateChanged(u => {
   currentUser = u;
@@ -21,8 +21,12 @@ firebase.auth().onAuthStateChanged(u => {
 $('btnLogin').onclick   = openLogin;
 $('closeLogin').onclick = closeLogin;
 $('loginMask').onclick  = closeLogin;
-$('doLogin').onclick    = () => firebase.auth().signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
-$('doSignup').onclick   = () => firebase.auth().createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
+$('doLogin').onclick    = () => firebase.auth()
+                          .signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value)
+                          .catch(alert);
+$('doSignup').onclick   = () => firebase.auth()
+                          .createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value)
+                          .catch(alert);
 $('btnLogout').onclick  = () => firebase.auth().signOut();
 
 function openLogin(){
@@ -34,7 +38,7 @@ function closeLogin(){
   $('loginModal').classList.remove('open');
 }
 
-/* === Modali Pagamento === */
+/* === Pay Modal === */
 $('btnRicarica').onclick = openPay;
 $('closePay').onclick    = closePay;
 $('payMask').onclick     = closePay;
@@ -50,7 +54,7 @@ function closePay(){
   $('payModal').classList.remove('open');
 }
 
-/* === Crediti === */
+/* === Credits === */
 function addCredits(n){ credits += n; updateCredits(); }
 function useCredits(n){ credits -= n; updateCredits(); }
 function updateCredits(){
@@ -73,7 +77,7 @@ const V = (r, keys) => {
   return '';
 };
 
-/* === Load & Parse TSV === */
+/* === Load & parse TSV === */
 fetch(SHEET_URL)
   .then(r => r.text())
   .then(txt => {
@@ -87,7 +91,7 @@ function parseTSV(tsv){
   const lines = tsv.trim().split('\n').map(l => l.split('\t'));
   const head  = lines.shift();
   return lines.map((r,i) => {
-    const o = { __id:'row'+i };
+    const o = { __id: 'row'+i };
     head.forEach((h,j) => o[h.trim()] = r[j]||'');
     return o;
   });
@@ -109,7 +113,6 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=e=>{
   renderCards();
 });
 
-// default
 let currentFilter = 'all';
 
 function initFilters(){
@@ -149,14 +152,16 @@ function cardHTML(r){
   const tipo = V(r,COL.Tipo), cls = normalize(tipo);
   const cost = Number(V(r,COL.Costo)||1), has = bought.has(r.__id);
   const phone = has ? V(r,COL.Tel) : '•••••••••';
+
   let btn;
   if (cls==='contr'){
-    btn = `<button class="btn btn-pink" onclick="openReserve()">Riserva</button>`;
+    btn = `<button class="btn btn-green" onclick="openReserve()">Riserva</button>`;
   } else {
     btn = has
       ? `<button class="btn btn-grey" onclick="undo('${r.__id}',${cost})">Annulla (-${cost} cr)</button>`
       : `<button class="btn btn-green" onclick="acq('${r.__id}',${cost})">Acquisisci (+${cost} cr)</button>`;
   }
+
   return `<div class="card ${cls}">
     <h4>${r.Descrizione||''}</h4>
     <small>${V(r,COL.Regione)} / ${V(r,COL.Citta)} – ${V(r,COL.Categoria)}</small>
