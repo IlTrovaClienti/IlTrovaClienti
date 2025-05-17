@@ -1,114 +1,22 @@
 
-// === Config ===
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?gid=71180301&single=true&output=tsv";
-let userCredits = 5;
-const EUR_PER_CREDIT = 40;
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?gid=71180301&output=tsv";
+let rows=[], cart=[], hidden=new Set();
 
-// === State ===
-let rows = [];
-let cart = [];
-const hiddenIds = new Set();
+const sel={reg:regioneFilter,cit:cittaFilter,cat:categoriaFilter,tipo:tipoFilter};
+Object.values(sel).forEach(s=>s.onchange=renderCards);
 
-// === DOM ===
-const creditsEl = document.getElementById('crediti');
-const euroEl    = document.getElementById('euroCrediti');
-const cardsEl   = document.getElementById('cards');
-const cartListEl= document.getElementById('cartList');
-const cartTotalEl=document.getElementById('cartTotal');
+document.querySelectorAll('.tab').forEach(btn=>btn.onclick=e=>{document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));e.currentTarget.classList.add('active');sel.tipo.value=e.currentTarget.dataset.type;renderCards();});
 
-// === Filters
-const selReg = document.getElementById('regioneFilter');
-const selCit = document.getElementById('cittaFilter');
-const selCat = document.getElementById('categoriaFilter');
-const selTipo= document.getElementById('tipoFilter');
-[selReg,selCit,selCat,selTipo].forEach(s=>s.onchange=renderCards);
+function parse(tsv){const l=tsv.trim().split('\n').map(r=>r.split('\t'));const h=l.shift();return l.map((r,i)=>{let o={__id:'r'+i};h.forEach((k,j)=>o[k.trim()]=r[j]||'');return o;});}
 
-// === Tabs
-document.querySelectorAll('.tab').forEach(btn=>{
-  btn.addEventListener('click',e=>{
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    e.currentTarget.classList.add('active');
-    selTipo.value = e.currentTarget.dataset.type;
-    renderCards();
-  });
-});
+fetch(SHEET_URL).then(r=>r.text()).then(t=>{rows=parse(t);initFilters();renderCards();}).catch(console.error);
 
-// === Init
-updateCredits();
-loadTSV();
+function initFilters(){const m={reg:'Regione',cit:'Città',cat:'Categoria',tipo:'Tipo'};for(const k in m){const v=[...new Set(rows.map(r=>r[m[k]]).filter(Boolean))].sort();sel[k].innerHTML='<option value="">Tutti</option>'+v.map(x=>`<option>${x}</option>`).join('');}}
 
-// ---------------- Functions ----------------
-function updateCredits(){
-  creditsEl.textContent = userCredits;
-  euroEl.textContent = (userCredits*EUR_PER_CREDIT).toFixed(2);
-}
+function renderCards(){const f={Regione:sel.reg.value,'Città':sel.cit.value,Categoria:sel.cat.value,Tipo:sel.tipo.value};const v=rows.filter(r=>(!f.Regione||r.Regione===f.Regione)&&(!f['Città']||r['Città']===f['Città'])&&(!f.Categoria||r.Categoria===f.Categoria)&&(!f.Tipo||r.Tipo===f.Tipo)&&!hidden.has(r.__id));cards.innerHTML=v.map(cardHTML).join('');}
 
-function loadTSV(){
-  fetch(SHEET_URL)
-    .then(r=>r.text())
-    .then(tsv=>{ rows = parseTSV(tsv); initFilters(); renderCards(); })
-    .catch(console.error);
-}
+function cardHTML(r){const cls=r.Tipo==='Lead'?'lead':(r.Tipo==='Appuntamento'?'app':'contr');return `<div class="card ${cls}"><strong>${r.Descrizione||''}</strong><br><small>${r.Regione} / ${r['Città']} – ${r.Categoria}</small><br><b>Prezzo: €${r.Prezzo||0}</b><br><button onclick="acq('${r.__id}',${r.Prezzo||0})">Acquisisci</button></div>`;}
 
-function parseTSV(tsv){
-  const lines = tsv.trim().split('\n').map(l=>l.split('\t'));
-  const header = lines.shift();
-  return lines.map((r,i)=>{
-     const obj = {};
-     header.forEach((h,idx)=>obj[h.trim()] = r[idx] || '');
-     obj.__id = 'row'+i;
-     return obj;
-  });
-}
-
-function initFilters(){
-  const map = {regione:'Regione', citta:'Città', categoria:'Categoria', tipo:'Tipo'};
-  Object.entries(map).forEach(([id,col])=>{
-    const sel = document.getElementById(id+'Filter');
-    const values = [...new Set(rows.map(d=>d[col]).filter(Boolean))].sort();
-    sel.innerHTML = '<option value="">Tutti</option>'+values.map(v=>`<option value="${v}">${v}</option>`).join('');
-  });
-}
-
-function renderCards(){
-  const filt = { Regione:selReg.value, 'Città':selCit.value, Categoria:selCat.value, Tipo:selTipo.value };
-  const vis = rows.filter(d=>
-    (!filt.Regione || d.Regione===filt.Regione) &&
-    (!filt['Città'] || d['Città']===filt['Città']) &&
-    (!filt.Categoria || d.Categoria===filt.Categoria) &&
-    (!filt.Tipo || d.Tipo===filt.Tipo) &&
-    !hiddenIds.has(d.__id)
-  );
-  cardsEl.innerHTML = vis.map(cardHTML).join('');
-}
-
-function cardHTML(d){
-  const cls = d.Tipo==='Lead'?'lead':(d.Tipo==='Appuntamento'?'app':'contr');
-  const price = Number(d.Prezzo||0);
-  return `<div class="card ${cls}">
-    <strong>${d.Descrizione||''}</strong><br>
-    <small>${d.Regione} / ${d['Città']} – ${d.Categoria}</small><br>
-    <b>Prezzo: €${price}</b><br>
-    <button onclick="addToCart('${d.__id}',${price})">Acquisisci</button>
-  </div>`;
-}
-
-function addToCart(id, price){
-  hiddenIds.add(id);
-  cart.push({id,price});
-  renderCart();
-  renderCards();
-}
-
-function renderCart(){
-  cartListEl.innerHTML = cart.map((c,i)=>`<li>#${i+1} €${c.price} <button onclick="undoCart(${i})">Annulla</button></li>`).join('');
-  cartTotalEl.textContent = cart.reduce((s,c)=>s+c.price,0).toFixed(2);
-}
-
-function undoCart(idx){
-  const item = cart[idx];
-  cart.splice(idx,1);
-  hiddenIds.delete(item.id);
-  renderCart();
-  renderCards();
-}
+function acq(id,p){hidden.add(id);cart.push({id,p});renderCart();renderCards();}
+function undo(i){hidden.delete(cart[i].id);cart.splice(i,1);renderCart();renderCards();}
+function renderCart(){cartList.innerHTML=cart.map((c,i)=>`<li>#${i+1} €${c.p} <button onclick="undo(${i})">Annulla</button></li>`).join('');cartTotal.textContent=cart.reduce((s,c)=>s+c.p,0).toFixed(2);}
