@@ -39,12 +39,6 @@ html, body {
 .btn-yellow { background: var(--yellow); color: #000; }
 .btn-grey   { background: #ccc;          color: #000; }
 
-/* Aggiunge piena larghezza ai bottoni all'interno delle card */
-.card button {
-  width: 100%;
-  margin-top: auto;
-}
-
 /* -------------------------
    HEADER
    ------------------------- */
@@ -90,18 +84,23 @@ html, body {
    ------------------------- */
 .filters {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
   padding: 10px;
   background: #fff;
   z-index: 8;
+  overflow-x: auto;
 }
+.filters::-webkit-scrollbar { height: 6px; }
+.filters::-webkit-scrollbar-thumb { background: rgba(0,0,0,.2); border-radius: 3px; }
+
 .filters select {
-  flex: 1 1 150px;
-  padding: 8px;
+  flex: 0 0 auto;
+  padding: 6px 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   background: #fff;
+  height: 36px;
+  font-size: .9rem;
 }
 
 /* -------------------------
@@ -201,25 +200,3 @@ html, body {
   border-radius: 6px;
 }
 #ibanBox { padding: 8px 0; }
-
-/* -------------------------
-   RESPONSIVE MOBILE
-   ------------------------- */
-@media (max-width: 600px) {
-  /* Tabs verticali full-width */
-  .tabs {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .tab {
-    width: 100% !important;
-    margin: 4px 0;
-  }
-  /* Filtri e select full-width */
-  .filters {
-    flex-direction: column;
-  }
-  .filters select {
-    width: 100%;
-  }
-}
