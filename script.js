@@ -2,7 +2,7 @@
 // === Config ===
 let userCrediti = 5;               // crediti iniziali demo
 const EURO_PER_CREDITO = 40;       // 1 credito = 40 €
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/gviz/tq?tqx=out:tsv';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/gviz/tq?tqx=out:tsv&gid=0';
 
 // === Stato ===
 let data = [];
