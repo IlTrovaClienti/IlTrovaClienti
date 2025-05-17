@@ -1,7 +1,3 @@
-// Dummy firebase config to prevent runtime error
-const firebaseConfig = {
-  apiKey: "dummy",
-  authDomain: "dummy",
-  projectId: "dummy"
-};
-firebase.initializeApp(firebaseConfig);
+
+// Inserisci qui la tua configurazione Firebase SOLO se ti serve.
+// Con i CDN compat l'app non va in errore anche se lasci vuoto.
