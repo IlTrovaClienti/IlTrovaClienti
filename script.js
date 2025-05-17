@@ -9,7 +9,7 @@ let rows = [], bought = new Set();
 /* === DOM HELPERS === */
 const $ = id => document.getElementById(id);
 
-/* === Firebase Auth State === */
+/* === Auth State === */
 let currentUser = null;
 firebase.auth().onAuthStateChanged(u => {
   currentUser = u;
@@ -21,10 +21,8 @@ firebase.auth().onAuthStateChanged(u => {
 $('btnLogin').onclick   = openLogin;
 $('closeLogin').onclick = closeLogin;
 $('loginMask').onclick  = closeLogin;
-$('doLogin').onclick    = () =>
-  firebase.auth().signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
-$('doSignup').onclick   = () =>
-  firebase.auth().createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
+$('doLogin').onclick    = () => firebase.auth().signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
+$('doSignup').onclick   = () => firebase.auth().createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
 $('btnLogout').onclick  = () => firebase.auth().signOut();
 
 function openLogin(){
@@ -82,7 +80,7 @@ fetch(SHEET_URL)
     rows = parseTSV(txt);
     initFilters();
     renderCards();
-    equalizeTabWidths();   // dopo il primo render calcola le larghezze
+    equalizeTabWidths();
   })
   .catch(console.error);
 
@@ -116,9 +114,19 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=e=>{
 let currentFilter = 'all';
 
 function initFilters(){
+  // Label dei select
+  const LABELS = {
+    Regione:   'Regione',
+    Citta:     'Città',
+    Categoria: 'Categoria',
+    Tipo:      'Tipo'
+  };
   for(const [key,keys] of Object.entries(COL).filter(([k])=>!['Costo','Tel'].includes(k))){
-    const opts=[...new Set(rows.map(r=>V(r,keys)).filter(Boolean))].sort();
-    sel[key].innerHTML = '<option value="">Tutti</option>'+opts.map(v=>`<option>${v}</option>`).join('');
+    const opts = [...new Set(rows.map(r=>V(r,keys)).filter(Boolean))].sort();
+    // prima voce = label, le altre opzioni
+    sel[key].innerHTML =
+      `<option value="" disabled selected>${LABELS[key]}</option>` +
+      opts.map(v=>`<option value="${v}">${v}</option>`).join('');
   }
 }
 
@@ -148,19 +156,19 @@ function renderCards(){
   $('cards').innerHTML = list.map(cardHTML).join('');
 }
 
-/* === Card HTML === */
 function cardHTML(r){
   const tipo = V(r,COL.Tipo), cls = normalize(tipo);
   const cost = Number(V(r,COL.Costo)||1), has = bought.has(r.__id);
   const phone = has ? V(r,COL.Tel) : '•••••••••';
+  const label = cost===1 ? '1 credito' : `${cost} crediti`;
 
   let btn;
   if (cls==='contr'){
     btn = `<button class="btn btn-green" onclick="openReserve()">Riserva</button>`;
   } else {
     btn = has
-      ? `<button class="btn btn-grey" onclick="undo('${r.__id}',${cost})">Annulla (-${cost} cr)</button>`
-      : `<button class="btn btn-green" onclick="acq('${r.__id}',${cost})">Acquisisci (+${cost} cr)</button>`;
+      ? `<button class="btn btn-grey" onclick="undo('${r.__id}',${cost})">Annulla (-${label})</button>`
+      : `<button class="btn btn-green" onclick="acq('${r.__id}',${cost})">Acquisisci (+${label})</button>`;
   }
 
   return `<div class="card ${cls}">
@@ -187,7 +195,7 @@ function undo(id,cost){
   renderCards();
 }
 
-/* === Reserve Contratto === */
+/* === Reserve === */
 function openReserve(){
   $('resMask').classList.add('open');
   $('resModal').classList.add('open');
@@ -201,7 +209,7 @@ $('doReserve').onclick = ()=>{
   $('closeRes').onclick();
 };
 
-/* === Equalize Tab Widths === */
+/* === Equalize Tabs === */
 function equalizeTabWidths(){
   const tabs = Array.from(document.querySelectorAll('.tab'));
   tabs.forEach(t=>t.style.width='auto');
@@ -210,5 +218,5 @@ function equalizeTabWidths(){
     const w = t.getBoundingClientRect().width;
     if (w>maxW) maxW = w;
   });
-  tabs.forEach(t=>t.style.width = maxW + 'px');
+  tabs.forEach(t=>t.style.width = maxW+'px');
 }
