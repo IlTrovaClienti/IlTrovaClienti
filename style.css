@@ -42,3 +42,14 @@ h1{margin:0;font-size:28px}
 .modal-mask{position:fixed;inset:0;background:rgba(0,0,0,.6)}
 .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,.3);min-width:280px;z-index:30}
 .hidden{display:none}
+/* mappa le classi nuove ai bottoni attuali */
+.tab[data-type="Lead"]          { background:#004080;color:#fff; }
+.tab[data-type="Appuntamento"]  { background:#FF00FF;color:#fff; }
+.tab[data-type="Contratto"]     { background:#FFD700;color:#000; }
+.tab.active { outline:3px solid #333; }
+.cliente-card.lead       { border-left: 4px solid #004080; }
+.cliente-card.appuntamento{ border-left: 4px solid #FF00FF; }
+.cliente-card.contratto  { border-left: 4px solid #FFD700; }
+.card.lead  { border-left-color: #004080; }
+.card.app   { border-left-color: #FF00FF; }
+.card.contr { border-left-color: #FFD700; }
