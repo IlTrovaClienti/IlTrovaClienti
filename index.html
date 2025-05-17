@@ -1,63 +1,42 @@
+
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="style.css">
-  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-  <script defer src="firebase-init.js"></script>
-  <script defer src="script.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=BAAiu7JnsVGsz3kMtSsDJJPkH_CdlneLTRk_yR9DV4uJZpkr8mb5-zyAtEusMwwRLGjgYJbrbySuivZ1WM&components=hosted-buttons&disable-funding=venmo&currency=EUR"></script>
+  <link rel="stylesheet" href="style.css?v=1.0.4">
 </head>
 <body>
-  <header class="header">
+  <header class="topbar">
     <h1>IlTrovaClienti</h1>
-    <div class="credit-display">
-      Crediti: <span id="crediti">0</span> (<span id="euro">€0.00</span>)
-      <button onclick="openRicarica()">Ricarica</button>
+    <div id="creditiBox">Crediti: <span id="crediti">0</span> (€<span id="euroCrediti">0.00</span>) 
+      <button id="btnRicarica">Ricarica</button>
     </div>
   </header>
-  <nav class="section-buttons">
-    <button id="btnTutti" onclick="resetFilters()">Tutti</button>
-    <button id="btnLeads" onclick="filterByCategoria('Lead da chiamare')">Lead da chiamare</button>
-    <button id="btnAppuntamenti" onclick="filterByCategoria('Appuntamento fissato')">Appuntamenti fissati</button>
-    <button id="btnContratti" onclick="filterByCategoria('Contratto riservato')">Contratti riservati</button>
-  </nav>
+
+  <section class="tabs">
+    <button class="tab-btn active" data-type="tutti">Tutti</button>
+    <button class="tab-btn" data-type="lead">Lead da chiamare</button>
+    <button class="tab-btn" data-type="app">Appuntamenti fissati</button>
+    <button class="tab-btn" data-type="contratto">Contratti riservati</button>
+  </section>
+
   <section class="filters">
-    <div class="filter-row">
-      <label>Regione</label><select id="regione"><option>Tutti</option></select>
-      <label>Città</label><select id="citta"><option>Tutti</option></select>
-    </div>
-    <div class="filter-row">
-      <label>Categoria</label><select id="categoria"><option>Tutti</option></select>
-      <label>Tipo</label><select id="tipo"><option>Tutti</option></select>
-    </div>
+    <select id="regione"></select>
+    <select id="citta"></select>
+    <select id="categoria"></select>
+    <select id="tipo"></select>
   </section>
-  <section class="carrello">
-    <h2>Carrello</h2><ul id="carrello"></ul><div id="totale">Totale: €0.00</div>
+
+  <section id="cards" class="cards"></section>
+
+  <section id="carrelloBox">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <p>Totale: €<span id="totaleCarrello">0.00</span></p>
   </section>
-  <div id="paypal-button-container"></div>
-  <main id="clienti"></main>
 
-  <!-- Modal Trattativa Riservata -->
-  <div id="form-modal" class="modal-overlay">
-    <div class="modal">
-      <h3>Richiedi Trattativa Riservata</h3>
-      <form id="reserve-form">
-        <input type="text"  id="f-name"  placeholder="Nome e cognome" required>
-        <input type="tel"   id="f-phone" placeholder="Telefono"       required>
-        <input type="text"  id="f-loc"   placeholder="Località"       required>
-        <input type="email" id="f-mail"  placeholder="Email"          required>
-        <textarea id="f-msg" placeholder="Messaggio" rows="4"></textarea>
-        <button type="submit">Invia richiesta</button>
-        <button type="button" class="cancel-form" onclick="closeFormModal()">Annulla</button>
-      </form>
-    </div>
-  </div>
-
+  <script src="script.js?v=1.0.4" defer></script>
 </body>
 </html>

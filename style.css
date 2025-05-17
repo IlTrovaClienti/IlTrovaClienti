@@ -1,18 +1,13 @@
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px}.header{background:#fff;padding:15px;border-radius:8px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}.credit-display button{margin-left:10px;padding:4px 8px;border-radius:12px;background:#004080;color:#fff;border:none}.section-buttons{display:flex;gap:5px;margin-bottom:10px}.section-buttons button{flex:1;padding:8px;border:none;border-radius:12px;font-weight:bold;cursor:pointer}#btnTutti{background:#ddd;color:#000}#btnLeads{background:#0085FF;color:#fff}#btnAppuntamenti{background:#FF00FF;color:#fff}#btnContratti{background:#FFD700;color:#000}.filters{margin-bottom:15px}.filter-row{display:flex;gap:10px;margin-bottom:10px;align-items:flex-start}.filters select{flex:1;padding:2px 4px;border:1px solid #ccc;border-radius:6px}.carrello{background:#fff;padding:10px;border-radius:8px;margin-bottom:10px}.carrello h2{margin-bottom:6px}#carrello li{margin-bottom:4px}#totale{margin-top:8px;font-weight:bold}.cliente-card{background:#fff;border-left:4px solid transparent;border-radius:8px;padding:12px;margin-bottom:10px;box-shadow:0 2px 4px rgba(0,0,0,0.05)}.badge{display:inline-block;padding:2px 6px;border-radius:12px;color:#fff}.badge.lead{background:#0085FF}.badge.appuntamento{background:#FF00FF}.badge.contratto{background:#FFD700;color:#000}.cliente-card h3{margin-bottom:6px;font-size:1.1em}.cliente-card .desc{font-style:italic;margin-bottom:4px}.cliente-card .commission{font-weight:bold;margin-bottom:6px}.actions{display:flex;gap:6px;margin-top:8px}.actions button{padding:4px 8px;border:none;border-radius:12px;cursor:pointer}.actions .acquisisci { background:#28a745; color:#fff; }.actions .annulla{background:#dc3545;color:#fff}@media(max-width:600px){.filter-row{flex-direction:column}.section-buttons{flex-direction:column}}
-#clienti{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;}
 
-.cliente-card.lead{border-left-color:#0085FF!important;background:#e6f3ff;}
-.cliente-card.appuntamento{border-left-color:#FF00FF!important;background:#ffe6ff;}
-.cliente-card.contratto{border-left-color:#FFD700!important;background:#fff9d6;}
-
-.actions .acquisisci{background:#28a745!important;color:#fff!important;border:none!important;-webkit-tap-highlight-color:transparent;}
-
-/* Responsive filters: due campi per riga in mobile */
-@media (max-width: 600px){
-  .filter-row{flex-wrap:wrap;}
-  .filter-row label,
-  .filter-row select{width:48%;}
-  .filter-row label{margin-bottom:4px;}
-}
-
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);display:none;justify-content:center;align-items:center;z-index:1000}.modal{background:#fff;padding:20px;border-radius:12px;max-width:320px;width:90%}.modal form input,.modal form textarea{width:100%;padding:6px 8px;margin-bottom:8px;border-radius:6px;border:1px solid #ccc}.modal form button{padding:6px 12px;border:none;border-radius:8px;background:#28a745;color:#fff}.cancel-form{background:#dc3545}
+body { font-family: Arial, sans-serif; margin:0; }
+.topbar { padding:8px 12px; background:#f0f0f0; display:flex; justify-content:space-between; align-items:center; }
+.tabs { display:flex; gap:4px; padding:8px; }
+.tab-btn { flex:1; padding:6px; border:none; cursor:pointer; }
+.tab-btn.active { background:#d0d0d0; }
+.filters { display:flex; flex-wrap:wrap; gap:4px; padding:8px; }
+.cards { padding:8px; display:grid; gap:8px; }
+.card { border:1px solid #ccc; padding:8px; border-radius:4px; }
+.card.lead { background:#e3f0ff; }
+.card.app { background:#fbe3ff; }
+.card.contratto { background:#fffbe3; }
+#carrelloBox { padding:8px; background:#f9f9f9; }
