@@ -1,132 +1,158 @@
 /* === CONFIG === */
-const SHEET_URL =
-  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?gid=71180301&output=tsv';
-const REVOLUT_LINK =
-  'https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?gid=71180301&output=tsv';
+const REVOLUT_LINK = 'https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4';
 
 let credits = 0;
 const EUR_PER_CREDIT = 40;
-let rows = [];                       // righe TSV
-let bought = new Set();              // id card già acquisite
+let rows = [], bought = new Set();
 
-/* === DOM === */
-const creditsEl  = document.getElementById('crediti');
-const euroEl     = document.getElementById('euroCrediti');
-const mask       = document.getElementById('mask');
-const modal      = document.getElementById('modalPay');
-const ibanBox    = document.getElementById('ibanBox');
+/* === DOM HELPERS === */
+const $ = id => document.getElementById(id);
+const logOutBtn = $('btnLogout'), logInBtn = $('btnLogin');
 
-/* === Mapping colonne tollerante === */
-const COL = {
-  Regione:  ['Regione'],
-  Citta:    ['Città','Citta'],
-  Categoria:['Categoria'],
-  Tipo:     ['Tipo','Stato'],
-  Costo:    ['Costo (crediti)','Costo crediti','Crediti'],
-  Tel:      ['Telefono']
-};
-const V = (r, keys) => { for (const k of keys) if (r[k] !== undefined) return r[k].trim(); return ''; };
+/* === Utente Firebase === */
+let currentUser = null;
+firebase.auth().onAuthStateChanged(u => {
+  currentUser = u;
+  logInBtn.classList.toggle('hidden', !!u);
+  logOutBtn.classList.toggle('hidden', !u);
+});
 
-/* === Modal pagamento === */
-btnRicarica.onclick = () => openModal();
-closeModal.onclick  = closeModal;
-mask.onclick        = closeModal;
-payRevolut.onclick  = () => { addCredits(10); closeModal(); window.open(REVOLUT_LINK,'_blank'); };
-showIban.onclick    = () => ibanBox.classList.toggle('hidden');
+/* === Login/Logout === */
+$('btnLogin').onclick = () => openLogin();
+$('closeLogin').onclick = closeLogin;
+$('loginMask').onclick = closeLogin;
+$('doLogin').onclick   = () => firebase.auth().signInWithEmailAndPassword($('loginEmail').value,$('loginPassword').value).catch(alert);
+$('doSignup').onclick  = () => firebase.auth().createUserWithEmailAndPassword($('loginEmail').value,$('loginPassword').value).catch(alert);
+$('btnLogout').onclick = () => firebase.auth().signOut();
 
-function openModal(){ mask.classList.add('open'); modal.classList.add('open'); }
-function closeModal(){ mask.classList.remove('open'); modal.classList.remove('open'); }
-function addCredits(n){ credits += n; updateCredits(); }
+/* === Modali Pagamento === */
+$('btnRicarica').onclick = () => openPay();
+$('closePay').onclick    = closePay;
+$('payMask').onclick     = closePay;
+$('payRevolut').onclick  = ()=>{ addCredits(10); closePay(); window.open(REVOLUT_LINK,'_blank'); };
+$('showIban').onclick    = ()=>$('ibanBox').classList.toggle('hidden');
 
+function openPay(){ $('payMask').classList.add('open'); $('payModal').classList.add('open'); }
+function closePay(){ $('payMask').classList.remove('open'); $('payModal').classList.remove('open'); }
+
+function openLogin(){ $('loginMask').classList.add('open'); $('loginModal').classList.add('open'); }
+function closeLogin(){ $('loginMask').classList.remove('open'); $('loginModal').classList.remove('open'); }
+
+/* === Crediti UI === */
+function addCredits(n){ credits+=n; updateCredits(); }
+function useCredits(n){ credits-=n; updateCredits(); }
 function updateCredits(){
-  creditsEl.textContent = credits;
-  euroEl.textContent    = (credits * EUR_PER_CREDIT).toFixed(0);
+  $('crediti').textContent = credits;
+  $('euroCrediti').textContent = (credits * EUR_PER_CREDIT).toFixed(0);
 }
 updateCredits();
 
-/* === TSV === */
-fetch(SHEET_URL)
-  .then(r => r.text())
-  .then(txt => { rows = parseTSV(txt); initFilters(); renderCards(); })
-  .catch(console.error);
+/* === Mappatura colonne === */
+const COL = {
+  Regione:   ['Regione'],
+  Citta:     ['Città','Citta'],
+  Categoria: ['Categoria'],
+  Tipo:      ['Tipo','Stato'],
+  Costo:     ['Costo (crediti)','Costo crediti','Crediti'],
+  Tel:       ['Telefono']
+};
+const V = (r, keys) => { for (const k of keys) if (r[k]!==undefined) return r[k].trim(); return ''; };
 
-function parseTSV(tsv){
-  const lines = tsv.trim().split('\n').map(r => r.split('\t'));
-  const head  = lines.shift();
-  return lines.map((r,i)=>{ const o={__id:'row'+i}; head.forEach((h,idx)=> o[h.trim()] = r[idx] || ''); return o; });
+/* === Carica dati === */
+fetch(SHEET_URL).then(r=>r.text()).then(txt=>{ rows=parse(tsvToArray(txt)); initFilters(); renderCards(); }).catch(console.error);
+
+function tsvToArray(tsv){
+  const lines=tsv.trim().split('\n').map(l=>l.split('\t'));
+  const head=lines.shift();
+  return lines.map((r,i)=>{ let o={__id:'row'+i}; head.forEach((h,j)=>o[h.trim()]=r[j]||''); return o; });
 }
 
-/* === Filtri === */
+/* === Filtri e Tabs === */
 const sel = {
-  Regione:   document.getElementById('regioneFilter'),
-  Citta:     document.getElementById('cittaFilter'),
-  Categoria: document.getElementById('categoriaFilter'),
-  Tipo:      document.getElementById('tipoFilter')
+  Regione: $('regioneFilter'),
+  Citta:   $('cittaFilter'),
+  Categoria:$('categoriaFilter'),
+  Tipo:    $('tipoFilter')
 };
-Object.values(sel).forEach(s=>s.onchange = renderCards);
-
-document.querySelectorAll('.tab').forEach(btn => btn.onclick = e => {
-  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+Object.values(sel).forEach(s=>s.onchange=renderCards);
+document.querySelectorAll('.tab').forEach(b=>b.onclick=e=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
   e.currentTarget.classList.add('active');
   sel.Tipo.value = e.currentTarget.dataset.type;
   renderCards();
 });
 
 function initFilters(){
-  for(const [logic,keys] of Object.entries(COL).filter(([k])=>!['Costo','Tel'].includes(k))){
-    const vals = [...new Set(rows.map(r => V(r,keys)).filter(Boolean))].sort();
-    sel[logic].innerHTML = '<option value="">Tutti</option>' +
-       vals.map(v=>`<option>${v}</option>`).join('');
+  for(const [key,keys] of Object.entries(COL).filter(([k])=>!['Costo','Tel'].includes(k))){
+    const opts=[...new Set(rows.map(r=>V(r,keys)).filter(Boolean))].sort();
+    sel[key].innerHTML = '<option value="">Tutti</option>'+opts.map(v=>`<option>${v}</option>`).join('');
   }
 }
 
-/* === Card render === */
+/* === Rendering cards === */
 function normalize(tipo){
-  tipo = tipo.toLowerCase();
-  return tipo.startsWith('lead') ? 'lead'
-       : tipo.startsWith('app')  ? 'app'
-       : 'contr';
+  tipo=tipo.toLowerCase();
+  return tipo.startsWith('lead')?'lead':tipo.startsWith('app')?'app':'contr';
 }
 
 function renderCards(){
-  const f = {Regione:sel.Regione.value, Citta:sel.Citta.value, Categoria:sel.Categoria.value, Tipo:sel.Tipo.value};
-  const list = rows.filter(r =>
-    (!f.Regione  || V(r,COL.Regione)   === f.Regione) &&
-    (!f.Citta    || V(r,COL.Citta)     === f.Citta)   &&
-    (!f.Categoria|| V(r,COL.Categoria) === f.Categoria) &&
-    (!f.Tipo     || V(r,COL.Tipo)      === f.Tipo)
+  const f={Regione:sel.Regione.value,Citta:sel.Citta.value,Categoria:sel.Categoria.value,Tipo:sel.Tipo.value};
+  const list=rows.filter(r=>
+    (!f.Regione||V(r,COL.Regione)===f.Regione)&&
+    (!f.Citta  ||V(r,COL.Citta)  ===f.Citta)&&
+    (!f.Categoria||V(r,COL.Categoria)===f.Categoria)&&
+    (!f.Tipo   ||V(r,COL.Tipo)   ===f.Tipo)
   );
-
-  cards.innerHTML = list.map(cardHTML).join('');
+  $('cards').innerHTML = list.map(cardHTML).join('');
 }
 
 function cardHTML(r){
-  const tipo  = V(r,COL.Tipo);
-  const cls   = normalize(tipo);
-  const cost  = Number(V(r,COL.Costo) || 1);
-  const isBought = bought.has(r.__id);
-  const phone = isBought ? V(r,COL.Tel) : '•••••••••';
-  const btn   = isBought
-     ? `<button class="btn btn-grey" onclick="undo('${r.__id}',${cost})">Annulla (-${cost} cr)</button>`
-     : `<button class="btn btn-green" onclick="acq('${r.__id}',${cost})">Acquisisci (+${cost} cr)</button>`;
-
+  const tipo=V(r,COL.Tipo), cls=normalize(tipo);
+  const cost=Number(V(r,COL.Costo)||1);
+  const has = bought.has(r.__id);
+  const phone=has?V(r,COL.Tel):'•••••••••';
+  // Bottone e annulla
+  let actionBtn;
+  if(cls==='contr'){
+    actionBtn=`<button class="btn btn-pink" onclick="openReserve()">Riserva</button>`;
+  } else {
+    actionBtn=has
+      ? `<button class="btn btn-grey" onclick="undo('${r.__id}',${cost})">Annulla (-${cost} cr)</button>`
+      : `<button class="btn btn-green" onclick="acq('${r.__id}',${cost})">Acquisisci (+${cost} cr)</button>`;
+  }
   return `<div class="card ${cls}">
-      <h4>${r.Descrizione || ''}</h4>
+      <h4>${r.Descrizione||''}</h4>
       <small>${V(r,COL.Regione)} / ${V(r,COL.Citta)} – ${V(r,COL.Categoria)}</small>
       <span class="badge ${cls}">${tipo}</span>
       <p><b>Telefono:</b> ${phone}</p>
-      ${btn}
+      ${actionBtn}
     </div>`;
 }
 
 /* === Azioni === */
 function acq(id,cost){
-  if (credits < cost){ openModal(); return; }
-  credits -= cost; updateCredits();
-  bought.add(id);  renderCards();
+  if(!currentUser){ openLogin(); return; }
+  if(credits<cost){ openPay(); return; }
+  useCredits(cost);
+  bought.add(id);
+  renderCards();
 }
+
 function undo(id,cost){
-  if (!bought.has(id)) return;
-  credits += cost; updateCredits();
-  bought.delete(id); renderCards();
+  if(!bought.has(id)) return;
+  addCredits(cost);
+  bought.delete(id);
+  renderCards();
 }
+
+/* === Reserving Contratto === */
+function openReserve(){
+  $('resMask').classList.add('open');
+  $('resModal').classList.add('open');
+}
+$('closeRes').onclick = $('resMask').onclick = ()=>{$('resMask').classList.remove('open');$('resModal').classList.remove('open');};
+$('doReserve').onclick = ()=>{
+  alert('Richiesta di riserva inviata!');
+  $('closeRes').onclick();
+};
