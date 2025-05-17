@@ -9,7 +9,7 @@ let rows = [], bought = new Set();
 /* === DOM HELPERS === */
 const $ = id => document.getElementById(id);
 
-/* === Auth State === */
+/* === Firebase Auth State === */
 let currentUser = null;
 firebase.auth().onAuthStateChanged(u => {
   currentUser = u;
@@ -21,12 +21,10 @@ firebase.auth().onAuthStateChanged(u => {
 $('btnLogin').onclick   = openLogin;
 $('closeLogin').onclick = closeLogin;
 $('loginMask').onclick  = closeLogin;
-$('doLogin').onclick    = () => firebase.auth()
-                          .signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value)
-                          .catch(alert);
-$('doSignup').onclick   = () => firebase.auth()
-                          .createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value)
-                          .catch(alert);
+$('doLogin').onclick    = () =>
+  firebase.auth().signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
+$('doSignup').onclick   = () =>
+  firebase.auth().createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
 $('btnLogout').onclick  = () => firebase.auth().signOut();
 
 function openLogin(){
@@ -77,13 +75,14 @@ const V = (r, keys) => {
   return '';
 };
 
-/* === Load & parse TSV === */
+/* === Load & Parse TSV === */
 fetch(SHEET_URL)
   .then(r => r.text())
   .then(txt => {
     rows = parseTSV(txt);
     initFilters();
     renderCards();
+    equalizeTabWidths();   // dopo il primo render calcola le larghezze
   })
   .catch(console.error);
 
@@ -111,6 +110,7 @@ document.querySelectorAll('.tab').forEach(b=>b.onclick=e=>{
   e.currentTarget.classList.add('active');
   currentFilter = e.currentTarget.dataset.filter;
   renderCards();
+  equalizeTabWidths();
 });
 
 let currentFilter = 'all';
@@ -148,6 +148,7 @@ function renderCards(){
   $('cards').innerHTML = list.map(cardHTML).join('');
 }
 
+/* === Card HTML === */
 function cardHTML(r){
   const tipo = V(r,COL.Tipo), cls = normalize(tipo);
   const cost = Number(V(r,COL.Costo)||1), has = bought.has(r.__id);
@@ -199,3 +200,15 @@ $('doReserve').onclick = ()=>{
   alert('Richiesta di riserva inviata!');
   $('closeRes').onclick();
 };
+
+/* === Equalize Tab Widths === */
+function equalizeTabWidths(){
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  tabs.forEach(t=>t.style.width='auto');
+  let maxW = 0;
+  tabs.forEach(t=>{
+    const w = t.getBoundingClientRect().width;
+    if (w>maxW) maxW = w;
+  });
+  tabs.forEach(t=>t.style.width = maxW + 'px');
+}
