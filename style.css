@@ -1,5 +1,5 @@
 :root{
-  --green:   #28a745; /* verde acceso */
+  --green:   #28a745;
   --blue:    #0076ff;
   --pink:    #e5008a;
   --yellow:  #ffcc00;
@@ -21,9 +21,17 @@ html,body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f4f6}
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.1);position:sticky;top:0;z-index:10}
 
 /* Tabs pillola */
-.tabs{display:flex;flex-direction:column;gap:8px;background:#fff;padding:10px;z-index:9}
-@media(min-width:600px){.tabs{flex-direction:row}}
-.tab{flex:1;text-align:center;font-weight:bold;border-radius:30px;padding:12px 16px;color:#fff;cursor:pointer}
+.tabs{display:flex;justify-content:center;gap:8px;background:#fff;padding:10px;z-index:9}
+.tab{ /* rimuoviamo flex:1 e lasciamo width gestito da JS */
+  text-align:center;
+  font-weight:bold;
+  border-radius:30px;
+  padding:12px 16px;
+  color:#fff;
+  cursor:pointer;
+  /* fallback se JS disabilitato */
+  flex:0 1 auto;
+}
 .tab.active{outline:3px solid #333}
 
 /* Filtri */
