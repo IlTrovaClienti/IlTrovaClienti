@@ -1,6 +1,5 @@
 // firebase-init.js
 
-// ======== CONFIGURAZIONE FIREBASE (v9 compat) ========
 const firebaseConfig = {
   apiKey:            "AIzaSyAb1SzaWGRWTxa5C1STYv3IiuCTyS6WaOA",
   authDomain:        "iltrovaclienti-948af.firebaseapp.com",
@@ -11,7 +10,6 @@ const firebaseConfig = {
   measurementId:     "G-JF12YKNJX6"
 };
 
-// ======== INIZIALIZZA FIREBASE ========
 firebase.initializeApp(firebaseConfig);
 const auth      = firebase.auth();
 const firestore = firebase.firestore();
