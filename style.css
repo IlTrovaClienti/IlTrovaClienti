@@ -1,4 +1,9 @@
-:root{--green:#00a84f;--blue:#0076ff;--pink:#e5008a;--yellow:#ffcc00;}
+:root{
+  --green:   #28a745; /* verde acceso */
+  --blue:    #0076ff;
+  --pink:    #e5008a;
+  --yellow:  #ffcc00;
+}
 *{box-sizing:border-box}
 html,body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f3f4f6}
 
