@@ -5,28 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
 
-  <!-- Tuo CSS principale -->
+  <!-- I tuoi CSS -->
   <link rel="stylesheet" href="styles.css">
-  <!-- Stile per il modal di contatto -->
   <link rel="stylesheet" href="contact-modal.css">
 </head>
 <body>
 
-  <!-- HEADER con bottoni di autenticazione -->
+  <!-- HEADER con autenticazione -->
   <header>
+    <h1>IlTrovaClienti</h1>
     <button id="login-button" class="btn">Accedi</button>
     <button id="register-button" class="btn">Registrati</button>
     <button id="logout-button" class="btn" style="display:none;">Logout</button>
   </header>
 
-  <!-- Lista lead / contratti -->
-  <main>
-    <!-- ... i tuoi lead qui ... -->
-    <!-- Ogni volta che vuoi aprire il form di contatto, dai a quel pulsante questa classe: -->
-    <button class="open-contact-modal btn">Richiedi Contatto</button>
-  </main>
+  <!-- FILTRI -->
+  <section id="filters" class="filter-group">
+    <label>Regione:
+      <select id="filter-region">
+        <option value="">Tutte</option>
+      </select>
+    </label>
+    <label>Città:
+      <select id="filter-city">
+        <option value="">Tutte</option>
+      </select>
+    </label>
+    <label>Categoria:
+      <select id="filter-category">
+        <option value="">Tutte</option>
+      </select>
+    </label>
+    <label>Tipo:
+      <select id="filter-type">
+        <option value="">Tutti</option>
+      </select>
+    </label>
+    <button id="clear-filters" class="btn">Pulisci Filtri</button>
+  </section>
 
-  <!-- Modal “Richiesta Contatto” -->
+  <!-- CONTAINER LEAD -->
+  <main id="leads-container" class="cards-grid"></main>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkout-modal" class="modal">
+    <div class="modal-content">
+      <h2>Scegli Metodo di Pagamento</h2>
+      <label><input type="radio" name="payment" value="paypal"> PayPal</label><br>
+      <label><input type="radio" name="payment" value="card"> Carta di Credito</label><br>
+      <label><input type="radio" name="payment" value="bank"> Bonifico Bancario</label>
+      <div class="buttons">
+        <button id="pay-now" class="btn">Paga Ora</button>
+        <button id="close-checkout" class="btn">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT MODAL -->
   <div id="contact-modal">
     <div class="modal-content">
       <h2>Richiesta Contatto</h2>
@@ -45,40 +80,129 @@
     </div>
   </div>
 
-  <!-- Firebase + Auth -->
+  <!-- LIBRERIE -->
+  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <!-- I tuoi script -->
   <script src="firebase-init.js"></script>
   <script src="firebase-auth.js"></script>
 
-  <!-- Script per aprire/chiudere il modal di contatto -->
   <script>
-    function openContactModal() {
-      document.getElementById('contact-modal').classList.add('visible');
-    }
-    function closeContactModal() {
-      document.getElementById('contact-modal').classList.remove('visible');
-    }
+    // URL del tuo Google Sheet pubblicato
+    const SHEET_KEY = 'https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/pubhtml';
 
+    // Variabili globali
+    let allLeads = [];
+
+    // Inizializza Tabletop e Firebase dopo caricamento DOM
     document.addEventListener('DOMContentLoaded', () => {
-      document.querySelectorAll('.open-contact-modal')
-              .forEach(btn => btn.addEventListener('click', openContactModal));
-      document.getElementById('close-contact-modal')
-              .addEventListener('click', closeContactModal);
-
-      // Gestione invio form (esempio: logga i dati, poi chiudi)
-      document.getElementById('contact-form').addEventListener('submit', e => {
-        e.preventDefault();
-        const data = new FormData(e.target);
-        const obj = Object.fromEntries(data.entries());
-        console.log('Invio richiesta contatto:', obj);
-        // TODO: mandare via API o Firebase Firestore...
-        alert('Richiesta inviata! Ti contatteremo a breve.');
-        closeContactModal();
-        e.target.reset();
-      });
+      initTabletop();
+      setupModals();
+      setupFilters();
     });
-  </script>
 
+    function initTabletop() {
+      Tabletop.init({
+        key: SHEET_KEY,
+        callback: data => {
+          allLeads = data;
+          populateFilters(data);
+          renderLeads(data);
+        },
+        simpleSheet: true
+      });
+    }
+
+    function populateFilters(data) {
+      const regions = [...new Set(data.map(l => l.Regione))].sort();
+      const cities  = [...new Set(data.map(l => l.Città))].sort();
+      const cats    = [...new Set(data.map(l => l.Categoria))].sort();
+      const types   = [...new Set(data.map(l => l.Tipo))].sort();
+      const addOptions = (arr, selectId) => {
+        const sel = document.getElementById(selectId);
+        arr.forEach(v => {
+          const opt = document.createElement('option');
+          opt.value = v; opt.textContent = v;
+          sel.appendChild(opt);
+        });
+      };
+      addOptions(regions, 'filter-region');
+      addOptions(cities,  'filter-city');
+      addOptions(cats,    'filter-category');
+      addOptions(types,   'filter-type');
+    }
+
+    function setupFilters() {
+      ['filter-region','filter-city','filter-category','filter-type']
+        .forEach(id => document.getElementById(id)
+          .addEventListener('change', applyFilters));
+      document.getElementById('clear-filters')
+        .addEventListener('click', () => {
+          ['filter-region','filter-city','filter-category','filter-type']
+            .forEach(id => document.getElementById(id).value = '');
+          renderLeads(allLeads);
+        });
+    }
+
+    function applyFilters() {
+      const region   = document.getElementById('filter-region').value;
+      const city     = document.getElementById('filter-city').value;
+      const category = document.getElementById('filter-category').value;
+      const type     = document.getElementById('filter-type').value;
+      const filtered = allLeads.filter(l => {
+        return (!region   || l.Regione   === region)
+            && (!city     || l.Città     === city)
+            && (!category || l.Categoria === category)
+            && (!type     || l.Tipo      === type);
+      });
+      renderLeads(filtered);
+    }
+
+    function renderLeads(leads) {
+      const container = document.getElementById('leads-container');
+      container.innerHTML = '';
+      leads.forEach(l => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${l.Titolo}</h3>
+          <p>${l.Descrizione}</p>
+          <p><strong>Budget:</strong> €${l.Budget}</p>
+          <button class="btn open-contact-modal">Richiedi Contatto</button>
+          <button class="btn open-checkout-modal">Riserva</button>
+        `;
+        container.appendChild(card);
+      });
+      // ri-assegna eventi ai nuovi bottoni
+      document.querySelectorAll('.open-contact-modal')
+        .forEach(b => b.addEventListener('click', () => openModal('contact-modal')));
+      document.querySelectorAll('.open-checkout-modal')
+        .forEach(b => b.addEventListener('click', () => openModal('checkout-modal')));
+    }
+
+    // Funzioni modali
+    function setupModals() {
+      document.getElementById('close-contact-modal')
+        .addEventListener('click', () => closeModal('contact-modal'));
+      document.getElementById('close-checkout')
+        .addEventListener('click', () => closeModal('checkout-modal'));
+      document.getElementById('pay-now')
+        .addEventListener('click', () => {
+          const method = document.querySelector('input[name="payment"]:checked');
+          if (!method) return alert('Seleziona un metodo di pagamento');
+          alert('Pagamento con ' + method.value + ' non ancora implementato');
+          closeModal('checkout-modal');
+        });
+    }
+
+    function openModal(id) {
+      document.getElementById(id).classList.add('visible');
+    }
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('visible');
+    }
+  </script>
 </body>
 </html>
