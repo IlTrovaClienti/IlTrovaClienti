@@ -78,7 +78,6 @@ html, body {
   border: 1px solid #ccc;
   border-radius: 6px;
   background: #fff;
-  height: auto;
 }
 
 /* ========================
@@ -119,9 +118,7 @@ html, body {
 .tab[data-filter="Contratto"]    { background: var(--yellow);order: 3; color: #000; }
 .tab[data-filter="all"]          { background: var(--green); order: 4; color: #fff; }
 /* Tab attiva */
-.tab.active {
-  border-width: 2px;
-}
+.tab.active { border-width: 2px; }
 
 /* ========================
    Cards
@@ -147,6 +144,7 @@ html, body {
 .card h4    { margin: 0 0 6px; font-size: 1rem; }
 .card small { color: #555; font-size: .85rem; }
 .card p     { margin: 6px 0; font-size: .9rem; }
+.card button { margin-top: auto; width: 100%; }
 
 /* ========================
    Badge
@@ -212,29 +210,17 @@ html, body {
   z-index: 21;
 }
 .modal.open,
-.modal-mask.open {
-  display: block;
-}
+.modal-mask.open { display: block; }
 .modal input,
 .modal textarea {
-  width: 100%;
-  margin: 4px 0;
-  padding: 8px;
-  font-size: .9rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  width: 100%; margin: 4px 0; padding: 8px; font-size: .9rem;
+  border: 1px solid #ccc; border-radius: 6px;
 }
 
 /* ========================
    Responsive Mobile
    ======================== */
 @media (max-width: 600px) {
-  /* Tabs scrollabili orizzontale */
-  .tabs {
-    overflow-x: auto;
-  }
-  /* Filtri due per riga */
-  .filters {
-    overflow-x: hidden;
-  }
+  .tabs { overflow-x: auto; }
+  .filters { overflow-x: hidden; }
 }
