@@ -2,91 +2,53 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="favicon.ico">
-  <link rel="stylesheet" href="style.css?v=2.3.3">
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script defer src="firebase-init.js"></script>
-  <script defer src="script.js?v=2.3.3"></script>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="topbar">
+
+  <!-- Topbar -->
+  <div class="topbar">
     <h1>IlTrovaClienti</h1>
-    <div class="credit-box">
-      Crediti: <span id="crediti">0</span> (€<span id="euroCrediti">0</span>)
-      <button id="btnRicarica" class="btn btn-yellow small">Ricarica</button>
-      <button id="btnLogin"   class="btn btn-blue small">Login</button>
-      <button id="btnLogout"  class="btn btn-grey small hidden">Logout</button>
+    <div class="buttons">
+      <button id="ricaricaBtn" class="btn btn-yellow">Ricarica</button>
+      <button id="loginBtn"    class="btn btn-blue">Login</button>
+      <button id="logoutBtn"   class="btn btn-grey">Logout</button>
+      <span id="crediti">Crediti: 0 (€0)</span>
     </div>
-  </header>
+  </div>
 
-  <nav class="tabs">
-    <button class="tab btn-green active" data-filter="all">Tutti</button>
-    <button class="tab btn-blue"         data-filter="lead">Lead da chiamare</button>
-    <button class="tab btn-pink"         data-filter="app">Appuntamenti fissati</button>
-    <button class="tab btn-yellow"       data-filter="contr">Contratti riservati</button>
-  </nav>
+  <!-- FILTRI (ora qui sopra) -->
+  <div class="filters">
+    <select id="regioneFilter"><option>Regione</option></select>
+    <select id="cittaFilter"><option>Città</option></select>
+    <select id="categoriaFilter"><option>Categoria</option></select>
+    <select id="tipoFilter"><option>Tipo</option></select>
+  </div>
 
-  <section class="filters">
-    <select id="regioneFilter"></select>
-    <select id="cittaFilter"></select>
-    <select id="categoriaFilter"></select>
-    <select id="tipoFilter"></select>
-  </section>
+  <!-- TABS (ora sotto i filtri) -->
+  <div class="tabs">
+    <div class="tab" data-filter="Lead">Lead da chiamare</div>
+    <div class="tab" data-filter="Appuntamento">Appuntamenti fissati</div>
+    <div class="tab" data-filter="Contratto">Contratti riservati</div>
+    <div class="tab active" data-filter="all">Tutti</div>
+  </div>
 
-  <main id="cards" class="cards"></main>
-
-  <aside id="cart">
+  <!-- CARDS E CARRELLO -->
+  <div class="cards" id="cards"></div>
+  <div id="cart">
     <h2>Carrello</h2>
     <ul id="cartList"></ul>
-    <p>Totale crediti: <span id="cartTotal">0</span></p>
-  </aside>
-
-  <!-- Login Modal -->
-  <div id="loginMask" class="modal-mask hidden"></div>
-  <div id="loginModal" class="modal hidden">
-    <h3>Login / Registrazione</h3>
-    <input id="loginEmail"    type="email"    placeholder="Email">
-    <input id="loginPassword" type="password" placeholder="Password">
-    <button id="doLogin"      class="btn btn-blue full">Login</button>
-    <button id="doSignup"     class="btn btn-green full">Registrati</button>
-    <button id="closeLogin"   class="btn btn-grey small">Chiudi</button>
+    <div>Totale crediti: <span id="cartTotal">0</span></div>
   </div>
 
-  <!-- Pay Modal -->
-  <div id="payMask" class="modal-mask hidden"></div>
-  <div id="payModal" class="modal hidden">
-    <h3>Crediti insufficienti</h3>
-    <button id="payRevolut" class="btn btn-blue full">Carta (Revolut)</button>
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-      <input type="hidden" name="cmd" value="_s-xclick">
-      <input type="hidden" name="hosted_button_id" value="YOUR_BUTTON_ID">
-      <button class="btn btn-yellow full" type="submit">PayPal</button>
-    </form>
-    <button id="showIban" class="btn btn-green full">Bonifico bancario</button>
-    <div id="ibanBox" class="hidden">
-      <p><b>Beneficiario:</b> Cristian Di Bella</p>
-      <p><b>IBAN:</b> LT67 3250 0328 0923 7250</p>
-      <p><b>BIC/SWIFT:</b> REVOLT21</p>
-      <p><b>Banca:</b> Revolut Bank UAB – Konstitucijos ave. 21B, Vilnius</p>
-    </div>
-    <button id="closePay" class="btn btn-grey small">Chiudi</button>
-  </div>
+  <!-- MODALI ecc… -->
+  <div id="modalMask" class="modal-mask"></div>
+  <div id="loginModal" class="modal">…</div>
+  <div id="resModal"   class="modal">…</div>
 
-  <!-- Reserve Modal -->
-  <div id="resMask" class="modal-mask hidden"></div>
-  <div id="resModal" class="modal hidden">
-    <h3>Riserva Contratto</h3>
-    <input id="resName"   type="text" placeholder="Nome e Cognome">
-    <input id="resPhone"  type="text" placeholder="Telefono">
-    <input id="resLoc"    type="text" placeholder="Località">
-    <input id="resEmail"  type="email" placeholder="Email">
-    <textarea id="resMsg" placeholder="Messaggio libero"></textarea>
-    <button id="doReserve" class="btn btn-green full">Riserva</button>
-    <button id="closeRes"   class="btn btn-grey small">Chiudi</button>
-  </div>
+  <script src="script.js"></script>
+  <script src="firebase-init.js"></script>
 </body>
 </html>
