@@ -1,49 +1,37 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Il Trova Clienti</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="favicon.ico">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Il Trova Clienti</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Il Trova Clienti</h1>
-    </header>
-
-    <nav>
-        <ul>
-            <li><button data-tab="Lead" class="tab-button active">Lead</button></li>
-            <li><button data-tab="Appuntamento" class="tab-button">Appuntamenti</button></li>
-            <li><button data-tab="Contratto" class="tab-button">Contratti</button></li>
-            <li><button data-tab="Tutti" class="tab-button">Tutti</button></li>
-        </ul>
-    </nav>
-
-    <section id="filters">
-        <select id="filter-region"></select>
-        <select id="filter-city"></select>
-        <select id="filter-category"></select>
-        <select id="filter-type"></select>
-    </section>
-
-    <main id="cards"></main>
-
-    <div id="cart" class="sticky-cart">
-        <h2>Carrello</h2>
-        <ul id="cart-items"></ul>
-        <div id="cart-total"></div>
-        <button id="checkout" class="round-button">Checkout</button>
-    </div>
-
-    <!-- PayPal button container -->
-    <div id="paypal-button-container"></div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="firebase-init.js"></script>
-    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR"></script>
-    <script src="script.js" defer></script>
+  <header><h1>Il Trova Clienti</h1></header>
+  <nav>
+    <button data-tab="Lead" class="tab-button active">Lead</button>
+    <button data-tab="Appuntamento" class="tab-button">Appuntamenti</button>
+    <button data-tab="Contratto" class="tab-button">Contratti</button>
+    <button data-tab="Tutti" class="tab-button">Tutti</button>
+  </nav>
+  <section id="filters">
+    <select id="filter-region"></select>
+    <select id="filter-city"></select>
+    <select id="filter-category"></select>
+    <select id="filter-type"></select>
+  </section>
+  <main id="cards"></main>
+  <div id="cart" class="sticky-cart">
+    <h2>Carrello</h2>
+    <ul id="cart-items"></ul>
+    <div id="cart-total"></div>
+    <button id="checkout" class="round-button">Checkout</button>
+  </div>
+  <div id="paypal-button-container"></div>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="firebase-init.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
