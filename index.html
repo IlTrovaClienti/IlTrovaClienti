@@ -4,205 +4,127 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-
-  <!-- I tuoi CSS -->
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="contact-modal.css">
+  <base href="/IlTrovaClienti/">
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="firebase-init.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
-
-  <!-- HEADER con autenticazione -->
-  <header>
-    <h1>IlTrovaClienti</h1>
-    <button id="login-button" class="btn">Accedi</button>
-    <button id="register-button" class="btn">Registrati</button>
-    <button id="logout-button" class="btn" style="display:none;">Logout</button>
+  <header class="header">
+    <div class="logo">
+      <img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti">
+    </div>
+    <div class="header-right">
+      <div class="credit-display">
+        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
+      </div>
+      <button id="checkout-small" class="checkout-small btn">Checkout</button>
+      <a id="ricarica" class="ricarica-btn btn" href="ricarica.html">Ricarica</a>
+    </div>
   </header>
 
-  <!-- FILTRI -->
-  <section id="filters" class="filter-group">
-    <label>Regione:
-      <select id="filter-region">
-        <option value="">Tutte</option>
-      </select>
-    </label>
-    <label>Città:
-      <select id="filter-city">
-        <option value="">Tutte</option>
-      </select>
-    </label>
-    <label>Categoria:
-      <select id="filter-category">
-        <option value="">Tutte</option>
-      </select>
-    </label>
-    <label>Tipo:
-      <select id="filter-type">
-        <option value="">Tutti</option>
-      </select>
-    </label>
-    <button id="clear-filters" class="btn">Pulisci Filtri</button>
+  <nav class="section-buttons">
+    <button id="btnLeads" class="selected btn">Lead da chiamare</button>
+    <button id="btnAppuntamenti" class="btn">Appuntamenti fissati</button>
+    <button id="btnContratti" class="btn">Contratti riservati</button>
+  </nav>
+
+  <section class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="regione">Regione</label>
+        <select id="regione"></select>
+      </div>
+      <div class="filter-group">
+        <label for="citta">Città</label>
+        <select id="citta"></select>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria"></select>
+      </div>
+      <div class="filter-group">
+        <label for="tipo">Tipo</label>
+        <select id="tipo"></select>
+      </div>
+    </div>
   </section>
 
-  <!-- CONTAINER LEAD -->
-  <main id="leads-container" class="cards-grid"></main>
+  <section class="carrello">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0</div>
+  </section>
 
-  <!-- CHECKOUT MODAL -->
-  <div id="checkout-modal" class="modal">
-    <div class="modal-content">
-      <h2>Scegli Metodo di Pagamento</h2>
-      <label><input type="radio" name="payment" value="paypal"> PayPal</label><br>
-      <label><input type="radio" name="payment" value="card"> Carta di Credito</label><br>
-      <label><input type="radio" name="payment" value="bank"> Bonifico Bancario</label>
-      <div class="buttons">
-        <button id="pay-now" class="btn">Paga Ora</button>
-        <button id="close-checkout" class="btn">Chiudi</button>
+  <main id="clienti"></main>
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login" class="active btn">Accedi</button>
+        <button id="show-register" class="btn">Registrati</button>
       </div>
+      <form id="login-form" class="active">
+        <input type="email"  id="login-email"  placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta" required></label>
+        <button type="button" id="btnLogin" class="btn">Accedi</button>
+      </form>
+      <form id="register-form">
+        <input type="text"  id="register-name"  placeholder="Nome" required>
+        <input type="text"  id="register-surname"  placeholder="Cognome" required>
+        <input type="email"  id="register-email"  placeholder="Email" required>
+        <input type="password" id="register-password"  placeholder="Password" required>
+        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta" required></label>
+        <button type="button" id="btnRegister" class="btn">Registrati</button>
+      </form>
+      <button id="close-auth" class="cancel-form btn">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Scegli metodo di pagamento</h3>
+      <div class="option-container">
+        <div class="option">
+          <img class="pay-logo" src="assets/paypal.png" alt="PayPal">
+          <button id="pay-paypal" class="btn">PayPal</button>
+        </div>
+        <div class="option">
+          <img class="pay-logo" src="assets/credit-card.png" alt="Carta">
+          <button id="pay-card" class="btn">Carta</button>
+        </div>
+        <div class="option">
+          <img class="pay-logo" src="assets/bank.png" alt="Bonifico">
+          <button id="pay-bank" class="btn">Bonifico</button>
+        </div>
+      </div>
+      <button id="close-payment" class="cancel-form btn">Chiudi</button>
     </div>
   </div>
 
   <!-- CONTACT MODAL -->
-  <div id="contact-modal">
-    <div class="modal-content">
-      <h2>Richiesta Contatto</h2>
-      <form id="contact-form">
-        <input type="text" name="nome" placeholder="Nome" required>
-        <input type="text" name="cognome" placeholder="Cognome" required>
-        <input type="tel" name="telefono" placeholder="Telefono" required>
-        <input type="text" name="localita" placeholder="Località" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <textarea name="messaggio" placeholder="Messaggio" rows="4" required></textarea>
-        <div class="buttons">
-          <button type="submit" class="btn">Invia</button>
-          <button type="button" class="btn" id="close-contact-modal">Chiudi</button>
-        </div>
-      </form>
+  <div id="contact-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Richiesta Contatto</h3>
+      <input type="text"  id="contact-name"  placeholder="Nome" required>
+      <input type="text"  id="contact-surname"  placeholder="Cognome" required>
+      <input type="tel"  id="contact-phone"  placeholder="Telefono" required>
+      <input type="text"  id="contact-location" placeholder="Località" required>
+      <input type="email" id="contact-email"  placeholder="Email" required>
+      <textarea id="contact-message" rows="4" placeholder="Messaggio" required></textarea>
+      <button id="btnContactSend" class="ricarica-action btn-paylink btn">Invia</button>
+      <button id="close-contact" class="cancel-form btn">Chiudi</button>
     </div>
   </div>
 
-  <!-- LIBRERIE -->
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-
-  <!-- I tuoi script -->
-  <script src="firebase-init.js"></script>
-  <script src="firebase-auth.js"></script>
-
-  <script>
-    // URL del tuo Google Sheet pubblicato
-    const SHEET_KEY = 'https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/pubhtml';
-
-    // Variabili globali
-    let allLeads = [];
-
-    // Inizializza Tabletop e Firebase dopo caricamento DOM
-    document.addEventListener('DOMContentLoaded', () => {
-      initTabletop();
-      setupModals();
-      setupFilters();
-    });
-
-    function initTabletop() {
-      Tabletop.init({
-        key: SHEET_KEY,
-        callback: data => {
-          allLeads = data;
-          populateFilters(data);
-          renderLeads(data);
-        },
-        simpleSheet: true
-      });
-    }
-
-    function populateFilters(data) {
-      const regions = [...new Set(data.map(l => l.Regione))].sort();
-      const cities  = [...new Set(data.map(l => l.Città))].sort();
-      const cats    = [...new Set(data.map(l => l.Categoria))].sort();
-      const types   = [...new Set(data.map(l => l.Tipo))].sort();
-      const addOptions = (arr, selectId) => {
-        const sel = document.getElementById(selectId);
-        arr.forEach(v => {
-          const opt = document.createElement('option');
-          opt.value = v; opt.textContent = v;
-          sel.appendChild(opt);
-        });
-      };
-      addOptions(regions, 'filter-region');
-      addOptions(cities,  'filter-city');
-      addOptions(cats,    'filter-category');
-      addOptions(types,   'filter-type');
-    }
-
-    function setupFilters() {
-      ['filter-region','filter-city','filter-category','filter-type']
-        .forEach(id => document.getElementById(id)
-          .addEventListener('change', applyFilters));
-      document.getElementById('clear-filters')
-        .addEventListener('click', () => {
-          ['filter-region','filter-city','filter-category','filter-type']
-            .forEach(id => document.getElementById(id).value = '');
-          renderLeads(allLeads);
-        });
-    }
-
-    function applyFilters() {
-      const region   = document.getElementById('filter-region').value;
-      const city     = document.getElementById('filter-city').value;
-      const category = document.getElementById('filter-category').value;
-      const type     = document.getElementById('filter-type').value;
-      const filtered = allLeads.filter(l => {
-        return (!region   || l.Regione   === region)
-            && (!city     || l.Città     === city)
-            && (!category || l.Categoria === category)
-            && (!type     || l.Tipo      === type);
-      });
-      renderLeads(filtered);
-    }
-
-    function renderLeads(leads) {
-      const container = document.getElementById('leads-container');
-      container.innerHTML = '';
-      leads.forEach(l => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <h3>${l.Titolo}</h3>
-          <p>${l.Descrizione}</p>
-          <p><strong>Budget:</strong> €${l.Budget}</p>
-          <button class="btn open-contact-modal">Richiedi Contatto</button>
-          <button class="btn open-checkout-modal">Riserva</button>
-        `;
-        container.appendChild(card);
-      });
-      // ri-assegna eventi ai nuovi bottoni
-      document.querySelectorAll('.open-contact-modal')
-        .forEach(b => b.addEventListener('click', () => openModal('contact-modal')));
-      document.querySelectorAll('.open-checkout-modal')
-        .forEach(b => b.addEventListener('click', () => openModal('checkout-modal')));
-    }
-
-    // Funzioni modali
-    function setupModals() {
-      document.getElementById('close-contact-modal')
-        .addEventListener('click', () => closeModal('contact-modal'));
-      document.getElementById('close-checkout')
-        .addEventListener('click', () => closeModal('checkout-modal'));
-      document.getElementById('pay-now')
-        .addEventListener('click', () => {
-          const method = document.querySelector('input[name="payment"]:checked');
-          if (!method) return alert('Seleziona un metodo di pagamento');
-          alert('Pagamento con ' + method.value + ' non ancora implementato');
-          closeModal('checkout-modal');
-        });
-    }
-
-    function openModal(id) {
-      document.getElementById(id).classList.add('visible');
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('visible');
-    }
-  </script>
 </body>
 </html>
