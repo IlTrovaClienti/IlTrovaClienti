@@ -5,17 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
   <base href="/IlTrovaClienti/">
+
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <!-- Se vuoi supportare anche PNG -->
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+
+  <!-- CSS principali -->
   <link rel="stylesheet" href="style.css">
-  <!-- Firebase SDK v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="firebase-init.js" defer></script>
-  <script src="script.js" defer></script>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="header">
     <div class="logo">
-      <img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti">
+      <img src="assets/logo.jpg" alt="Logo IlTrovaClienti" class="logo-img">
     </div>
     <div class="header-right">
       <div class="credit-display">
@@ -26,12 +29,14 @@
     </div>
   </header>
 
+  <!-- NAV SEZIONI -->
   <nav class="section-buttons">
     <button id="btnLeads" class="selected btn">Lead da chiamare</button>
     <button id="btnAppuntamenti" class="btn">Appuntamenti fissati</button>
     <button id="btnContratti" class="btn">Contratti riservati</button>
   </nav>
 
+  <!-- FILTRI -->
   <section class="filters">
     <div class="filter-row">
       <div class="filter-group">
@@ -55,15 +60,17 @@
     </div>
   </section>
 
+  <!-- CARRELLO -->
   <section class="carrello">
     <h2>Carrello</h2>
     <ul id="carrello"></ul>
     <div id="totale">Totale: €0</div>
   </section>
 
+  <!-- CONTENITORE CLIENTI -->
   <main id="clienti"></main>
 
-  <!-- AUTH MODAL -->
+  <!-- MODALE AUTH -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-tabs">
@@ -89,7 +96,7 @@
     </div>
   </div>
 
-  <!-- PAYMENT MODAL -->
+  <!-- MODALE PAGAMENTO -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal">
       <h3>Scegli metodo di pagamento</h3>
@@ -111,7 +118,7 @@
     </div>
   </div>
 
-  <!-- CONTACT MODAL -->
+  <!-- MODALE CONTATTO -->
   <div id="contact-modal" class="modal-overlay">
     <div class="modal">
       <h3>Richiesta Contatto</h3>
@@ -126,5 +133,13 @@
     </div>
   </div>
 
+  <!-- LIBRERIE -->
+  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+
+  <!-- TUOI SCRIPT -->
+  <script src="firebase-init.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
