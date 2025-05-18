@@ -1,7 +1,7 @@
 // firebase-init.js
-
+// ATTENZIONE: sostituisci questi valori solo se cambiano nel tuo project settings!
 const firebaseConfig = {
-  apiKey:            "AIzaSyAbiSzaWGRWTxA5C1STYv3IiuCTyS6WaOA",
+  apiKey:            "AIzaSyAbiSZaWGRWTxA5C15TYv3IiuCTyS6WaOA",
   authDomain:        "iltrovaclienti-948af.firebaseapp.com",
   projectId:         "iltrovaclienti-948af",
   storageBucket:     "iltrovaclienti-948af.appspot.com",
@@ -10,6 +10,7 @@ const firebaseConfig = {
   measurementId:     "G-JF12YKNJX6"
 };
 
+// Inizializza Firebase
 firebase.initializeApp(firebaseConfig);
 const auth      = firebase.auth();
 const firestore = firebase.firestore();
