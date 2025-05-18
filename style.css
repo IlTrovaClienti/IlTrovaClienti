@@ -1,13 +1,14 @@
-/* style.css v2.4.4 */
+/* style.css v2.4.6 */
 
 /* ========================
    Variabili colori
    ======================== */
 :root {
-  --green:   #28a745;  /* verde brillante */
-  --blue:    #0076ff;  /* blu acceso */
-  --pink:    #e5008a;  /* fucsia vivo */
-  --yellow:  #ffcc00;  /* giallo intenso */
+  --green:   #28a745;
+  --blue:    #0076ff;
+  --pink:    #e5008a;
+  --yellow:  #ffcc00;
+  --grey:    #ccc;
 }
 
 /* ========================
@@ -27,36 +28,22 @@ html, body {
    Generale Bottoni
    ======================== */
 .btn {
-  display: inline-block;
   border: none;
   border-radius: 20px;
-  padding: 10px 16px;
+  padding: 8px 14px;
   font-weight: bold;
   cursor: pointer;
-  text-align: center;
   transition: background .2s;
 }
-.btn.small {
-  padding: 6px 12px;
-  font-size: .85rem;
-}
-.btn.full {
-  width: 100%;
-  margin: 6px 0;
-}
+.btn.small { padding: 6px 12px; font-size: .85rem; }
 .btn-green  { background: var(--green);  color: #fff; }
 .btn-blue   { background: var(--blue);   color: #fff; }
 .btn-pink   { background: var(--pink);   color: #fff; }
 .btn-yellow { background: var(--yellow); color: #000; }
-.btn-grey   { background: #ccc;          color: #000; }
-/* Pulsante interno alla card */
-.card button {
-  width: 100%;
-  margin-top: auto;
-}
+.btn-grey   { background: var(--grey);   color: #000; }
 
 /* ========================
-   Header
+   Topbar
    ======================== */
 .topbar {
   display: flex;
@@ -65,21 +52,37 @@ html, body {
   padding: 8px 12px;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0,0,0,.1);
-  position: sticky;
-  top: 0;
-  z-index: 10;
+  position: sticky; top: 0; z-index: 10;
 }
-.topbar h1 {
-  font-size: 1.4rem;
-  margin: 0;
-}
+.topbar h1 { font-size: 1.4rem; margin: 0; }
 .topbar .buttons {
-  display: flex;
-  gap: 6px;
+  display: flex; align-items: center; gap: 8px;
 }
 
 /* ========================
-   Tabs (4-in-riga, colori e ordine corretti)
+   Filtri
+   ======================== */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #fff;
+  z-index: 9;
+}
+.filters select {
+  flex: 1 1 calc(50% - 6px);
+  min-width: 0;
+  padding: 6px 10px;
+  font-size: .9rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  height: auto;
+}
+
+/* ========================
+   Tabs
    ======================== */
 .tabs {
   display: flex;
@@ -88,7 +91,7 @@ html, body {
   padding: 8px 12px;
   background: #fff;
   overflow-x: auto;
-  z-index: 9;
+  z-index: 8;
 }
 .tabs::-webkit-scrollbar {
   height: 6px;
@@ -102,50 +105,22 @@ html, body {
   min-width: 80px;
   text-align: center;
   font-size: .9rem;
-  padding: 8px 12px;
+  padding: 8px 10px;
   border-radius: 20px;
   cursor: pointer;
   line-height: 1.2;
-  border: 2px solid transparent;
-  color: #fff;
+  border: 1px solid #333;
+  white-space: normal;
+  word-break: break-word;
 }
-/* Colori specifici */
-.tab[data-filter="all"]          { background: var(--green); order: 4; }
-.tab[data-filter="Lead"]         { background: var(--blue);  order: 1; }
-.tab[data-filter="Appuntamento"] { background: var(--pink);  order: 2; }
-.tab[data-filter="Contratto"]    { background: var(--yellow);color: #000; order: 3; }
+/* Colori e ordine */
+.tab[data-filter="Lead"]         { background: var(--blue);  order: 1; color: #fff; }
+.tab[data-filter="Appuntamento"] { background: var(--pink);  order: 2; color: #fff; }
+.tab[data-filter="Contratto"]    { background: var(--yellow);order: 3; color: #000; }
+.tab[data-filter="all"]          { background: var(--green); order: 4; color: #fff; }
 /* Tab attiva */
 .tab.active {
-  border-color: #333;
-}
-
-/* ========================
-   Filtri (compatti)
-   ======================== */
-.filters {
-  display: flex;
-  gap: 6px;
-  padding: 8px 12px;
-  background: #fff;
-  overflow-x: auto;
-  z-index: 8;
-}
-.filters::-webkit-scrollbar {
-  height: 6px;
-}
-.filters::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,.2);
-  border-radius: 3px;
-}
-.filters select {
-  flex: 0 0 auto;
-  padding: 6px 10px;
-  font-size: .9rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #fff;
-  height: auto;
-  min-width: 0;
+  border-width: 2px;
 }
 
 /* ========================
@@ -184,8 +159,8 @@ html, body {
   margin-bottom: 6px;
   color: #fff;
 }
-.badge.lead  { background: var(--blue); }
-.badge.app   { background: var(--pink); }
+.badge.lead  { background: var(--blue);   }
+.badge.app   { background: var(--pink);   }
 .badge.contr { background: var(--yellow); color: #000; }
 
 /* ========================
@@ -195,9 +170,7 @@ html, body {
   padding: 10px;
   background: #fff;
   border-top: 2px solid #ccc;
-  position: sticky;
-  bottom: 0;
-  z-index: 7;
+  position: sticky; bottom: 0; z-index: 7;
 }
 #cart h2 { margin: 0 0 6px; font-size: 1rem; }
 #cartList {
@@ -256,25 +229,12 @@ html, body {
    Responsive Mobile
    ======================== */
 @media (max-width: 600px) {
-
-  /* 1) Tab: bordino sempre visibile, multi-line wrap e colore testo corretto */
-  .tab {
-    border: 1px solid #333 !important;
-    white-space: normal;         /* permettere il wrap sulle due righe */
-    word-break: break-word;
+  /* Tabs scrollabili orizzontale */
+  .tabs {
+    overflow-x: auto;
   }
-  .tab[data-filter="Contratto"] {
-    color: #000 !important;      /* testo nero sul giallo */
-  }
-
-  /* 2) Filtri: due a riga, senza overflow orizzontale */
+  /* Filtri due per riga */
   .filters {
-    overflow-x: hidden !important;
-    flex-wrap: wrap !important;
+    overflow-x: hidden;
   }
-  .filters select {
-    flex: 1 1 calc(50% - 6px) !important;
-    min-width: 0;
-  }
-
 }
