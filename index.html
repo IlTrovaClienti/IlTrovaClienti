@@ -14,10 +14,10 @@
 
     <nav>
         <ul>
-            <li><button id="tab-lead">Lead</button></li>
-            <li><button id="tab-appointment">Appuntamenti</button></li>
-            <li><button id="tab-contract">Contratti</button></li>
-            <li><button id="tab-all">Tutti</button></li>
+            <li><button data-tab="Lead" class="tab-button active">Lead</button></li>
+            <li><button data-tab="Appuntamento" class="tab-button">Appuntamenti</button></li>
+            <li><button data-tab="Contratto" class="tab-button">Contratti</button></li>
+            <li><button data-tab="Tutti" class="tab-button">Tutti</button></li>
         </ul>
     </nav>
 
@@ -34,7 +34,7 @@
         <h2>Carrello</h2>
         <ul id="cart-items"></ul>
         <div id="cart-total"></div>
-        <button id="checkout">Checkout</button>
+        <button id="checkout" class="round-button">Checkout</button>
     </div>
 
     <!-- PayPal button container -->

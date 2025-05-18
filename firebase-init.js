@@ -12,21 +12,17 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
-// Auth UI logic (login/register popup)
+// Show login/register popup
 function showAuthPopup() {
   const email = prompt("Inserisci email:");
   const password = prompt("Inserisci password:");
   auth.signInWithEmailAndPassword(email, password)
-    .then(userCred => {
-      console.log('Utente loggato:', userCred.user);
-    })
     .catch(error => {
       if (error.code === 'auth/user-not-found') {
-        auth.createUserWithEmailAndPassword(email, password)
-          .then(userCred => console.log('Utente registrato:', userCred.user))
-          .catch(err => console.error(err));
-      } else {
-        console.error(error);
+        return auth.createUserWithEmailAndPassword(email, password);
       }
-    });
+      throw error;
+    })
+    .then(userCred => console.log('Utente autenticato:', userCred.user))
+    .catch(err => console.error(err));
 }
