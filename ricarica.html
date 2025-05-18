@@ -5,6 +5,61 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ricarica Crediti</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      background: #f0f2f5;
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+    }
+    .ricarica-box {
+      max-width: 400px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .ricarica-box h2 {
+      margin-bottom: 16px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    .ricarica-box h3 {
+      margin-top: 16px;
+      margin-bottom: 8px;
+      font-size: 1em;
+    }
+    .ricarica-box p {
+      font-size: .9em;
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+    .ricarica-action {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 12px 0;
+      margin: 8px 0;
+      border: none;
+      border-radius: 24px;
+      font-size: 1em;
+      color: #fff;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-revolut {
+      background: #4A90E2;
+    }
+    .btn-paypal {
+      background: #003087;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 16px 0;
+    }
+  </style>
 </head>
 <body>
   <div class="ricarica-box">
@@ -12,20 +67,24 @@
 
     <h3>💳 Con Revolut (Carta o Apple/Google Pay)</h3>
     <p>Importo fisso: <strong>40 € = 1 credito</strong></p>
-    <a href="https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4" target="_blank" class="btn-revolut">Paga ora con Revolut</a>
+    <a href="https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4"
+       target="_blank"
+       class="ricarica-action btn-revolut">
+      Paga ora con Revolut
+    </a>
 
-    <hr />
+    <hr/>
 
     <h3>🏦 Bonifico bancario su Revolut</h3>
     <p>
-      Beneficiario: <strong>Cristian Di Bella</strong><br />
-      IBAN: <strong>LT67 3250 0328 0923 7250</strong><br />
-      BIC/SWIFT: <strong>REVOLT21</strong><br />
-      Banca: <em>Revolut Bank UAB, Konstitucijos ave. 21B, 08130, Vilnius, Lithuania</em><br /><br />
+      Beneficiario: <strong>Cristian Di Bella</strong><br/>
+      IBAN: <strong>LT67 3250 0328 0923 7250</strong><br/>
+      BIC/SWIFT: <strong>REVOLT21</strong><br/>
+      Banca: <em>Revolut Bank UAB, Konstitucijos ave. 21B, Vilnius, Lithuania</em><br/><br/>
       <strong>Causale:</strong> <em>RICARICA CREDITO [tua email]</em>
     </p>
 
-    <hr />
+    <hr/>
 
     <h3>🅿️ PayPal / Carta di credito</h3>
     <p>Importo fisso: <strong>40 € = 1 credito</strong></p>
@@ -35,11 +94,15 @@
   <script src="https://www.paypal.com/sdk/js?client-id=AYZb2BzhUBu63wj_oyJp5NqNKsvY8R6I3iVWZ79WtdcnHn7K4NPM7KZ6eM6PfveLtU_xclgZPlCI2XXG&currency=EUR"></script>
   <script>
     paypal.Buttons({
+      style: {
+        shape: 'rect',
+        color: 'gold',
+        layout: 'vertical',
+        label: 'pay'
+      },
       createOrder: function (data, actions) {
         return actions.order.create({
-          purchase_units: [{
-            amount: { value: '40.00' }
-          }]
+          purchase_units: [{ amount: { value: '40.00' } }]
         });
       },
       onApprove: function (data, actions) {
