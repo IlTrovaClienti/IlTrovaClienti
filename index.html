@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>IlTrovaClienti</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -35,7 +35,7 @@
     <div class="tab active" data-filter="all">Tutti</div>
   </div>
 
-  <!-- Cards container -->
+  <!-- Cards -->
   <div id="cards" class="cards"></div>
 
   <!-- Carrello -->
@@ -48,21 +48,21 @@
   <!-- Modali -->
   <div id="modalMask" class="modal-mask"></div>
   <div id="loginModal" class="modal">
-    <!-- contenuto login/registrazione -->
+    <!-- login/registrazione -->
   </div>
   <div id="resModal" class="modal">
-    <!-- contenuto riserva contratto -->
+    <!-- riserva contratto -->
   </div>
 
-  <!-- 1) Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <!-- 1) Firebase SDK v8 (global namespace) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js" defer></script>
 
-  <!-- 2) Inizializzazione Firebase -->
-  <script src="firebase-init.js"></script>
+  <!-- 2) Il tuo init con firebase.initializeApp(...) -->
+  <script src="firebase-init.js" defer></script>
 
   <!-- 3) Il tuo script principale -->
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
