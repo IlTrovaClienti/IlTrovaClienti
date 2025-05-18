@@ -1,4 +1,4 @@
-/* style.css v2.4.2 */
+/* style.css v2.4.3 */
 
 /* ========================
    Variabili colori
@@ -90,6 +90,13 @@ html, body {
   overflow-x: auto;
   z-index: 9;
 }
+.tabs::-webkit-scrollbar {
+  height: 6px;
+}
+.tabs::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.2);
+  border-radius: 3px;
+}
 .tab {
   flex: 0 0 calc(25% - 8px);
   min-width: 80px;
@@ -98,21 +105,22 @@ html, body {
   padding: 8px 12px;
   border-radius: 20px;
   cursor: pointer;
+  line-height: 1.2;
   border: 2px solid transparent;
   color: #fff;
 }
-/* Colori specifici per filtro */
-.tab[data-filter="all"]           { background: var(--green); }
-.tab[data-filter="Lead"]          { background: var(--blue); }
-.tab[data-filter="Appuntamento"]  { background: var(--pink); }
-.tab[data-filter="Contratto"]     { background: var(--yellow); color: #000; }
+/* Colori specifici */
+.tab[data-filter="all"]          { background: var(--green); }
+.tab[data-filter="Lead"]         { background: var(--blue); }
+.tab[data-filter="Appuntamento"] { background: var(--pink); }
+.tab[data-filter="Contratto"]    { background: var(--yellow); color: #000; }
 /* Tab attiva */
 .tab.active {
   border-color: #333;
 }
 
 /* ========================
-   Filtri (compatti e scrollabili)
+   Filtri (compatti)
    ======================== */
 .filters {
   display: flex;
@@ -191,10 +199,7 @@ html, body {
   bottom: 0;
   z-index: 7;
 }
-#cart h2 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-}
+#cart h2 { margin: 0 0 6px; font-size: 1rem; }
 #cartList {
   list-style: none;
   padding: 0;
@@ -255,6 +260,13 @@ html, body {
   .tabs {
     overflow-x: auto;
     flex-wrap: nowrap;
+  }
+  .tabs::-webkit-scrollbar {
+    height: 6px;
+  }
+  .tabs::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,.2);
+    border-radius: 3px;
   }
   /* Filtri scrollabili orizzontalmente */
   .filters {
