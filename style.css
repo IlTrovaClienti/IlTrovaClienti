@@ -82,9 +82,7 @@ body {
 }
 
 /* FILTRI */
-.filters {
-  margin-bottom: 12px;
-}
+.filters { margin-bottom: 12px; }
 .filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -115,18 +113,9 @@ body {
   border-radius: 8px;
   margin-bottom: 12px;
 }
-.carrello h2 {
-  font-size: 1em;
-  margin-bottom: 6px;
-}
-#totale {
-  margin-top: 6px;
-  font-weight: bold;
-  font-size: .9em;
-}
-.carrello ul {
-  list-style: none;
-}
+.carrello h2 { font-size: 1em; margin-bottom: 6px; }
+#totale { margin-top: 6px; font-weight: bold; font-size: .9em; }
+.carrello ul { list-style: none; }
 
 /* CARDS GRID */
 #clienti {
@@ -176,9 +165,7 @@ body {
   font-size: .9em;
   cursor: pointer;
 }
-.actions button:hover {
-  opacity: 0.9;
-}
+.actions button:hover { opacity: 0.9; }
 .cliente-card.lead .acquisisci         { background: #007BFF; color: #fff; }
 .cliente-card.appuntamento .acquisisci { background: #FF00FF; color: #fff; }
 .cliente-card.contratto .riserva       { background: #FFD700; color: #000; }
@@ -214,7 +201,7 @@ body {
 }
 .modal-tabs button {
   flex: 1;
-  padding: 6px;
+  padding: 8px;
   border: none;
   background: #e0e0e0;
   cursor: pointer;
@@ -240,30 +227,27 @@ body {
   font-size: .9em;
 }
 
-/* BOTTONI LOGIN / REGISTRAZIONE / CHIUDI nel modal */
+/* BOTTONI LOGIN / CHIUDI nel modal */
 #btnLogin,
-#btnRegister,
 .cancel-form {
   display: inline-block;
-  padding: 8px 12px;
-  font-size: .9em;
+  padding: 10px 16px;
+  font-size: 1em;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 8px;
+  border-radius: 12px;
   color: #fff;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
-  margin-top: 8px;
+  margin-top: 12px;
 }
-#btnLogin,
-#btnRegister {
-  background: #004080;
+#btnLogin {
+  background: #28a745; /* verde */
 }
 .cancel-form {
-  background: #dc3545;
+  background: #FF00FF; /* fucsia */
 }
 #btnLogin:hover,
-#btnRegister:hover,
 .cancel-form:hover {
   opacity: 0.9;
 }
@@ -287,7 +271,5 @@ body {
   font-size: .9em;
   cursor: pointer;
 }
-.option button:hover {
-  opacity: 0.9;
-}
+.option button:hover { opacity: 0.9; }
 #contact-message { resize: vertical; }
