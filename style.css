@@ -4,15 +4,17 @@ body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px}
 /* Header */
 .header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border-radius:8px;margin-bottom:12px}
 .logo{display:flex;align-items:center}
-.logo-img{max-height:50px;width:auto;margin-right:8px}
+.logo-img{max-height:100px;width:auto;margin-right:8px} /* doubled size */
 .header-right{display:flex;align-items:center;gap:8px}
 .credit-display{font-size:0.9em}
 .checkout-small{padding:4px 8px;font-size:0.8em;border:none;border-radius:8px;background:#28a745;color:#fff;cursor:pointer}
 .ricarica-btn{padding:6px 10px;font-size:0.85em;border:none;border-radius:8px;background:#004080;color:#fff;cursor:pointer}
 /* Section buttons */
 .section-buttons{display:flex;gap:6px;margin-bottom:12px}
-.section-buttons button{flex:1;padding:8px;border:none;border-radius:12px;background:#e0e0e0;cursor:pointer;font-weight:bold;font-size:0.9em}
-.section-buttons button.selected{background:#004080;color:#fff}
+#btnLeads{background:#007BFF;color:#fff} /* Blue */
+#btnAppuntamenti{background:#FF00FF;color:#fff} /* Fucsia */
+#btnContratti{background:#FFD700;color:#000} /* Yellow with black text */
+.section-buttons button{flex:1;padding:8px;border:none;border-radius:12px;cursor:pointer;font-weight:bold;font-size:0.9em}
 /* Filters */
 .filters{margin-bottom:12px}
 .filter-row{display:flex;gap:8px;margin-bottom:8px}
