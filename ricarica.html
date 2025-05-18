@@ -13,16 +13,18 @@
       border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1)
     }
     .ricarica-box h2 { text-align:center; margin-bottom:16px; font-size:1.3em }
-    .ricarica-box h3 { margin:16px 0 8px; font-size:1em }
+    .ricarica-box h3 {
+      margin:16px 0 8px; font-size:1em; display:flex; align-items:center; gap:8px;
+    }
     .ricarica-box p { font-size:.9em; line-height:1.4; margin-bottom:12px }
     .ricarica-action {
-      display:block; width:100%; text-align:center;
-      padding:12px 0; margin:8px 0;
+      display:block; width:100%;
+      text-align:center; padding:12px 0; margin:8px 0;
       border:none; border-radius:24px;
       font-size:1em; color:#fff;
-      text-decoration:none; cursor:pointer
+      text-decoration:none; cursor:pointer;
     }
-    .btn-revolut { background:#4A90E2 }
+    .btn-card    { background:#4A90E2 }
     .btn-paylink { background:#0070BA }
     hr { border:none; border-top:1px solid #ddd; margin:16px 0 }
   </style>
@@ -31,18 +33,18 @@
   <div class="ricarica-box">
     <h2>Ricarica crediti</h2>
 
-    <!-- Revolut Checkout -->
-    <h3>💳 Paga con Revolut</h3>
+    <!-- Carta di credito -->
+    <h3>💳 Paga con carta</h3>
     <p>1 credito = 40 €</p>
     <a href="https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4"
        target="_blank"
-       class="ricarica-action btn-revolut">
-      Paga ora con Revolut
+       class="ricarica-action btn-card">
+      Paga ora con carta
     </a>
 
     <hr/>
 
-    <!-- PayPal Business Payment Link -->
+    <!-- PayPal -->
     <h3>🅿️ Paga con PayPal</h3>
     <p>1 credito = 40 €</p>
     <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y"
