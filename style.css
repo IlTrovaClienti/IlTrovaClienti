@@ -4,7 +4,7 @@ body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px}
 /* Header */
 .header{display:flex;justify-content:space-between;align-items:center;background:#fff;padding:12px;border-radius:8px;margin-bottom:12px}
 .logo{display:flex;align-items:center}
-.logo-img{max-height:28px;width:auto}
+.logo-img{max-height:50px;width:auto;margin-right:8px}
 .header-right{display:flex;align-items:center;gap:8px}
 .credit-display{font-size:0.9em}
 .checkout-small{padding:4px 8px;font-size:0.8em;border:none;border-radius:8px;background:#28a745;color:#fff;cursor:pointer}
