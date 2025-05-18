@@ -4,125 +4,81 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <base href="/IlTrovaClienti/">
-  <link rel="stylesheet" href="style.css">
-  <!-- Firebase SDK v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <!-- Inizializzazione Firebase -->
-  <script src="firebase-init.js" defer></script>
-  <!-- Logica app -->
-  <script src="script.js" defer></script>
+
+  <!-- Tuo CSS principale -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Stile per il modal di contatto -->
+  <link rel="stylesheet" href="contact-modal.css">
 </head>
 <body>
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">
-      <img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti">
-    </div>
-    <div class="header-right">
-      <div class="credit-display">
-        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
-      </div>
-      <button id="checkout-small" class="checkout-small">Checkout</button>
-      <!-- cambiato da <button> a <a> per aprire ricarica.html -->
-      <a id="ricarica" class="ricarica-btn" href="ricarica.html">Ricarica</a>
-    </div>
+
+  <!-- HEADER con bottoni di autenticazione -->
+  <header>
+    <button id="login-button" class="btn">Accedi</button>
+    <button id="register-button" class="btn">Registrati</button>
+    <button id="logout-button" class="btn" style="display:none;">Logout</button>
   </header>
 
-  <!-- NAV TABS -->
-  <nav class="section-buttons">
-    <button id="btnLeads" class="selected">Lead da chiamare</button>
-    <button id="btnAppuntamenti">Appuntamenti fissati</button>
-    <button id="btnContratti">Contratti riservati</button>
-  </nav>
+  <!-- Lista lead / contratti -->
+  <main>
+    <!-- ... i tuoi lead qui ... -->
+    <!-- Ogni volta che vuoi aprire il form di contatto, dai a quel pulsante questa classe: -->
+    <button class="open-contact-modal btn">Richiedi Contatto</button>
+  </main>
 
-  <!-- FILTRI -->
-  <section class="filters">
-    <div class="filter-row">
-      <div class="filter-group">
-        <label for="regione">Regione</label>
-        <select id="regione"></select>
-      </div>
-      <div class="filter-group">
-        <label for="citta">Città</label>
-        <select id="citta"></select>
-      </div>
-    </div>
-    <div class="filter-row">
-      <div class="filter-group">
-        <label for="categoria">Categoria</label>
-        <select id="categoria"></select>
-      </div>
-      <div class="filter-group">
-        <label for="tipo">Tipo</label>
-        <select id="tipo"></select>
-      </div>
-    </div>
-  </section>
-
-  <!-- CARRELLO -->
-  <section class="carrello">
-    <h2>Carrello</h2>
-    <ul id="carrello"></ul>
-    <div id="totale">Totale: €0</div>
-  </section>
-
-  <!-- MAIN CARDS -->
-  <main id="clienti"></main>
-
-  <!-- AUTH MODAL -->
-  <div id="auth-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-tabs">
-        <button id="show-login" class="active">Accedi</button>
-        <button id="show-register">Registrati</button>
-      </div>
-      <form id="login-form" class="active">
-        <input type="email"    id="login-email"    placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta"></label>
-        <button type="button" id="btnLogin">Accedi</button>
+  <!-- Modal “Richiesta Contatto” -->
+  <div id="contact-modal">
+    <div class="modal-content">
+      <h2>Richiesta Contatto</h2>
+      <form id="contact-form">
+        <input type="text" name="nome" placeholder="Nome" required>
+        <input type="text" name="cognome" placeholder="Cognome" required>
+        <input type="tel" name="telefono" placeholder="Telefono" required>
+        <input type="text" name="localita" placeholder="Località" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <textarea name="messaggio" placeholder="Messaggio" rows="4" required></textarea>
+        <div class="buttons">
+          <button type="submit" class="btn">Invia</button>
+          <button type="button" class="btn" id="close-contact-modal">Chiudi</button>
+        </div>
       </form>
-      <form id="register-form">
-        <input type="text"     id="register-name"      placeholder="Nome">
-        <input type="text"     id="register-surname"   placeholder="Cognome">
-        <input type="email"    id="register-email"     placeholder="Email">
-        <input type="password" id="register-password"  placeholder="Password">
-        <input type="password" id="register-password2" placeholder="Ripeti Password">
-        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta"></label>
-        <button type="button" id="btnRegister">Registrati</button>
-      </form>
-      <button id="close-auth" class="cancel-form">Chiudi</button>
     </div>
   </div>
 
-  <!-- PAYMENT MODAL (se vuoi tenerlo, altrimenti non viene più usato) -->
-  <div id="payment-modal" class="modal-overlay">
-    <div class="modal">
-      <h3>Scegli metodo di pagamento</h3>
-      <div class="option-container">
-        <div class="option"><img class="pay-logo" src="assets/paypal.png"><button id="pay-paypal">PayPal</button></div>
-        <div class="option"><img class="pay-logo" src="assets/credit-card.png"><button id="pay-card">Carta di credito</button></div>
-        <div class="option"><img class="pay-logo" src="assets/bank.png"><button id="pay-bank">Bonifico</button></div>
-      </div>
-      <button id="close-payment" class="cancel-form">Chiudi</button>
-    </div>
-  </div>
+  <!-- Firebase + Auth -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="firebase-init.js"></script>
+  <script src="firebase-auth.js"></script>
 
-  <!-- CONTACT MODAL (Contratti) -->
-  <div id="contact-modal" class="modal-overlay">
-    <div class="modal">
-      <h3>Richiesta Contatto</h3>
-      <input type="text"  id="contact-name"     placeholder="Nome">
-      <input type="text"  id="contact-surname"  placeholder="Cognome">
-      <input type="tel"   id="contact-phone"    placeholder="Telefono">
-      <input type="text"  id="contact-location" placeholder="Località">
-      <input type="email" id="contact-email"    placeholder="Email">
-      <textarea id="contact-message" rows="4" placeholder="Messaggio"></textarea>
-      <button id="btnContactSend">Invia</button>
-      <button id="close-contact" class="cancel-form">Chiudi</button>
-    </div>
-  </div>
+  <!-- Script per aprire/chiudere il modal di contatto -->
+  <script>
+    function openContactModal() {
+      document.getElementById('contact-modal').classList.add('visible');
+    }
+    function closeContactModal() {
+      document.getElementById('contact-modal').classList.remove('visible');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.open-contact-modal')
+              .forEach(btn => btn.addEventListener('click', openContactModal));
+      document.getElementById('close-contact-modal')
+              .addEventListener('click', closeContactModal);
+
+      // Gestione invio form (esempio: logga i dati, poi chiudi)
+      document.getElementById('contact-form').addEventListener('submit', e => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const obj = Object.fromEntries(data.entries());
+        console.log('Invio richiesta contatto:', obj);
+        // TODO: mandare via API o Firebase Firestore...
+        alert('Richiesta inviata! Ti contatteremo a breve.');
+        closeContactModal();
+        e.target.reset();
+      });
+    });
+  </script>
+
 </body>
 </html>
