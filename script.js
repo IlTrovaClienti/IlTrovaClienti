@@ -1,222 +1,158 @@
-/* === CONFIG === */
-const SHEET_URL    = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?gid=71180301&output=tsv';
-const REVOLUT_LINK = 'https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4';
+// script.js
+// Tutto dentro DOMContentLoaded grazie a defer negli <script>
+(() => {
+  // === Config ===
+  let userCredits = 0;
+  const EUR_PER_CREDIT = 40;
+  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
-let credits = 0;
-const EUR_PER_CREDIT = 40;
-let rows = [], bought = new Set();
+  // === Stato ===
+  let rows = [];
+  let cart = [];
+  const hiddenIds = new Set();
 
-/* === DOM HELPERS === */
-const $ = id => document.getElementById(id);
+  // === DOM Elements ===
+  const ricaricaBtn = document.getElementById('ricaricaBtn');
+  const loginBtn    = document.getElementById('loginBtn');
+  const logoutBtn   = document.getElementById('logoutBtn');
+  const creditiEl   = document.getElementById('crediti');
+  const cardsEl     = document.getElementById('cards');
+  const cartListEl  = document.getElementById('cartList');
+  const cartTotalEl = document.getElementById('cartTotal');
 
-/* === Auth State === */
-let currentUser = null;
-firebase.auth().onAuthStateChanged(u => {
-  currentUser = u;
-  $('btnLogin').classList.toggle('hidden', !!u);
-  $('btnLogout').classList.toggle('hidden', !u);
-});
+  const selReg     = document.getElementById('regioneFilter');
+  const selCitt    = document.getElementById('cittaFilter');
+  const selCat     = document.getElementById('categoriaFilter');
+  const selTipo    = document.getElementById('tipoFilter');
 
-/* === Login/Signup === */
-$('btnLogin').onclick   = openLogin;
-$('closeLogin').onclick = closeLogin;
-$('loginMask').onclick  = closeLogin;
-$('doLogin').onclick    = () => firebase.auth().signInWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
-$('doSignup').onclick   = () => firebase.auth().createUserWithEmailAndPassword($('loginEmail').value, $('loginPassword').value).catch(alert);
-$('btnLogout').onclick  = () => firebase.auth().signOut();
+  // Controlla che esistano davvero
+  if (!ricaricaBtn || !loginBtn || !logoutBtn || !credetiEl || !cardsEl) {
+    console.error('+++ ERRORE: elementi DOM mancanti +++');
+    return;
+  }
 
-function openLogin(){
-  $('loginMask').classList.add('open');
-  $('loginModal').classList.add('open');
-}
-function closeLogin(){
-  $('loginMask').classList.remove('open');
-  $('loginModal').classList.remove('open');
-}
+  // === Eventi Topbar ===
+  ricaricaBtn.addEventListener('click', () => {
+    userCredits = 0;
+    updateCredits();
+    loadTSV();
+  });
+  loginBtn.addEventListener('click', () => {
+    document.getElementById('loginModal').classList.add('open');
+    document.getElementById('modalMask').classList.add('open');
+  });
+  logoutBtn.addEventListener('click', () => {
+    auth.signOut();
+  });
 
-/* === Pay Modal === */
-$('btnRicarica').onclick = openPay;
-$('closePay').onclick    = closePay;
-$('payMask').onclick     = closePay;
-$('payRevolut').onclick  = ()=>{ addCredits(10); closePay(); window.open(REVOLUT_LINK,'_blank'); };
-$('showIban').onclick    = ()=>$('ibanBox').classList.toggle('hidden');
+  // === Eventi Filtri ===
+  [selReg, selCitt, selCat, selTipo].forEach(s => {
+    s.addEventListener('change', renderCards);
+  });
 
-function openPay(){
-  $('payMask').classList.add('open');
-  $('payModal').classList.add('open');
-}
-function closePay(){
-  $('payMask').classList.remove('open');
-  $('payModal').classList.remove('open');
-}
+  // === Eventi Tabs ===
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.filter === 'all' ? '' : tab.dataset.filter;
+      selTipo.value = filter;  // usiamo 'Tipo' per distinguere, il resto è gestito in render
+      renderCards();
+    });
+  });
 
-/* === Credits === */
-function addCredits(n){ credits += n; updateCredits(); }
-function useCredits(n){ credits -= n; updateCredits(); }
-function updateCredits(){
-  $('crediti').textContent     = credits;
-  $('euroCrediti').textContent = (credits * EUR_PER_CREDIT).toFixed(0);
-}
-updateCredits();
+  // === Inizializzazione ===
+  updateCredits();
+  loadTSV();
 
-/* === Column Mapping === */
-const COL = {
-  Regione:   ['Regione'],
-  Citta:     ['Città','Citta'],
-  Categoria: ['Categoria'],
-  Tipo:      ['Tipo','Stato'],
-  Costo:     ['Costo (crediti)','Costo crediti','Crediti'],
-  Tel:       ['Telefono']
-};
-const V = (r, keys) => {
-  for (const k of keys) if (r[k] !== undefined) return r[k].trim();
-  return '';
-};
+  // ---------------- Funzioni ----------------
+  function updateCredits() {
+    creditiEl.textContent = `Crediti: ${userCredits} (€${(userCredits * EUR_PER_CREDIT).toFixed(2)})`;
+  }
 
-/* === Load & Parse TSV === */
-fetch(SHEET_URL)
-  .then(r => r.text())
-  .then(txt => {
-    rows = parseTSV(txt);
-    initFilters();
+  function loadTSV() {
+    fetch(SHEET_URL)
+      .then(r => r.text())
+      .then(tsv => {
+        rows = parseTSV(tsv);
+        initFilters();
+        renderCards();
+      })
+      .catch(err => console.error('Errore caricamento TSV:', err));
+  }
+
+  function parseTSV(tsv) {
+    const lines = tsv.trim().split('\n').map(l => l.split('\t'));
+    const header = lines.shift();
+    return lines.map((r, i) => {
+      const obj = {};
+      header.forEach((h, idx) => obj[h.trim()] = r[idx] || '');
+      obj.__id = 'row' + i;
+      return obj;
+    });
+  }
+
+  function initFilters() {
+    const map = { regione: 'Regione', citta: 'Città', categoria: 'Categoria', tipo: 'Tipo' };
+    Object.entries(map).forEach(([id, col]) => {
+      const sel = document.getElementById(id + 'Filter');
+      const values = [...new Set(rows.map(d => d[col]).filter(Boolean))].sort();
+      sel.innerHTML = `<option value="">${col}</option>` +
+        values.map(v => `<option value="${v}">${v}</option>`).join('');
+    });
+  }
+
+  function renderCards() {
+    const fReg = selReg.value, fCit = selCitt.value;
+    const fCat = selCat.value, fTip = selTipo.value;
+    const visible = rows.filter(d =>
+      (!fReg || d.Regione === fReg) &&
+      (!fCit || d['Città'] === fCit) &&
+      (!fCat || d.Categoria === fCat) &&
+      (!fTip || d.Tipo === fTip) &&
+      !hiddenIds.has(d.__id)
+    );
+    cardsEl.innerHTML = visible.map(cardHTML).join('');
+  }
+
+  function cardHTML(d) {
+    const cls = d.Tipo === 'Lead' ? 'lead' : (d.Tipo === 'Appuntamento' ? 'app' : 'contr');
+    const price = Number(d['Costo (crediti)'] || 0);
+    const btnText = d.Tipo === 'Contratto'
+      ? 'Riserva'
+      : `Acquisisci (+${price} credito${price>1?'i':''})`;
+    return `
+      <div class="card ${cls}">
+        <h4>${d.Descrizione}</h4>
+        <small>${d.Regione} / ${d['Città']} – ${d.Categoria}</small>
+        <span class="badge ${cls}">${d.Tipo}</span>
+        <p>Telefono: ${d.Tipo === 'Contratto' ? '•••••••••' : d.Telefono}</p>
+        <button class="btn btn-green" onclick="addToCart('${d.__id}',${price})">
+          ${btnText}
+        </button>
+      </div>`;
+  }
+
+  window.addToCart = (id, price) => {
+    hiddenIds.add(id);
+    cart.push({ id, price });
+    renderCart();
     renderCards();
-    equalizeTabWidths();
-  })
-  .catch(console.error);
-
-function parseTSV(tsv){
-  const lines = tsv.trim().split('\n').map(l => l.split('\t'));
-  const head  = lines.shift();
-  return lines.map((r,i) => {
-    const o = { __id: 'row'+i };
-    head.forEach((h,j) => o[h.trim()] = r[j]||'');
-    return o;
-  });
-}
-
-/* === Filters & Tabs === */
-const sel = {
-  Regione:   $('regioneFilter'),
-  Citta:     $('cittaFilter'),
-  Categoria: $('categoriaFilter'),
-  Tipo:      $('tipoFilter')
-};
-Object.values(sel).forEach(s=>s.onchange=renderCards);
-
-document.querySelectorAll('.tab').forEach(b=>b.onclick=e=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  e.currentTarget.classList.add('active');
-  currentFilter = e.currentTarget.dataset.filter;
-  renderCards();
-  equalizeTabWidths();
-});
-
-let currentFilter = 'all';
-
-function initFilters(){
-  // Label dei select
-  const LABELS = {
-    Regione:   'Regione',
-    Citta:     'Città',
-    Categoria: 'Categoria',
-    Tipo:      'Tipo'
   };
-  for(const [key,keys] of Object.entries(COL).filter(([k])=>!['Costo','Tel'].includes(k))){
-    const opts = [...new Set(rows.map(r=>V(r,keys)).filter(Boolean))].sort();
-    // prima voce = label, le altre opzioni
-    sel[key].innerHTML =
-      `<option value="" disabled selected>${LABELS[key]}</option>` +
-      opts.map(v=>`<option value="${v}">${v}</option>`).join('');
-  }
-}
 
-/* === Render Cards === */
-function normalize(tipo){
-  tipo = tipo.toLowerCase();
-  return tipo.startsWith('lead') ? 'lead'
-       : tipo.startsWith('app')  ? 'app'
-       : 'contr';
-}
-
-function renderCards(){
-  const f = {
-    Regione:   sel.Regione.value,
-    Citta:     sel.Citta.value,
-    Categoria: sel.Categoria.value,
-    Tipo:      sel.Tipo.value
-  };
-  const list = rows.filter(r => {
-    if (currentFilter!=='all' && normalize(V(r,COL.Tipo))!==currentFilter) return false;
-    if (f.Regione   && V(r,COL.Regione)!==f.Regione)   return false;
-    if (f.Citta     && V(r,COL.Citta)!==f.Citta)       return false;
-    if (f.Categoria && V(r,COL.Categoria)!==f.Categoria) return false;
-    if (f.Tipo      && V(r,COL.Tipo)!==f.Tipo)         return false;
-    return true;
-  });
-  $('cards').innerHTML = list.map(cardHTML).join('');
-}
-
-function cardHTML(r){
-  const tipo = V(r,COL.Tipo), cls = normalize(tipo);
-  const cost = Number(V(r,COL.Costo)||1), has = bought.has(r.__id);
-  const phone = has ? V(r,COL.Tel) : '•••••••••';
-  const label = cost===1 ? '1 credito' : `${cost} crediti`;
-
-  let btn;
-  if (cls==='contr'){
-    btn = `<button class="btn btn-green" onclick="openReserve()">Riserva</button>`;
-  } else {
-    btn = has
-      ? `<button class="btn btn-grey" onclick="undo('${r.__id}',${cost})">Annulla (-${label})</button>`
-      : `<button class="btn btn-green" onclick="acq('${r.__id}',${cost})">Acquisisci (+${label})</button>`;
+  function renderCart() {
+    cartListEl.innerHTML = cart.map((c, i) =>
+      `<li>#${i+1} €${c.price} <button onclick="undoCart(${i})">Annulla</button></li>`
+    ).join('');
+    cartTotalEl.textContent = cart.reduce((s, c) => s + c.price, 0).toFixed(2);
   }
 
-  return `<div class="card ${cls}">
-    <h4>${r.Descrizione||''}</h4>
-    <small>${V(r,COL.Regione)} / ${V(r,COL.Citta)} – ${V(r,COL.Categoria)}</small>
-    <span class="badge ${cls}">${tipo}</span>
-    <p><b>Telefono:</b> ${phone}</p>
-    ${btn}
-  </div>`;
-}
+  window.undoCart = idx => {
+    const item = cart[idx];
+    cart.splice(idx, 1);
+    hiddenIds.delete(item.id);
+    renderCart();
+    renderCards();
+  };
 
-/* === Actions === */
-function acq(id,cost){
-  if (!currentUser){ openLogin(); return; }
-  if (credits < cost){ openPay(); return; }
-  useCredits(cost);
-  bought.add(id);
-  renderCards();
-}
-function undo(id,cost){
-  if (!bought.has(id)) return;
-  addCredits(cost);
-  bought.delete(id);
-  renderCards();
-}
-
-/* === Reserve === */
-function openReserve(){
-  $('resMask').classList.add('open');
-  $('resModal').classList.add('open');
-}
-$('closeRes').onclick = $('resMask').onclick = ()=>{
-  $('resMask').classList.remove('open');
-  $('resModal').classList.remove('open');
-};
-$('doReserve').onclick = ()=>{
-  alert('Richiesta di riserva inviata!');
-  $('closeRes').onclick();
-};
-
-/* === Equalize Tabs === */
-function equalizeTabWidths(){
-  const tabs = Array.from(document.querySelectorAll('.tab'));
-  tabs.forEach(t=>t.style.width='auto');
-  let maxW = 0;
-  tabs.forEach(t=>{
-    const w = t.getBoundingClientRect().width;
-    if (w>maxW) maxW = w;
-  });
-  tabs.forEach(t=>t.style.width = maxW+'px');
-}
+})();  
