@@ -6,6 +6,13 @@
   <title>IlTrovaClienti</title>
   <base href="/IlTrovaClienti/">
   <link rel="stylesheet" href="style.css">
+  <!-- Firebase v8 SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <!-- Initialize Firebase -->
+  <script src="firebase-init.js" defer></script>
+  <!-- App logic -->
+  <script src="script.js" defer></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -58,10 +65,10 @@
     <div id="totale">Totale: €0</div>
   </section>
 
-  <!-- LEADS / CARDS -->
+  <!-- MAIN CARDS -->
   <main id="clienti"></main>
 
-  <!-- MODALE DI LOGIN / REGISTRAZIONE -->
+  <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-tabs">
@@ -87,7 +94,7 @@
     </div>
   </div>
 
-  <!-- MODALE PAGAMENTO -->
+  <!-- PAYMENT MODAL -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal">
       <h3>Scegli metodo di pagamento</h3>
@@ -100,7 +107,7 @@
     </div>
   </div>
 
-  <!-- MODALE CONTATTO PER CONTRATTI -->
+  <!-- CONTACT MODAL -->
   <div id="contact-modal" class="modal-overlay">
     <div class="modal">
       <h3>Richiesta Contatto</h3>
@@ -114,9 +121,5 @@
       <button id="close-contact" class="cancel-form">Chiudi</button>
     </div>
   </div>
-
-  <!-- SCRIPTS -->
-  <script src="firebase-init.js" defer></script>
-  <script src="script.js" defer></script>
 </body>
 </html>
