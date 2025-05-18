@@ -1,4 +1,4 @@
-/* style.css v2.4.3 */
+/* style.css v2.4.4 */
 
 /* ========================
    Variabili colori
@@ -79,7 +79,7 @@ html, body {
 }
 
 /* ========================
-   Tabs (4-in-riga, colori corretti)
+   Tabs (4-in-riga, colori e ordine corretti)
    ======================== */
 .tabs {
   display: flex;
@@ -110,10 +110,10 @@ html, body {
   color: #fff;
 }
 /* Colori specifici */
-.tab[data-filter="all"]          { background: var(--green); }
-.tab[data-filter="Lead"]         { background: var(--blue); }
-.tab[data-filter="Appuntamento"] { background: var(--pink); }
-.tab[data-filter="Contratto"]    { background: var(--yellow); color: #000; }
+.tab[data-filter="all"]          { background: var(--green); order: 4; }
+.tab[data-filter="Lead"]         { background: var(--blue);  order: 1; }
+.tab[data-filter="Appuntamento"] { background: var(--pink);  order: 2; }
+.tab[data-filter="Contratto"]    { background: var(--yellow);color: #000; order: 3; }
 /* Tab attiva */
 .tab.active {
   border-color: #333;
@@ -256,19 +256,12 @@ html, body {
    Responsive Mobile
    ======================== */
 @media (max-width: 600px) {
-  /* Tabs scrollabili orizzontalmente */
+  /* Tabs scrollabili e ordine mantenuto */
   .tabs {
     overflow-x: auto;
     flex-wrap: nowrap;
   }
-  .tabs::-webkit-scrollbar {
-    height: 6px;
-  }
-  .tabs::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,.2);
-    border-radius: 3px;
-  }
-  /* Filtri scrollabili orizzontalmente */
+  /* Filtri scrollabili */
   .filters {
     overflow-x: auto;
     flex-wrap: nowrap;
