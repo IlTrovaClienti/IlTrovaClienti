@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
@@ -19,7 +19,7 @@
     </div>
   </div>
 
-  <!-- FILTRI (ora qui sopra) -->
+  <!-- Filtri -->
   <div class="filters">
     <select id="regioneFilter"><option>Regione</option></select>
     <select id="cittaFilter"><option>Città</option></select>
@@ -27,7 +27,7 @@
     <select id="tipoFilter"><option>Tipo</option></select>
   </div>
 
-  <!-- TABS (ora sotto i filtri) -->
+  <!-- Tabs -->
   <div class="tabs">
     <div class="tab" data-filter="Lead">Lead da chiamare</div>
     <div class="tab" data-filter="Appuntamento">Appuntamenti fissati</div>
@@ -35,20 +35,34 @@
     <div class="tab active" data-filter="all">Tutti</div>
   </div>
 
-  <!-- CARDS E CARRELLO -->
-  <div class="cards" id="cards"></div>
+  <!-- Cards container -->
+  <div id="cards" class="cards"></div>
+
+  <!-- Carrello -->
   <div id="cart">
     <h2>Carrello</h2>
     <ul id="cartList"></ul>
     <div>Totale crediti: <span id="cartTotal">0</span></div>
   </div>
 
-  <!-- MODALI ecc… -->
+  <!-- Modali -->
   <div id="modalMask" class="modal-mask"></div>
-  <div id="loginModal" class="modal">…</div>
-  <div id="resModal"   class="modal">…</div>
+  <div id="loginModal" class="modal">
+    <!-- contenuto login/registrazione -->
+  </div>
+  <div id="resModal" class="modal">
+    <!-- contenuto riserva contratto -->
+  </div>
 
-  <script src="script.js"></script>
+  <!-- 1) Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+  <!-- 2) Inizializzazione Firebase -->
   <script src="firebase-init.js"></script>
+
+  <!-- 3) Il tuo script principale -->
+  <script src="script.js"></script>
 </body>
 </html>
