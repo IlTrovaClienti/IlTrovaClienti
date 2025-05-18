@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ricarica Crediti</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="ricarica-box">
+    <h2>Ricarica crediti</h2>
+
+    <h3>💳 Con Revolut (Carta o Apple/Google Pay)</h3>
+    <p>Importo fisso: <strong>40 € = 1 credito</strong></p>
+    <a href="https://checkout.revolut.com/pay/716c6260-3151-4a9b-ba52-670eb35db1b4" target="_blank" class="btn-revolut">Paga ora con Revolut</a>
+
+    <hr />
+
+    <h3>🏦 Bonifico bancario su Revolut</h3>
+    <p>
+      Beneficiario: <strong>Cristian Di Bella</strong><br />
+      IBAN: <strong>LT67 3250 0328 0923 7250</strong><br />
+      BIC/SWIFT: <strong>REVOLT21</strong><br />
+      Banca: <em>Revolut Bank UAB, Konstitucijos ave. 21B, 08130, Vilnius, Lithuania</em><br /><br />
+      <strong>Causale:</strong> <em>RICARICA CREDITO [tua email]</em>
+    </p>
+
+    <hr />
+
+    <h3>🅿️ PayPal / Carta di credito</h3>
+    <p>Importo fisso: <strong>40 € = 1 credito</strong></p>
+    <div id="paypal-button-container"></div>
+  </div>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=AYZb2BzhUBu63wj_oyJp5NqNKsvY8R6I3iVWZ79WtdcnHn7K4NPM7KZ6eM6PfveLtU_xclgZPlCI2XXG&currency=EUR"></script>
+  <script>
+    paypal.Buttons({
+      createOrder: function (data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: '40.00' }
+          }]
+        });
+      },
+      onApprove: function (data, actions) {
+        return actions.order.capture().then(function (details) {
+          alert('✅ Pagamento completato da ' + details.payer.name.given_name + '! Il tuo credito sarà caricato entro pochi minuti.');
+        });
+      }
+    }).render('#paypal-button-container');
+  </script>
+</body>
+</html>

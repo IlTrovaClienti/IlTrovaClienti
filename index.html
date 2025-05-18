@@ -2,36 +2,98 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Il Trova Clienti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IlTrovaClienti</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header><h1>Il Trova Clienti</h1></header>
-  <nav>
-    <button data-tab="Lead" class="tab-button active">Lead</button>
-    <button data-tab="Appuntamento" class="tab-button">Appuntamenti</button>
-    <button data-tab="Contratto" class="tab-button">Contratti</button>
-    <button data-tab="Tutti" class="tab-button">Tutti</button>
+  <header class="header">
+    <div class="logo">IlTrovaClienti</div>
+    <div class="header-right">
+      <div class="credit-display">Crediti: <span id="crediti">0.00</span> (<span id="euro">€0.00</span>)</div>
+      <button id="checkout-small" class="checkout-small">Checkout</button>
+      <button id="ricarica" class="ricarica-btn">Ricarica</button>
+    </div>
+  </header>
+  <nav class="section-buttons">
+    <button id="btnLeads" class="selected">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
   </nav>
-  <section id="filters">
-    <select id="filter-region"></select>
-    <select id="filter-city"></select>
-    <select id="filter-category"></select>
-    <select id="filter-type"></select>
+  <section class="filters">
+    <div class="filter-row">
+      <label for="regione">Regione</label>
+      <select id="regione"></select>
+      <label for="citta">Città</label>
+      <select id="citta"></select>
+    </div>
+    <div class="filter-row">
+      <label for="categoria">Categoria</label>
+      <select id="categoria"></select>
+      <label for="tipo">Tipo</label>
+      <select id="tipo"></select>
+    </div>
   </section>
-  <main id="cards"></main>
-  <div id="cart" class="sticky-cart">
+  <section class="carrello">
     <h2>Carrello</h2>
-    <ul id="cart-items"></ul>
-    <div id="cart-total"></div>
-    <button id="checkout" class="round-button">Checkout</button>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0.00</div>
+  </section>
+  <main id="clienti"></main>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login" class="active">Accedi</button>
+        <button id="show-register">Registrati</button>
+        <button id="show-recover">Recupera password</button>
+      </div>
+      <form id="login-form" class="active">
+        <input type="email" id="login-email" placeholder="Email">
+        <input type="password" id="login-password" placeholder="Password">
+        <button type="button" id="btnLogin">Accedi</button>
+      </form>
+      <form id="register-form">
+        <input type="text" id="register-name" placeholder="Nome">
+        <input type="text" id="register-surname" placeholder="Cognome">
+        <input type="tel" id="register-phone" placeholder="Telefono">
+        <input type="email" id="register-email" placeholder="Email">
+        <input type="password" id="register-password" placeholder="Password">
+        <input type="password" id="register-password2" placeholder="Ripeti Password">
+        <label>Quanto fa 2+3? <input type="text" id="captcha" placeholder="Risposta"></label>
+        <button type="button" id="btnRegister">Registrati</button>
+      </form>
+      <form id="recover-password-form">
+        <input type="email" id="recover-email" placeholder="Email">
+        <button type="button" id="btnRecoverPassword">Recupera</button>
+      </form>
+      <button id="close-auth" class="cancel-form">Chiudi</button>
+    </div>
   </div>
-  <div id="paypal-button-container"></div>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="firebase-init.js"></script>
-  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR"></script>
+
+  <!-- Payment Modal -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Scegli metodo di pagamento</h3>
+      <div class="option-container">
+        <div class="option">
+          <img class="pay-logo" src="assets/paypal.png" alt="PayPal">
+          <button id="pay-paypal">PayPal</button>
+        </div>
+        <div class="option">
+          <img class="pay-logo" src="assets/credit-card.png" alt="Carta di credito">
+          <button id="pay-card">Carta di credito</button>
+        </div>
+        <div class="option">
+          <img class="pay-logo" src="assets/bank.png" alt="Bonifico bancario">
+          <button id="pay-bank">Bonifico bancario</button>
+        </div>
+      </div>
+      <button id="close-payment" class="cancel-form">Chiudi</button>
+    </div>
+  </div>
+
   <script src="script.js" defer></script>
 </body>
 </html>
