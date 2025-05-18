@@ -1,4 +1,4 @@
-/* style.css v2.3.9 */
+/* style.css v2.4.0 */
 
 /* ================
    Variabili colori
@@ -23,141 +23,129 @@ html, body {
 }
 
 /* ================
-   Generale Bottoni
-   ================ */
-.btn {
-  display: inline-block;
-  border: none;
-  border-radius: 30px;
-  padding: 12px 20px;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-  line-height: 1.2;
-  transition: background .2s;
-}
-.btn.small {
-  padding: 8px 16px;
-  font-size: .85rem;
-}
-.btn.full {
-  width: 100%;
-  margin: 8px 0;
-}
-.btn-green  { background: var(--green);  color: #fff; }
-.btn-blue   { background: var(--blue);   color: #fff; }
-.btn-pink   { background: var(--pink);   color: #fff; }
-.btn-yellow { background: var(--yellow); color: #000; }
-.btn-grey   { background: #ccc;          color: #000; }
-/* Nei card, il button deve occupare tutta la larghezza */
-.card button {
-  width: 100%;
-  margin-top: auto;
-}
-
-/* ================
    Header
    ================ */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: 8px 12px;
   background: #fff;
-  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  box-shadow: 0 1px 3px rgba(0,0,0,.1);
   position: sticky;
   top: 0;
   z-index: 10;
 }
+.topbar h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+.topbar .buttons {
+  display: flex;
+  gap: 6px;
+}
+.topbar .btn {
+  padding: 6px 12px;
+  font-size: .85rem;
+}
 
 /* ================
-   Tabs
+   Tabs (dimensioni ridotte, layout 3+1)
    ================ */
 .tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  padding: 8px 12px;
   background: #fff;
-  padding: 10px;
   justify-content: center;
   z-index: 9;
 }
 .tab {
-  flex: 1 1 auto;
-  min-width: 120px;
+  flex: 1 1 calc((100% - 16px) / 3);
+  min-width: 0;
   text-align: center;
-  font-weight: bold;
-  border-radius: 30px;
-  padding: 12px 16px;
-  color: #fff;
+  font-size: .9rem;
+  padding: 8px 12px;
+  border-radius: 20px;
   cursor: pointer;
+  line-height: 1.2;
+}
+.tab:first-child {
+  order: 4;
+  flex: 1 1 100%;
 }
 .tab.active {
-  outline: 3px solid #333;
+  outline: 2px solid #333;
 }
+.tab[data-type="Lead"]         { background: var(--blue);  color: #fff; }
+.tab[data-type="Appuntamento"] { background: var(--pink);  color: #fff; }
+.tab[data-type="Contratto"]    { background: var(--yellow);color: #000; }
+.tab:nth-child(1)              { background: var(--green); color: #fff; }
 
 /* ================
-   Filtri
+   Filtri (compatti)
    ================ */
 .filters {
   display: flex;
   gap: 6px;
-  padding: 10px;
+  padding: 8px 12px;
   background: #fff;
-  z-index: 8;
   overflow-x: auto;
-}
-.filters::-webkit-scrollbar {
-  height: 6px;
-}
-.filters::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,.2);
-  border-radius: 3px;
+  z-index: 8;
 }
 .filters select {
   flex: 0 0 auto;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 4px 8px;
+  font-size: .85rem;
+  border-radius: 6px;
   border: 1px solid #ccc;
   background: #fff;
-  height: 36px;
-  font-size: .9rem;
+  height: auto;
+  min-width: 0;
 }
 
 /* ================
-   Card
+   Cards
    ================ */
 .cards {
   padding: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+  gap: 12px;
 }
 .card {
   background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,.15);
-  padding: 14px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.1);
+  padding: 10px;
   display: flex;
   flex-direction: column;
-  border-left: 10px solid #999;
+  border-left: 6px solid #999;
 }
 .card.lead  { border-color: var(--blue); }
 .card.app   { border-color: var(--pink); }
 .card.contr { border-color: var(--yellow); }
-.card h4    { margin: 0 0 6px; font-size: 1rem; }
-.card small { color: #555; }
-.card p     { margin: 6px 0; }
+.card h4 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+.card small {
+  color: #555;
+  font-size: .85rem;
+}
+.card p {
+  margin: 4px 0;
+  font-size: .9rem;
+}
 
-/* ================
-   Badge
-   ================ */
+/* Badge */
 .badge {
   display: inline-block;
   font-size: .75rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  margin-bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  margin-bottom: 4px;
   color: #fff;
 }
 .badge.lead  { background: var(--blue); }
@@ -168,24 +156,31 @@ html, body {
    Carrello
    ================ */
 #cart {
-  padding: 14px;
+  padding: 10px;
   background: #fff;
-  border-top: 3px solid #ccc;
+  border-top: 2px solid #ccc;
   position: sticky;
   bottom: 0;
   z-index: 7;
 }
-#cart h2 { margin: 0 0 8px; }
+#cart h2 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
 #cartList {
   list-style: none;
   padding: 0;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
 }
 #cartList li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 6px 0;
+  padding: 4px 0;
+}
+#cartList button {
+  padding: 4px 8px;
+  font-size: .8rem;
 }
 
 /* ================
@@ -194,7 +189,7 @@ html, body {
 .modal-mask {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.5);
   display: none;
   z-index: 20;
 }
@@ -203,10 +198,10 @@ html, body {
   top: 50%; left: 50%;
   transform: translate(-50%,-50%);
   background: #fff;
-  padding: 22px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.35);
-  min-width: 280px;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.2);
+  min-width: 260px;
   display: none;
   z-index: 21;
 }
@@ -214,41 +209,12 @@ html, body {
 .modal-mask.open {
   display: block;
 }
-#loginModal input,
-#resModal input,
-#resModal textarea {
+.modal input,
+.modal textarea {
   width: 100%;
-  margin: 6px 0;
-  padding: 8px;
+  margin: 4px 0;
+  padding: 6px;
+  font-size: .9rem;
   border: 1px solid #ccc;
   border-radius: 6px;
-}
-#ibanBox { padding: 8px 0; }
-
-/* ================
-   Responsive Mobile
-   ================ */
-@media (max-width: 600px) {
-  /* Tab verticali full width su mobile */
-  .tabs {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .tab {
-    width: 100% !important;
-    margin: 4px 0;
-  }
-  /* Filtri su una riga compatta */
-  .filters {
-    overflow-x: hidden;
-    flex-wrap: nowrap;
-  }
-  .filters select {
-    flex: 0 0 25%;
-    min-width: 0;
-    padding: 4px 8px !important;
-    font-size: .9rem !important;
-    line-height: 1.2 !important;
-    height: auto !important;
-  }
 }
