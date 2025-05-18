@@ -25,16 +25,24 @@
   </nav>
   <section class="filters">
     <div class="filter-row">
-      <label for="regione">Regione</label>
-      <select id="regione"></select>
-      <label for="citta">Città</label>
-      <select id="citta"></select>
+      <div class="filter-group">
+        <label for="regione">Regione</label>
+        <select id="regione"></select>
+      </div>
+      <div class="filter-group">
+        <label for="citta">Città</label>
+        <select id="citta"></select>
+      </div>
     </div>
     <div class="filter-row">
-      <label for="categoria">Categoria</label>
-      <select id="categoria"></select>
-      <label for="tipo">Tipo</label>
-      <select id="tipo"></select>
+      <div class="filter-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria"></select>
+      </div>
+      <div class="filter-group">
+        <label for="tipo">Tipo</label>
+        <select id="tipo"></select>
+      </div>
     </div>
   </section>
   <section class="carrello">
@@ -44,6 +52,7 @@
   </section>
   <main id="clienti"></main>
 
+  <!-- Auth Modal -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-tabs">
@@ -74,6 +83,7 @@
     </div>
   </div>
 
+  <!-- Payment Modal -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal">
       <h3>Scegli metodo di pagamento</h3>
