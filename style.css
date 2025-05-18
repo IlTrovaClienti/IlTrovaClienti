@@ -1,1 +1,222 @@
-/* style.css (unchanged) */
+/* style.css */
+
+/* Reset di base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  padding: 12px;
+  color: #333;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+}
+.logo-img {
+  height: 80px;
+  width: auto;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.credit-display {
+  font-size: 1rem;
+}
+
+/* GENERIC BUTTON */
+.btn {
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 8px 16px;
+  border-radius: 24px;
+  transition: transform 0.1s ease;
+}
+.btn:hover {
+  transform: translateY(-2px);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* SPECIFIC BUTTON COLORS */
+.checkout-small {
+  background: #10b981; /* verde */
+  color: #fff;
+}
+.ricarica-btn {
+  background: #1e40af; /* blu scuro */
+  color: #fff;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* NAV SECTION BUTTONS */
+.section-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.section-buttons .btn {
+  flex: 1 1 30%;
+  padding: 12px;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+}
+#btnLeads {
+  background: #3b82f6; /* blu */
+}
+#btnAppuntamenti {
+  background: #ec4899; /* magenta */
+}
+#btnContratti {
+  background: #facc15; /* giallo */
+  color: #111;
+}
+
+/* FILTRI */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.filter-group {
+  flex: 1;
+  min-width: 120px;
+  display: flex;
+  flex-direction: column;
+}
+.filter-group label {
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+.filters select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  font-size: 0.9rem;
+}
+
+/* CARRELLO */
+.carrello {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 16px;
+}
+.carrello h2 {
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+#totale {
+  font-weight: 600;
+}
+
+/* CONTAINER CARDS */
+#clienti {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+/* SINGOLA CARD */
+.cliente-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-left: 6px solid;
+}
+.badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  color: #fff;
+}
+.badge.lead {
+  background: #3b82f6;
+}
+.badge.appuntamento {
+  background: #ec4899;
+}
+.badge.contratto {
+  background: #facc15;
+  color: #111;
+}
+.cliente-card.lead {
+  border-color: #3b82f6;
+}
+.cliente-card.appuntamento {
+  border-color: #ec4899;
+}
+.cliente-card.contratto {
+  border-color: #facc15;
+}
+
+.cliente-card h3 {
+  margin: 24px 0 8px;
+  color: #111;
+  font-size: 1rem;
+}
+.cliente-card p {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #444;
+}
+.budget, .commission {
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* AZIONI SU CARD */
+.actions {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+.actions .btn {
+  padding: 8px 12px;
+  font-size: 0.85rem;
+}
+.acquisisci {
+  background: #3b82f6;
+  color: #fff;
+}
+.riserva {
+  background: #10b981;
+  color: #fff;
+}
+
+/* MEDIA QUERIES */
+@media (min-width: 600px) {
+  #clienti {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+}
