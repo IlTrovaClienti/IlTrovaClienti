@@ -1,64 +1,49 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>IlTrovaClienti</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Trova Clienti</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
 </head>
 <body>
+    <header>
+        <h1>Il Trova Clienti</h1>
+    </header>
 
-  <!-- Topbar -->
-  <div class="topbar">
-    <h1>IlTrovaClienti</h1>
-    <div class="buttons">
-      <button id="ricaricaBtn" class="btn btn-yellow">Ricarica</button>
-      <button id="loginBtn"    class="btn btn-blue">Login</button>
-      <button id="logoutBtn"   class="btn btn-grey">Logout</button>
-      <span id="crediti">Crediti: 0 (€0)</span>
+    <nav>
+        <ul>
+            <li><button id="tab-lead">Lead</button></li>
+            <li><button id="tab-appointment">Appuntamenti</button></li>
+            <li><button id="tab-contract">Contratti</button></li>
+            <li><button id="tab-all">Tutti</button></li>
+        </ul>
+    </nav>
+
+    <section id="filters">
+        <select id="filter-region"></select>
+        <select id="filter-city"></select>
+        <select id="filter-category"></select>
+        <select id="filter-type"></select>
+    </section>
+
+    <main id="cards"></main>
+
+    <div id="cart" class="sticky-cart">
+        <h2>Carrello</h2>
+        <ul id="cart-items"></ul>
+        <div id="cart-total"></div>
+        <button id="checkout">Checkout</button>
     </div>
-  </div>
 
-  <!-- Filtri -->
-  <div class="filters">
-    <select id="regioneFilter"><option>Regione</option></select>
-    <select id="cittaFilter"><option>Città</option></select>
-    <select id="categoriaFilter"><option>Categoria</option></select>
-    <select id="tipoFilter"><option>Tipo</option></select>
-  </div>
+    <!-- PayPal button container -->
+    <div id="paypal-button-container"></div>
 
-  <!-- Tabs -->
-  <div class="tabs">
-    <div class="tab" data-filter="Lead">Lead da chiamare</div>
-    <div class="tab" data-filter="Appuntamento">Appuntamenti fissati</div>
-    <div class="tab" data-filter="Contratto">Contratti riservati</div>
-    <div class="tab active" data-filter="all">Tutti</div>
-  </div>
-
-  <!-- Cards -->
-  <div id="cards" class="cards"></div>
-
-  <!-- Carrello -->
-  <div id="cart">
-    <h2>Carrello</h2>
-    <ul id="cartList"></ul>
-    <div>Totale crediti: <span id="cartTotal">0</span></div>
-  </div>
-
-  <!-- Modali -->
-  <div id="modalMask" class="modal-mask"></div>
-  <div id="loginModal" class="modal"></div>
-  <div id="resModal"   class="modal"></div>
-
-  <!-- 1) Firebase SDK v8 (global namespace) -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js" defer></script>
-
-  <!-- 2) Il tuo init con firebase.initializeApp(...) -->
-  <script src="firebase-init.js" defer></script>
-
-  <!-- 3) Il tuo script principale -->
-  <script src="script.js" defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
