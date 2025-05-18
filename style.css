@@ -30,9 +30,7 @@ body {
   align-items: center;
   gap: 8px;
 }
-.credit-display {
-  font-size: .9em;
-}
+.credit-display { font-size: .9em; }
 
 /* Pulsanti header */
 .checkout-small,
@@ -41,22 +39,16 @@ body {
   padding: 8px 16px;
   font-size: .9em;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   color: #fff;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
 }
-.checkout-small {
-  background: #28a745;
-}
-.ricarica-btn {
-  background: #004080;
-}
+.checkout-small { background: #28a745; }
+.ricarica-btn   { background: #004080; }
 .checkout-small:hover,
-.ricarica-btn:hover {
-  opacity: 0.9;
-}
+.ricarica-btn:hover { opacity: 0.9; }
 
 /* NAV TABS */
 .section-buttons {
@@ -69,7 +61,7 @@ body {
   flex: 1 1 30%;
   padding: 10px;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   font-weight: bold;
   font-size: .9em;
   text-align: center;
@@ -78,14 +70,10 @@ body {
 #btnLeads        { background: #007BFF; color: #fff; }
 #btnAppuntamenti { background: #FF00FF; color: #fff; }
 #btnContratti    { background: #FFD700; color: #000; }
-.section-buttons button:hover {
-  opacity: 0.9;
-}
+.section-buttons button:hover { opacity: 0.9; }
 
 /* FILTRI */
-.filters {
-  margin-bottom: 12px;
-}
+.filters { margin-bottom: 12px; }
 .filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -105,7 +93,7 @@ body {
   width: 100%;
   padding: 6px 8px;
   border: 1px solid #ccc;
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   font-size: .9em;
 }
 
@@ -116,18 +104,9 @@ body {
   border-radius: 24px;
   margin-bottom: 12px;
 }
-.carrello h2 {
-  font-size: 1em;
-  margin-bottom: 6px;
-}
-#totale {
-  margin-top: 6px;
-  font-weight: bold;
-  font-size: .9em;
-}
-.carrello ul {
-  list-style: none;
-}
+.carrello h2 { font-size: 1em; margin-bottom: 6px; }
+#totale      { margin-top: 6px; font-weight: bold; font-size: .9em; }
+.carrello ul { list-style: none; }
 
 /* CARDS GRID */
 #clienti {
@@ -143,12 +122,12 @@ body {
   position: relative;
   border-left: 4px solid;
   border-right: 4px solid;
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
 }
 .badge {
   display: inline-block;
   padding: 4px 8px;
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   font-size: .8em;
   margin-bottom: 8px;
 }
@@ -159,27 +138,26 @@ body {
 .cliente-card.contratto    { border-color: #FFD700; }
 .badge.contratto           { background: #FFD700; color: #000; }
 
-.cliente-card h3           { margin: 8px 0; font-size: 1em; }
-.desc                      { font-style: italic; font-size: .9em; margin-bottom: 8px; }
-.budget                    { margin-bottom: 8px; }
-.commission                { font-weight: bold; font-size: .9em; margin-bottom: 8px; }
+.cliente-card h3    { margin: 8px 0; font-size: 1em; }
+.desc               { font-style: italic; font-size: .9em; margin-bottom: 8px; }
+.budget             { margin-bottom: 8px; }
+.commission         { font-weight: bold; font-size: .9em; margin-bottom: 8px; }
 
 .actions {
   display: flex;
   gap: 8px;
   position: absolute;
-  top: 12px; right: 12px;
+  top: 12px;
+  right: 12px;
 }
 .actions button {
   padding: 8px 12px;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   font-size: .9em;
   cursor: pointer;
 }
-.actions button:hover {
-  opacity: 0.9;
-}
+.actions button:hover { opacity: 0.9; }
 .cliente-card.lead .acquisisci         { background: #007BFF; color: #fff; }
 .cliente-card.appuntamento .acquisisci { background: #FF00FF; color: #fff; }
 .cliente-card.contratto .riserva       { background: #FFD700; color: #000; }
@@ -200,7 +178,7 @@ body {
 .modal {
   background: #fff;
   padding: 16px;
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   width: 100%;
   max-width: 360px;
   max-height: 90vh;
@@ -217,7 +195,7 @@ body {
   flex: 1;
   padding: 10px;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   background: #e0e0e0;
   cursor: pointer;
   font-size: .9em;
@@ -226,76 +204,58 @@ body {
   background: #004080;
   color: #fff;
 }
-.modal-tabs button:hover {
-  opacity: 0.9;
-}
-.modal form {
-  display: none;
-}
-.modal form.active {
-  display: block;
-}
+.modal-tabs button:hover { opacity: 0.9; }
+.modal form { display: none; }
+.modal form.active { display: block; }
 .modal input,
 .modal textarea {
   width: 100%;
   padding: 8px;
   margin-bottom: 12px;
   border: 1px solid #ccc;
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   font-size: .9em;
 }
 
-/* BOTTONI “Accedi” e “Chiudi” nel popup */
+/* BOTTONI “Accedi”, “Registrati” e “Chiudi” nel popup */
 #btnLogin,
+#btnRegister,
 #close-auth {
   display: inline-block;
   padding: 12px 20px;
   font-size: 1em;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   cursor: pointer;
   text-align: center;
   margin-top: 16px;
   color: #fff;
 }
-#btnLogin {
-  background: #28a745; /* verde */
-}
-#close-auth {
-  background: #004080; /* blu al posto del fucsia */
-}
+#btnLogin    { background: #28a745; }
+#btnRegister { background: #28a745; } /* ora verde */
+#close-auth  { background: #004080; }
 #btnLogin:hover,
-#close-auth:hover {
-  opacity: 0.9;
-}
+#btnRegister:hover,
+#close-auth:hover { opacity: 0.9; }
 
 /* PAYMENT & CONTACT */
-.option-container {
-  margin-bottom: 8px;
-}
+.option-container { margin-bottom: 8px; }
 .option {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 8px;
 }
-.pay-logo {
-  width: 28px;
-  height: 28px;
-}
+.pay-logo { width: 28px; height: 28px; }
 .option button {
   flex: 1;
   padding: 8px 12px;
   border: 1px solid rgba(0,0,0,0.1);
-  border-radius: 24px;        /* TONDEGGIANTE */
+  border-radius: 24px;
   background: #007BFF;
   color: #fff;
   font-size: .9em;
   cursor: pointer;
 }
-.option button:hover {
-  opacity: 0.9;
-}
-#contact-message {
-  resize: vertical;
-}
+.option button:hover { opacity: 0.9; }
+#contact-message { resize: vertical; }
