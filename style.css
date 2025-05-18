@@ -256,14 +256,25 @@ html, body {
    Responsive Mobile
    ======================== */
 @media (max-width: 600px) {
-  /* Tabs scrollabili e ordine mantenuto */
-  .tabs {
-    overflow-x: auto;
-    flex-wrap: nowrap;
+
+  /* 1) Tab: bordino sempre visibile, multi-line wrap e colore testo corretto */
+  .tab {
+    border: 1px solid #333 !important;
+    white-space: normal;         /* permettere il wrap sulle due righe */
+    word-break: break-word;
   }
-  /* Filtri scrollabili */
+  .tab[data-filter="Contratto"] {
+    color: #000 !important;      /* testo nero sul giallo */
+  }
+
+  /* 2) Filtri: due a riga, senza overflow orizzontale */
   .filters {
-    overflow-x: auto;
-    flex-wrap: nowrap;
+    overflow-x: hidden !important;
+    flex-wrap: wrap !important;
   }
+  .filters select {
+    flex: 1 1 calc(50% - 6px) !important;
+    min-width: 0;
+  }
+
 }
