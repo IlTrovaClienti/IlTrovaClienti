@@ -6,35 +6,26 @@
   <title>IlTrovaClienti</title>
   <base href="/IlTrovaClienti/">
   <link rel="stylesheet" href="style.css">
-  <!-- Firebase v8 SDK -->
+  <!-- Firebase SDK v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <!-- Initialize Firebase -->
   <script src="firebase-init.js" defer></script>
-  <!-- App logic -->
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- HEADER -->
   <header class="header">
     <div class="logo"><img src="assets/logo.jpg" class="logo-img" alt="Logo"></div>
     <div class="header-right">
-      <div class="credit-display">
-        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
-      </div>
+      <div class="credit-display">Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)</div>
       <button id="checkout-small" class="checkout-small">Checkout</button>
       <button id="ricarica" class="ricarica-btn">Ricarica</button>
     </div>
   </header>
-
-  <!-- NAV TABS -->
   <nav class="section-buttons">
     <button id="btnLeads" class="selected">Lead da chiamare</button>
     <button id="btnAppuntamenti">Appuntamenti fissati</button>
     <button id="btnContratti">Contratti riservati</button>
   </nav>
-
-  <!-- FILTRI -->
   <section class="filters">
     <div class="filter-row">
       <div class="filter-group">
@@ -57,18 +48,13 @@
       </div>
     </div>
   </section>
-
-  <!-- CARRELLO -->
   <section class="carrello">
     <h2>Carrello</h2>
     <ul id="carrello"></ul>
     <div id="totale">Totale: €0</div>
   </section>
-
-  <!-- MAIN CARDS -->
   <main id="clienti"></main>
-
-  <!-- AUTH MODAL -->
+  <!-- Auth Modal -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-tabs">
@@ -76,16 +62,16 @@
         <button id="show-register">Registrati</button>
       </div>
       <form id="login-form" class="active">
-        <input type="email"    id="login-email"    placeholder="Email">
+        <input type="email" id="login-email" placeholder="Email">
         <input type="password" id="login-password" placeholder="Password">
         <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta"></label>
         <button type="button" id="btnLogin">Accedi</button>
       </form>
       <form id="register-form">
-        <input type="text"     id="register-name"      placeholder="Nome">
-        <input type="text"     id="register-surname"   placeholder="Cognome">
-        <input type="email"    id="register-email"     placeholder="Email">
-        <input type="password" id="register-password"  placeholder="Password">
+        <input type="text" id="register-name" placeholder="Nome">
+        <input type="text" id="register-surname" placeholder="Cognome">
+        <input type="email" id="register-email" placeholder="Email">
+        <input type="password" id="register-password" placeholder="Password">
         <input type="password" id="register-password2" placeholder="Ripeti Password">
         <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta"></label>
         <button type="button" id="btnRegister">Registrati</button>
@@ -93,8 +79,7 @@
       <button id="close-auth" class="cancel-form">Chiudi</button>
     </div>
   </div>
-
-  <!-- PAYMENT MODAL -->
+  <!-- Payment Modal -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal">
       <h3>Scegli metodo di pagamento</h3>
@@ -106,16 +91,15 @@
       <button id="close-payment" class="cancel-form">Chiudi</button>
     </div>
   </div>
-
-  <!-- CONTACT MODAL -->
+  <!-- Contact Modal -->
   <div id="contact-modal" class="modal-overlay">
     <div class="modal">
       <h3>Richiesta Contatto</h3>
-      <input type="text"  id="contact-name"     placeholder="Nome">
-      <input type="text"  id="contact-surname"  placeholder="Cognome">
-      <input type="tel"   id="contact-phone"    placeholder="Telefono">
-      <input type="text"  id="contact-location" placeholder="Località">
-      <input type="email" id="contact-email"    placeholder="Email">
+      <input type="text" id="contact-name" placeholder="Nome">
+      <input type="text" id="contact-surname" placeholder="Cognome">
+      <input type="tel" id="contact-phone" placeholder="Telefono">
+      <input type="text" id="contact-location" placeholder="Località">
+      <input type="email" id="contact-email" placeholder="Email">
       <textarea id="contact-message" rows="4" placeholder="Messaggio"></textarea>
       <button id="btnContactSend">Invia</button>
       <button id="close-contact" class="cancel-form">Chiudi</button>

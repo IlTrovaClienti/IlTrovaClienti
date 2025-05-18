@@ -1,4 +1,3 @@
-// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAbiSZaWGRWTxA5C15TYv3IiuCTyS6WaOA",
   authDomain: "iltrovaclienti-948af.firebaseapp.com",
@@ -10,16 +9,3 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-function showAuthPopup() {
-  const email = prompt("Inserisci email:");
-  const password = prompt("Inserisci password:");
-  auth.signInWithEmailAndPassword(email, password)
-    .catch(err => {
-      if (err.code === 'auth/user-not-found') {
-        return auth.createUserWithEmailAndPassword(email, password);
-      }
-      throw err;
-    })
-    .then(userCred => console.log("Autenticato:", userCred.user))
-    .catch(console.error);
-}
