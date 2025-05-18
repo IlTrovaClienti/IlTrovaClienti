@@ -1,18 +1,18 @@
-/* style.css v2.4.0 */
+/* style.css v2.4.1 */
 
-/* ================
+/* ========================
    Variabili colori
-   ================ */
+   ======================== */
 :root {
-  --green:   #28a745;
-  --blue:    #0076ff;
-  --pink:    #e5008a;
-  --yellow:  #ffcc00;
+  --green:   #28a745;  /* verde brillante */
+  --blue:    #0076ff;  /* blu acceso */
+  --pink:    #e5008a;  /* fucsia vivo */
+  --yellow:  #ffcc00;  /* giallo intenso */
 }
 
-/* ================
+/* ========================
    Reset & Base
-   ================ */
+   ======================== */
 * {
   box-sizing: border-box;
 }
@@ -22,9 +22,9 @@ html, body {
   background: #f3f4f6;
 }
 
-/* ================
+/* ========================
    Header
-   ================ */
+   ======================== */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -49,9 +49,9 @@ html, body {
   font-size: .85rem;
 }
 
-/* ================
-   Tabs (dimensioni ridotte, layout 3+1)
-   ================ */
+/* ========================
+   Tabs
+   ======================== */
 .tabs {
   display: flex;
   flex-wrap: wrap;
@@ -62,30 +62,39 @@ html, body {
   z-index: 9;
 }
 .tab {
-  flex: 1 1 calc((100% - 16px) / 3);
-  min-width: 0;
+  flex: 1 1 calc(25% - 8px);
+  min-width: 80px;
   text-align: center;
   font-size: .9rem;
   padding: 8px 12px;
   border-radius: 20px;
   cursor: pointer;
   line-height: 1.2;
+  border: 2px solid #333;
+  color: #fff;
 }
-.tab:first-child {
-  order: 4;
-  flex: 1 1 100%;
+/* Colori specifici */
+.tab[data-filter="all"] {
+  background: var(--green);
 }
+.tab[data-filter="Lead"] {
+  background: var(--blue);
+}
+.tab[data-filter="Appuntamento"] {
+  background: var(--pink);
+}
+.tab[data-filter="Contratto"] {
+  background: var(--yellow);
+  color: #000;
+}
+/* Active */
 .tab.active {
-  outline: 2px solid #333;
+  outline: 3px solid #333;
 }
-.tab[data-type="Lead"]         { background: var(--blue);  color: #fff; }
-.tab[data-type="Appuntamento"] { background: var(--pink);  color: #fff; }
-.tab[data-type="Contratto"]    { background: var(--yellow);color: #000; }
-.tab:nth-child(1)              { background: var(--green); color: #fff; }
 
-/* ================
-   Filtri (compatti)
-   ================ */
+/* ========================
+   Filtri
+   ======================== */
 .filters {
   display: flex;
   gap: 6px;
@@ -93,6 +102,13 @@ html, body {
   background: #fff;
   overflow-x: auto;
   z-index: 8;
+}
+.filters::-webkit-scrollbar {
+  height: 6px;
+}
+.filters::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.2);
+  border-radius: 3px;
 }
 .filters select {
   flex: 0 0 auto;
@@ -105,13 +121,13 @@ html, body {
   min-width: 0;
 }
 
-/* ================
+/* ========================
    Cards
-   ================ */
+   ======================== */
 .cards {
   padding: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
 }
 .card {
@@ -138,7 +154,6 @@ html, body {
   margin: 4px 0;
   font-size: .9rem;
 }
-
 /* Badge */
 .badge {
   display: inline-block;
@@ -183,9 +198,9 @@ html, body {
   font-size: .8rem;
 }
 
-/* ================
+/* ========================
    Modali
-   ================ */
+   ======================== */
 .modal-mask {
   position: fixed;
   inset: 0;
@@ -217,4 +232,36 @@ html, body {
   font-size: .9rem;
   border: 1px solid #ccc;
   border-radius: 6px;
+}
+
+/* ========================
+   Responsive Mobile
+   ======================== */
+@media (max-width: 600px) {
+  /* Tab full-width 4-in-riga */
+  .tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .tabs::-webkit-scrollbar {
+    height: 6px;
+  }
+  .tabs::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,.2);
+    border-radius: 3px;
+  }
+  .tab {
+    flex: 0 0 calc(25% - 8px);
+    min-width: 80px;
+  }
+
+  /* Filtri compatti */
+  .filters {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .filters select {
+    flex: 0 0 25%;
+    min-width: 0;
+  }
 }
