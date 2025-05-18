@@ -1,4 +1,4 @@
-/* style.css v2.4.1 */
+/* style.css v2.4.2 */
 
 /* ========================
    Variabili colori
@@ -18,8 +18,41 @@
 }
 html, body {
   margin: 0;
+  padding: 0;
   font-family: Arial, Helvetica, sans-serif;
   background: #f3f4f6;
+}
+
+/* ========================
+   Generale Bottoni
+   ======================== */
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  transition: background .2s;
+}
+.btn.small {
+  padding: 6px 12px;
+  font-size: .85rem;
+}
+.btn.full {
+  width: 100%;
+  margin: 6px 0;
+}
+.btn-green  { background: var(--green);  color: #fff; }
+.btn-blue   { background: var(--blue);   color: #fff; }
+.btn-pink   { background: var(--pink);   color: #fff; }
+.btn-yellow { background: var(--yellow); color: #000; }
+.btn-grey   { background: #ccc;          color: #000; }
+/* Pulsante interno alla card */
+.card button {
+  width: 100%;
+  margin-top: auto;
 }
 
 /* ========================
@@ -44,56 +77,42 @@ html, body {
   display: flex;
   gap: 6px;
 }
-.topbar .btn {
-  padding: 6px 12px;
-  font-size: .85rem;
-}
 
 /* ========================
-   Tabs
+   Tabs (4-in-riga, colori corretti)
    ======================== */
 .tabs {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   padding: 8px 12px;
   background: #fff;
-  justify-content: center;
+  overflow-x: auto;
   z-index: 9;
 }
 .tab {
-  flex: 1 1 calc(25% - 8px);
+  flex: 0 0 calc(25% - 8px);
   min-width: 80px;
   text-align: center;
   font-size: .9rem;
   padding: 8px 12px;
   border-radius: 20px;
   cursor: pointer;
-  line-height: 1.2;
-  border: 2px solid #333;
+  border: 2px solid transparent;
   color: #fff;
 }
-/* Colori specifici */
-.tab[data-filter="all"] {
-  background: var(--green);
-}
-.tab[data-filter="Lead"] {
-  background: var(--blue);
-}
-.tab[data-filter="Appuntamento"] {
-  background: var(--pink);
-}
-.tab[data-filter="Contratto"] {
-  background: var(--yellow);
-  color: #000;
-}
-/* Active */
+/* Colori specifici per filtro */
+.tab[data-filter="all"]           { background: var(--green); }
+.tab[data-filter="Lead"]          { background: var(--blue); }
+.tab[data-filter="Appuntamento"]  { background: var(--pink); }
+.tab[data-filter="Contratto"]     { background: var(--yellow); color: #000; }
+/* Tab attiva */
 .tab.active {
-  outline: 3px solid #333;
+  border-color: #333;
 }
 
 /* ========================
-   Filtri
+   Filtri (compatti e scrollabili)
    ======================== */
 .filters {
   display: flex;
@@ -112,10 +131,10 @@ html, body {
 }
 .filters select {
   flex: 0 0 auto;
-  padding: 4px 8px;
-  font-size: .85rem;
-  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: .9rem;
   border: 1px solid #ccc;
+  border-radius: 6px;
   background: #fff;
   height: auto;
   min-width: 0;
@@ -127,14 +146,14 @@ html, body {
 .cards {
   padding: 12px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fill,minmax(260px,1fr));
   gap: 12px;
 }
 .card {
   background: #fff;
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0,0,0,.1);
-  padding: 10px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   border-left: 6px solid #999;
@@ -142,34 +161,28 @@ html, body {
 .card.lead  { border-color: var(--blue); }
 .card.app   { border-color: var(--pink); }
 .card.contr { border-color: var(--yellow); }
-.card h4 {
-  margin: 0 0 4px;
-  font-size: 1rem;
-}
-.card small {
-  color: #555;
-  font-size: .85rem;
-}
-.card p {
-  margin: 4px 0;
-  font-size: .9rem;
-}
-/* Badge */
+.card h4    { margin: 0 0 6px; font-size: 1rem; }
+.card small { color: #555; font-size: .85rem; }
+.card p     { margin: 6px 0; font-size: .9rem; }
+
+/* ========================
+   Badge
+   ======================== */
 .badge {
   display: inline-block;
   font-size: .75rem;
-  padding: 2px 6px;
+  padding: 3px 8px;
   border-radius: 10px;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #fff;
 }
 .badge.lead  { background: var(--blue); }
 .badge.app   { background: var(--pink); }
 .badge.contr { background: var(--yellow); color: #000; }
 
-/* ================
+/* ========================
    Carrello
-   ================ */
+   ======================== */
 #cart {
   padding: 10px;
   background: #fff;
@@ -195,7 +208,7 @@ html, body {
 }
 #cartList button {
   padding: 4px 8px;
-  font-size: .8rem;
+  font-size: .85rem;
 }
 
 /* ========================
@@ -228,7 +241,7 @@ html, body {
 .modal textarea {
   width: 100%;
   margin: 4px 0;
-  padding: 6px;
+  padding: 8px;
   font-size: .9rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -238,30 +251,14 @@ html, body {
    Responsive Mobile
    ======================== */
 @media (max-width: 600px) {
-  /* Tab full-width 4-in-riga */
+  /* Tabs scrollabili orizzontalmente */
   .tabs {
-    flex-wrap: nowrap;
     overflow-x: auto;
+    flex-wrap: nowrap;
   }
-  .tabs::-webkit-scrollbar {
-    height: 6px;
-  }
-  .tabs::-webkit-scrollbar-thumb {
-    background: rgba(0,0,0,.2);
-    border-radius: 3px;
-  }
-  .tab {
-    flex: 0 0 calc(25% - 8px);
-    min-width: 80px;
-  }
-
-  /* Filtri compatti */
+  /* Filtri scrollabili orizzontalmente */
   .filters {
-    flex-wrap: nowrap;
     overflow-x: auto;
-  }
-  .filters select {
-    flex: 0 0 25%;
-    min-width: 0;
+    flex-wrap: nowrap;
   }
 }
