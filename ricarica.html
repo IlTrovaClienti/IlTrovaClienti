@@ -1,53 +1,79 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
- <meta charset="UTF-8" />
- <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
- <title>Ricarica Crediti</title>
- <link rel="stylesheet" href="style.css" />
- <style>
- body { background: #f0f2f5; margin:0; padding:20px; font-family:Arial,sans-serif }
- .ricarica-box {
-   max-width:400px; margin:auto;
-   background:#fff; padding:20px;
-   border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.1)
- }
- .ricarica-box h2 { text-align:center; margin-bottom:16px; font-size:1.3em }
- .ricarica-box h3 {
-   margin:16px 0 8px; font-size:1em; display:flex;
-   align-items:center; gap:8px;
- }
- .ricarica-box p { font-size:.9em; line-height:1.4; margin-bottom:12px }
- .ricarica-action {
-   display:block; width:100%;
-   text-align:center; padding:12px 0; margin:8px 0;
-   border:none; border-radius:24px;
-   font-size:1em; color:#fff;
-   text-decoration:none; cursor:pointer;
- }
- .btn-card  { background:#4A90E2 }
- .btn-paylink { background:#0070BA }
- hr { border:none; border-top:1px solid #ddd; margin:16px 0 }
- </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ricarica Crediti</title>
+  <!-- Collega il tuo style generale -->
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Eventuali stili extra solo per questa pagina */
+    body {
+      background: #f0f2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    .ricarica-box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 320px;
+      width: 100%;
+    }
+    .ricarica-box h2 {
+      margin-bottom: 1rem;
+    }
+    .ricarica-box p {
+      margin-bottom: 1.5rem;
+      font-size: 0.95rem;
+    }
+    .ricarica-box .btn {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      border-radius: 24px;
+      text-decoration: none;
+      color: #fff;
+      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-card { background: #4A90E2; }
+    .btn-paypal { background: #0070BA; }
+  </style>
 </head>
 <body>
- <div class="ricarica-box">
-   <h2>Ricarica crediti</h2>
-   <h3>💳 Paga con carta</h3>
-   <p>1 credito = 40 €</p>
-   <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d"
-   target="_blank"
-   class="ricarica-action btn-card">
-   Paga ora con carta
-   </a>
-   <hr/>
-   <h3>🅿️ Paga con PayPal</h3>
-   <p>1 credito = 40 €</p>
-   <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y"
-   target="_blank"
-   class="ricarica-action btn-paylink">
-   Paga ora con PayPal
-   </a>
- </div>
+
+  <div class="ricarica-box">
+    <h2>Ricarica Crediti</h2>
+    <p>1 credito = 40 €</p>
+
+    <!-- Pulsante Carta (Revolut) -->
+    <button class="btn btn-card" id="pay-card">
+      Paga con Carta di Credito
+    </button>
+
+    <!-- Pulsante PayPal -->
+    <button class="btn btn-paypal" id="pay-paypal">
+      Paga con PayPal
+    </button>
+  </div>
+
+  <!-- Collega lo script per gestire i click -->
+  <script>
+    document.getElementById('pay-card').addEventListener('click', () => {
+      window.open('https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d', '_blank');
+    });
+    document.getElementById('pay-paypal').addEventListener('click', () => {
+      window.open('https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y', '_blank');
+    });
+  </script>
 </body>
 </html>
