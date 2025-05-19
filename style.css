@@ -1,171 +1,48 @@
 /* style.css */
+/* Reset e base */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px;color:#333}
 
-/* Reset */
-* { box-sizing:border-box; margin:0; padding:0; }
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f2f5;
-  padding: 12px;
-  color: #333;
-}
+/* Nasconde modali di default */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:1000}
+.modal-overlay.visible{display:flex}
 
 /* HEADER */
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  padding: 16px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom: 16px;
-}
-.logo-img { height:80px; width:auto; }
-.header-right { display:flex; align-items:center; gap:12px; }
-.credit-display { font-size:1rem; }
+.header{display:flex;align-items:center;justify-content:space-between;background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:16px}
+.logo-img{height:80px}
+.header-right{display:flex;align-items:center;gap:12px}
+.credit-display{font-size:1rem}
 
-/* BUTTON BASE */
-.btn {
-  border:none;
-  cursor:pointer;
-  font-size:0.95rem;
-  padding:8px 16px;
-  border-radius:24px;
-  transition:transform 0.1s ease;
-}
-.btn:hover { transform:translateY(-2px); }
-.btn:active { transform:translateY(1px); }
-
-/* COLORS */
-.checkout-small { background:#10b981; color:#fff; }
-.ricarica-btn { background:#1e40af; color:#fff; text-decoration:none; }
+/* BUTTONS */
+.btn{border:none;cursor:pointer;font-size:.95rem;padding:8px 16px;border-radius:24px;transition:transform .1s}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(1px)}
+.checkout-small{background:#10b981;color:#fff}
+.ricarica-btn{background:#1e40af;color:#fff;text-decoration:none}
 
 /* NAV */
-.section-buttons {
-  display:flex;
-  gap:8px;
-  margin-bottom:16px;
-  flex-wrap:wrap;
-}
-.section-buttons .btn {
-  flex:1 1 30%;
-  padding:12px;
-  font-weight:600;
-  color:#fff;
-  text-align:center;
-}
-#btnLeads { background:#3b82f6; }
-#btnAppuntamenti { background:#ec4899; }
-#btnContratti { background:#facc15; color:#111; }
+.section-buttons{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.section-buttons .btn{flex:1 1 30%;padding:12px;font-weight:600;color:#fff;text-align:center}
+#btnLeads{background:#3b82f6}#btnAppuntamenti{background:#ec4899}#btnContratti{background:#facc15;color:#111}
 
 /* FILTRI */
-.filters {
-  display:flex;
-  flex-wrap:wrap;
-  gap:12px;
-  margin-bottom:16px;
-  overflow: visible; /* dropdown sopra tutto */
-}
-.filter-group {
-  flex:1 1 45%;
-  min-width:120px;
-  display:flex;
-  flex-direction:column;
-  position:relative;
-  z-index:100;
-}
-.filter-group label { margin-bottom:4px; font-size:0.9rem; }
-.filters select {
-  padding:8px;
-  border-radius:8px;
-  border:1px solid #d1d5db;
-  background:#f3f4f6;
-  font-size:0.9rem;
-  appearance:none;
-}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.filters select{padding:8px;border-radius:8px;border:1px solid #d1d5db;background:#f3f4f6;appearance:none}
+#clear-filters{background:#6b7280;color:#fff}
 
 /* CARRELLO */
-.carrello {
-  background:#fff;
-  padding:16px;
-  border-radius:10px;
-  box-shadow:0 2px 8px rgba(0,0,0,0.1);
-  margin-bottom:16px;
-}
-.carrello h2 { font-size:1.2rem; margin-bottom:8px; }
-#totale { font-weight:600; }
+.carrello{background:#fff;padding:16px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.1);margin-bottom:16px}
+.carrello h2{margin-bottom:8px;font-size:1.2rem}
+#totale{font-weight:600}
 
-/* CARDS */
-#clienti {
-  display:grid;
-  grid-template-columns:1fr;
-  gap:16px;
-  margin-bottom:16px;
-}
-@media(min-width:600px) {
-  #clienti {
-    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  }
-}
-.cliente-card {
-  background:#fff;
-  padding:16px;
-  border-radius:12px;
-  position:relative;
-  box-shadow:0 2px 8px rgba(0,0,0,0.05);
-  border-left:6px solid;
-}
-.badge {
-  position:absolute;
-  top:16px; left:16px;
-  padding:4px 8px;
-  border-radius:12px;
-  font-size:0.75rem;
-  color:#fff;
-}
-.badge.lead { background:#3b82f6; }
-.badge.appuntamento { background:#ec4899; }
-.badge.contratto { background:#facc15; color:#111; }
-.cliente-card.lead { border-color:#3b82f6; }
-.cliente-card.appuntamento { border-color:#ec4899; }
-.cliente-card.contratto { border-color:#facc15; }
+/* CARDS CLIENTI */
+#clienti{display:grid;gap:16px;margin-bottom:16px}
+@media(min-width:600px){#clienti{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}}
+.cliente-card{background:#fff;padding:16px;border-radius:12px;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.05);border-left:6px solid}
+.badge{position:absolute;top:16px;left:16px;padding:4px 8px;border-radius:12px;font-size:.75rem;color:#fff}
+.lead.badge{background:#3b82f6}.appuntamento.badge{background:#ec4899}.contratto.badge{background:#facc15;color:#111}
+.actions{position:absolute;top:16px;right:16px;display:flex;gap:8px}
+.actions .btn{padding:8px 12px;font-size:.85rem}
+.acquisisci{background:#3b82f6;color:#fff}.riserva{background:#10b981;color:#fff}
 
-.cliente-card h3 { margin:24px 0 8px; font-size:1rem; color:#111; }
-.cliente-card p { margin-bottom:8px; font-size:0.9rem; color:#444; }
-.budget, .commission {
-  margin-bottom:8px;
-  font-size:0.9rem;
-  font-weight:500;
-}
-
-/* AZIONI */
-.actions {
-  position:absolute;
-  top:16px; right:16px;
-  display:flex; gap:8px;
-}
-.actions .btn {
-  padding:8px 12px;
-  font-size:0.85rem;
-}
-.acquisisci { background:#3b82f6; color:#fff; }
-.riserva    { background:#10b981; color:#fff; }
-
-/* MODALI */
-.modal-overlay {
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background:rgba(0,0,0,0.5); display:none;
-  align-items:center; justify-content:center;
-  z-index:1000;
-}
-.modal-overlay.visible {
-  display:flex;
-}
-.modal {
-  background:#fff;
-  padding:16px;
-  border-radius:12px;
-  width:90%; max-width:400px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.15);
-  position:relative;
-}
+/* ERROR */
+.error{color:#b91c1c;font-size:.9rem;margin-bottom:8px}
