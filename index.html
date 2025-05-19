@@ -20,6 +20,15 @@
 </head>
 <body>
 
+  <!-- Reset modal aperti -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      ['auth-modal','payment-modal','contact-modal'].forEach(id => {
+        document.getElementById(id)?.classList.remove('visible');
+      });
+    });
+  </script>
+
   <!-- HEADER -->
   <header class="header">
     <img src="assets/logo.jpg" alt="Logo IlTrovaClienti" class="logo-img">
@@ -35,7 +44,7 @@
     </div>
   </header>
 
-  <!-- NAV -->
+  <!-- NAV SEZIONI -->
   <nav class="section-buttons">
     <button id="btnLeads" class="btn selected">Lead</button>
     <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
@@ -68,6 +77,7 @@
         <button id="show-login" class="btn active">Accedi</button>
         <button id="show-register" class="btn">Registrati</button>
       </div>
+      <!-- LOGIN FORM -->
       <form id="login-form" class="active">
         <input type="email" id="login-email" placeholder="Email" required>
         <input type="password" id="login-password" placeholder="Password" required>
@@ -75,6 +85,7 @@
         <div id="login-error" class="error"></div>
         <button type="submit" class="btn">Entra</button>
       </form>
+      <!-- REGISTER FORM -->
       <form id="register-form">
         <input type="text" id="register-name" placeholder="Nome" required>
         <input type="text" id="register-surname" placeholder="Cognome" required>
@@ -94,9 +105,18 @@
     <div class="modal">
       <h3>Scegli Pagamento</h3>
       <div class="option-container">
-        <div class="option"><img src="assets/paypal.png" class="pay-logo" alt="PayPal"><button id="pay-paypal" class="btn">PayPal</button></div>
-        <div class="option"><img src="assets/credit-card.png" class="pay-logo" alt="Carta"><button id="pay-card" class="btn">Carta</button></div>
-        <div class="option"><img src="assets/bank.png" class="pay-logo" alt="Bonifico"><button id="pay-bank" class="btn">Bonifico</button></div>
+        <div class="option">
+          <img src="assets/paypal.png" class="pay-logo" alt="PayPal">
+          <button id="pay-paypal" class="btn">PayPal</button>
+        </div>
+        <div class="option">
+          <img src="assets/credit-card.png" class="pay-logo" alt="Carta">
+          <button id="pay-card" class="btn">Carta</button>
+        </div>
+        <div class="option">
+          <img src="assets/bank.png" class="pay-logo" alt="Bonifico">
+          <button id="pay-bank" class="btn">Bonifico</button>
+        </div>
       </div>
       <button id="close-payment" class="btn cancel-form">Chiudi</button>
     </div>
