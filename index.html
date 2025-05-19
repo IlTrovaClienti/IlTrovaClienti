@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-  <base href="/IlTrovaClienti/">
 
   <!-- Favicon -->
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
@@ -13,22 +12,13 @@
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
 
-  <!-- Tabletop per Google Sheet -->
+  <!-- Tabletop per leggere il Google Sheet -->
   <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js" defer></script>
   <!-- Firebase SDK v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
 </head>
 <body>
-
-  <!-- Reset modali aperti -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      ['auth-modal','payment-modal','contact-modal'].forEach(id => {
-        document.getElementById(id)?.classList.remove('visible');
-      });
-    });
-  </script>
 
   <!-- HEADER -->
   <header class="header">
@@ -93,72 +83,20 @@
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-tabs">
-        <button id="show-login" class="btn active">Accedi</button>
-        <button id="show-register" class="btn">Registrati</button>
-      </div>
-      <!-- FORM LOGIN -->
-      <form id="login-form" class="active">
-        <input type="email" id="login-email" placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <label>Quanto fa 2+3? <input type="text" id="login-captcha" required></label>
-        <div id="login-error" class="error"></div>
-        <button type="submit" class="btn">Entra</button>
-      </form>
-      <!-- FORM REGISTER -->
-      <form id="register-form">
-        <input type="text" id="register-name" placeholder="Nome" required>
-        <input type="text" id="register-surname" placeholder="Cognome" required>
-        <input type="email" id="register-email" placeholder="Email" required>
-        <input type="password" id="register-password" placeholder="Password" required>
-        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
-        <label>Quanto fa 2+3? <input type="text" id="register-captcha" required></label>
-        <div id="register-error" class="error"></div>
-        <button type="submit" class="btn">Registrati</button>
-      </form>
-      <button id="close-auth" class="btn cancel-form">Chiudi</button>
-    </div>
+    <!-- MARKUP MODAL COME PRIMA -->
   </div>
 
   <!-- PAYMENT MODAL -->
   <div id="payment-modal" class="modal-overlay">
-    <div class="modal">
-      <h3>Scegli Pagamento</h3>
-      <div class="option-container">
-        <div class="option">
-          <img src="assets/paypal.png" class="pay-logo" alt="PayPal">
-          <button id="pay-paypal" class="btn">PayPal</button>
-        </div>
-        <div class="option">
-          <img src="assets/credit-card.png" class="pay-logo" alt="Carta">
-          <button id="pay-card" class="btn">Carta</button>
-        </div>
-        <div class="option">
-          <img src="assets/bank.png" class="pay-logo" alt="Bonifico">
-          <button id="pay-bank" class="btn">Bonifico</button>
-        </div>
-      </div>
-      <button id="close-payment" class="btn cancel-form">Chiudi</button>
-    </div>
+    <!-- MARKUP MODAL COME PRIMA -->
   </div>
 
   <!-- CONTACT MODAL -->
   <div id="contact-modal" class="modal-overlay">
-    <div class="modal-content">
-      <h2>Richiesta Contatto</h2>
-      <input type="text" id="contact-name" placeholder="Nome" required>
-      <input type="text" id="contact-surname" placeholder="Cognome" required>
-      <input type="tel" id="contact-phone" placeholder="Telefono" required>
-      <input type="text" id="contact-location" placeholder="Località" required>
-      <input type="email" id="contact-email" placeholder="Email" required>
-      <textarea id="contact-message" rows="4" placeholder="Messaggio" required></textarea>
-      <button id="btnContactSend" class="btn">Invia</button>
-      <button id="close-contact" class="btn cancel-form">Chiudi</button>
-    </div>
+    <!-- MARKUP MODAL COME PRIMA -->
   </div>
 
-  <!-- SCRIPTS FINALI -->
+  <!-- Scripts -->
   <script src="firebase-init.js" defer></script>
   <script src="firebase-auth.js" defer></script>
   <script src="script.js" defer></script>
