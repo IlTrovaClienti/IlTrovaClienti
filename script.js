@@ -324,4 +324,25 @@ elems.showRegister.onclick = ()=>{
 };
 elems.btnLogin.onclick = ()=>{
   const email = document.getElementById('login-email').value;
-  const pwd  
+  const pwd   = document.getElementById('login-password').value;
+  const cap   = document.getElementById('login-captcha').value;
+  if(cap.trim()!=='5') return alert('Captcha errato');
+  auth.signInWithEmailAndPassword(email,pwd)
+    .then(()=>{ elems.authModal.style.display='none'; })
+    .catch(err=>alert(err.message));
+};
+elems.btnRegister.onclick = ()=>{
+  const email = document.getElementById('register-email').value;
+  const pwd   = document.getElementById('register-password').value;
+  const pwd2  = document.getElementById('register-password2').value;
+  const cap   = document.getElementById('register-captcha').value;
+  if(pwd!==pwd2) return alert('Password non corrispondono');
+  if(cap.trim()!=='5') return alert('Captcha errato');
+  auth.createUserWithEmailAndPassword(email,pwd)
+    .then(()=>{ elems.authModal.style.display='none'; })
+    .catch(err=>alert(err.message));
+};
+elems.closeAuth.onclick    = ()=> elems.authModal.style.display='none';
+elems.closeContact.onclick = ()=> elems.contactModal.style.display='none';
+elems.btnContact.onclick   = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
+
