@@ -19,8 +19,6 @@ const elems = {
   showRegister: document.getElementById('show-register'),
   loginForm:    document.getElementById('login-form'),
   registerForm: document.getElementById('register-form'),
-  btnLogin:     document.getElementById('btnLogin'),
-  btnRegister:  document.getElementById('btnRegister'),
   closeAuth:    document.getElementById('close-auth'),
   checkoutBtn:  document.getElementById('checkout-small'),
   paymentModal: document.getElementById('payment-modal'),
@@ -47,7 +45,7 @@ function findCol(map, alternatives) {
   return -1;
 }
 
-// MODALE RICARICA (pulsanti più piccoli e con icone)
+// MODALE RICARICA
 function showRicaricaModal() {
   if (!document.getElementById('modal-ricarica')) {
     const modal = document.createElement('div');
@@ -115,7 +113,6 @@ function showRicaricaModal() {
   }
 }
 
-
 // MODALE CHECKOUT
 function showCheckoutModal() {
   if (!document.getElementById('modal-checkout')) {
@@ -142,8 +139,8 @@ function showCheckoutModal() {
         <div style="margin:8px 0;font-weight:bold">Totale da pagare: €${totale}</div>
         <div style="margin-bottom:10px;font-size:.9em;">Dopo il pagamento i dati verranno sbloccati.<br>Paga ora:</div>
         <div style="display:flex;gap:10px;justify-content:center;">
-          <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d" target="_blank" class="ricarica-action btn-card" style="font-size:1em;padding:8px 20px;">Carta</a>
-          <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y" target="_blank" class="ricarica-action btn-paylink" style="font-size:1em;padding:8px 20px;">PayPal</a>
+          <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d" target="_blank" class="ricarica-action btn-card pay-gradient" style="font-size:1em;padding:8px 20px;min-width:140px;">Carta</a>
+          <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y" target="_blank" class="ricarica-action btn-paylink pay-gradient" style="font-size:1em;padding:8px 20px;min-width:140px;">PayPal</a>
         </div>
         <button id="close-checkout" class="cancel-form" style="margin-top:18px;">Chiudi</button>
       </div>`;
@@ -151,7 +148,6 @@ function showCheckoutModal() {
     modal.innerHTML = html;
     document.body.appendChild(modal);
     document.getElementById('close-checkout').onclick = () => { modal.remove(); };
-    // Chiudi anche con ESC/click fuori
     modal.onclick = e => { if(e.target === modal) modal.remove(); };
     document.addEventListener('keydown', function handler(ev){
       if(ev.key==="Escape"){ modal.remove(); document.removeEventListener('keydown', handler);}
@@ -355,7 +351,9 @@ elems.showRegister.onclick = ()=>{
   elems.loginForm.classList.remove('active');
   elems.registerForm.classList.add('active');
 };
-elems.btnLogin.onclick = ()=>{
+// Login con INVIO
+elems.loginForm.onsubmit = function(e) {
+  e.preventDefault();
   const email = document.getElementById('login-email').value;
   const pwd   = document.getElementById('login-password').value;
   const cap   = document.getElementById('login-captcha').value;
@@ -364,7 +362,9 @@ elems.btnLogin.onclick = ()=>{
     .then(()=>{ elems.authModal.style.display='none'; })
     .catch(err=>alert(err.message));
 };
-elems.btnRegister.onclick = ()=>{
+// Register con INVIO
+elems.registerForm.onsubmit = function(e) {
+  e.preventDefault();
   const email = document.getElementById('register-email').value;
   const pwd   = document.getElementById('register-password').value;
   const pwd2  = document.getElementById('register-password2').value;
@@ -378,4 +378,3 @@ elems.btnRegister.onclick = ()=>{
 elems.closeAuth.onclick    = ()=> elems.authModal.style.display='none';
 elems.closeContact.onclick = ()=> elems.contactModal.style.display='none';
 elems.btnContact.onclick   = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
-
