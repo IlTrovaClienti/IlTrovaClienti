@@ -6,7 +6,6 @@
   <title>IlTrovaClienti</title>
   <base href="/IlTrovaClienti/">
   <link rel="stylesheet" href="style.css">
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
   <!-- Firebase SDK v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -40,7 +39,7 @@
         <select id="regione"></select>
       </div>
       <div class="filter-group">
-        <label for="citta">Città</label>
+        <label for="citta">Citta</label>
         <select id="citta"></select>
       </div>
     </div>
@@ -71,33 +70,30 @@
         <button id="show-login" class="active">Accedi</button>
         <button id="show-register">Registrati</button>
       </div>
-      <form id="login-form" class="active">
-        <input type="email"    id="login-email"    placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta"></label>
-        <button type="button" id="btnLogin">Accedi</button>
+      <form id="login-form" class="active" autocomplete="on">
+        <input type="email"    id="login-email"    placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta" required></label>
       </form>
-      <form id="register-form">
-        <input type="text"     id="register-name"      placeholder="Nome">
-        <input type="text"     id="register-surname"   placeholder="Cognome">
-        <input type="email"    id="register-email"     placeholder="Email">
-        <input type="password" id="register-password"  placeholder="Password">
-        <input type="password" id="register-password2" placeholder="Ripeti Password">
-        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta"></label>
-        <button type="button" id="btnRegister">Registrati</button>
+      <form id="register-form" autocomplete="on">
+        <input type="text"     id="register-name"      placeholder="Nome" required>
+        <input type="text"     id="register-surname"   placeholder="Cognome" required>
+        <input type="email"    id="register-email"     placeholder="Email" required>
+        <input type="password" id="register-password"  placeholder="Password" required>
+        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta" required></label>
       </form>
       <button id="close-auth" class="cancel-form">Chiudi</button>
     </div>
   </div>
 
-  <!-- PAYMENT MODAL -->
+  <!-- PAYMENT MODAL (opzionale) -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal">
       <h3>Scegli metodo di pagamento</h3>
       <div class="option-container">
         <div class="option"><img class="pay-logo" src="assets/paypal.png"><button id="pay-paypal">PayPal</button></div>
         <div class="option"><img class="pay-logo" src="assets/credit-card.png"><button id="pay-card">Carta</button></div>
-        <div class="option"><img class="pay-logo" src="assets/bank.png"><button id="pay-bank">Bonifico</button></div>
       </div>
       <button id="close-payment" class="cancel-form">Chiudi</button>
     </div>
