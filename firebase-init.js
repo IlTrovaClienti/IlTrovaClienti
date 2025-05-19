@@ -9,6 +9,4 @@ const firebaseConfig = {
   measurementId: "G-JF12YKNJX6"
 };
 firebase.initializeApp(firebaseConfig);
-
-// Espongo `auth` globalmente
-window.auth = firebase.auth();
+// **Non dichiarare qui `const auth`**  
