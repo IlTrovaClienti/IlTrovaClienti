@@ -109,9 +109,9 @@ function populateFilters() {
   elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
     regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
 
-  // CITTA
+  // CITTA — **QUI LA LABEL CORRETTA**
   const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
-  elems.citta.innerHTML = `<option value="">Tutte le Città</option>` +
+  elems.citta.innerHTML = `<option value="">Tutte le Citta</option>` +
     cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
 
   // CATEGORIA
@@ -199,10 +199,91 @@ function render() {
 });
 
 // Tabs
+function toggleButton(btn) {
+  elems.btnLeads.classList.remove('selected');
+  elems.btnAppuntamenti.classList.remove('selected');
+  elems.btnContratti.classList.remove('selected');
+  btn.classList.add('selected');
+}
 elems.btnLeads.onclick = ()=>{ sectionFilter='lead'; toggleButton(elems.btnLeads); render(); };
 elems.btnAppuntamenti.onclick = ()=>{ sectionFilter='appuntamento'; toggleButton(elems.btnAppuntamenti); render(); };
 elems.btnContratti.onclick = ()=>{ sectionFilter='contratto'; toggleButton(elems.btnContratti); render(); };
 
 // FETCH dati
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
-  const lines =
+  const lines = txt.trim().split('\n');
+  const headers = lines.shift().split('\t');
+  const map = {};
+  headers.forEach((h,i)=>map[h]=i);
+
+  const idxRegione     = findCol(map, ['regione']);
+  const idxCitta       = findCol(map, ['citta','città']);
+  const idxCategoria   = findCol(map, ['categoria']);
+  const idxTipo        = findCol(map, ['tipo']);
+  const idxDescrizione = findCol(map, ['descrizione']);
+  const idxTelefono    = findCol(map, ['telefono']);
+  const idxBudget      = findCol(map, ['budget (€)','budget']);
+
+  if ([idxRegione, idxCitta, idxCategoria, idxTipo, idxDescrizione, idxBudget].includes(-1)) {
+    elems.clienti.innerHTML = '<div style="color:red;font-weight:bold">ERRORE: Colonne mancanti!</div>';
+    return;
+  }
+
+  leads = lines.map((l,i)=>{
+    const cols = l.split('\t');
+    return {
+      id: i+1,
+      regione: cols[idxRegione] || '',
+      citta: cols[idxCitta] || '',
+      categoria: cols[idxCategoria] || '',
+      tipo: (cols[idxTipo] || '').toLowerCase().replace(/\s.*$/,''),
+      descrizione: cols[idxDescrizione] || '',
+      telefono: cols[idxTelefono] || '',
+      budget: parseFloat(cols[idxBudget]) || 0
+    };
+  });
+  render();
+}).catch(err=>{
+  elems.clienti.innerHTML = '<div style="color:red">Errore caricamento dati!</div>';
+});
+
+// Modali
+elems.checkoutBtn.onclick = ()=> showCheckoutModal();
+if(elems.ricarica) elems.ricarica.onclick = (e)=>{ e.preventDefault(); showRicaricaModal(); };
+
+// Auth modal controls (resto identico)
+elems.showLogin.onclick = ()=>{
+  elems.showLogin.classList.add('active');
+  elems.showRegister.classList.remove('active');
+  elems.loginForm.classList.add('active');
+  elems.registerForm.classList.remove('active');
+};
+elems.showRegister.onclick = ()=>{
+  elems.showLogin.classList.remove('active');
+  elems.showRegister.classList.add('active');
+  elems.loginForm.classList.remove('active');
+  elems.registerForm.classList.add('active');
+};
+elems.btnLogin.onclick = ()=>{
+  const email = document.getElementById('login-email').value;
+  const pwd   = document.getElementById('login-password').value;
+  const cap   = document.getElementById('login-captcha').value;
+  if(cap.trim()!=='5') return alert('Captcha errato');
+  auth.signInWithEmailAndPassword(email,pwd)
+    .then(()=>{ elems.authModal.style.display='none'; })
+    .catch(err=>alert(err.message));
+};
+elems.btnRegister.onclick = ()=>{
+  const email = document.getElementById('register-email').value;
+  const pwd   = document.getElementById('register-password').value;
+  const pwd2  = document.getElementById('register-password2').value;
+  const cap   = document.getElementById('register-captcha').value;
+  if(pwd!==pwd2) return alert('Password non corrispondono');
+  if(cap.trim()!=='5') return alert('Captcha errato');
+  auth.createUserWithEmailAndPassword(email,pwd)
+    .then(()=>{ elems.authModal.style.display='none'; })
+    .catch(err=>alert(err.message));
+};
+elems.closeAuth.onclick      = ()=> elems.authModal.style.display='none';
+elems.closeContact.onclick   = ()=> elems.contactModal.style.display='none';
+elems.btnContact.onclick     = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
