@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <!-- rimossa la riga <base> -->
+  <link rel="icon" href="assets/favicon.ico">
   <link rel="stylesheet" href="style.css">
   <!-- Firebase SDK v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -13,6 +13,7 @@
   <script src="script.js" defer></script>
 </head>
 <body>
+  <!-- HEADER -->
   <header class="header">
     <div class="logo"><img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti"></div>
     <div class="header-right">
@@ -25,12 +26,14 @@
     </div>
   </header>
 
+  <!-- NAV -->
   <nav class="section-buttons">
     <button id="btnLeads" class="btn selected">Lead</button>
     <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
     <button id="btnContratti" class="btn">Contratti</button>
   </nav>
 
+  <!-- FILTRI -->
   <section class="filters">
     <select id="regione"><option value="">Tutte Regioni</option></select>
     <select id="citta"><option value="">Tutte Città</option></select>
@@ -39,28 +42,68 @@
     <button id="clear-filters" class="btn">Pulisci</button>
   </section>
 
+  <!-- CARRELLO -->
   <section class="carrello">
     <h2>Carrello</h2>
     <ul id="carrello"></ul>
     <div id="totale">Totale: €0</div>
   </section>
 
+  <!-- CONTENITORE CLIENTI -->
   <main id="clienti"></main>
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay">
-    <!-- markup completo come prima -->
-    …  
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login" class="btn active">Accedi</button>
+        <button id="show-register" class="btn">Registrati</button>
+      </div>
+      <form id="login-form" class="active">
+        <input type="email"    id="login-email"    placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" required></label>
+        <button type="button" id="btnLogin" class="btn">Entra</button>
+      </form>
+      <form id="register-form">
+        <input type="text"     id="register-name"    placeholder="Nome" required>
+        <input type="text"     id="register-surname" placeholder="Cognome" required>
+        <input type="email"    id="register-email"   placeholder="Email" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" required></label>
+        <button type="button" id="btnRegister" class="btn">Registrati</button>
+      </form>
+      <button id="close-auth" class="btn cancel-form">Chiudi</button>
+    </div>
   </div>
 
   <!-- PAYMENT MODAL -->
   <div id="payment-modal" class="modal-overlay">
-    …  
+    <div class="modal">
+      <h3>Scegli Pagamento</h3>
+      <div class="option-container">
+        <div class="option"><img src="assets/paypal.png" class="pay-logo"><button id="pay-paypal" class="btn">PayPal</button></div>
+        <div class="option"><img src="assets/credit-card.png" class="pay-logo"><button id="pay-card" class="btn">Carta</button></div>
+        <div class="option"><img src="assets/bank.png" class="pay-logo"><button id="pay-bank" class="btn">Bonifico</button></div>
+      </div>
+      <button id="close-payment" class="btn cancel-form">Chiudi</button>
+    </div>
   </div>
 
   <!-- CONTACT MODAL -->
   <div id="contact-modal" class="modal-overlay">
-    …  
+    <div class="modal">
+      <h3>Richiesta Contatto</h3>
+      <input type="text"  id="contact-name"     placeholder="Nome" required>
+      <input type="text"  id="contact-surname"  placeholder="Cognome" required>
+      <input type="tel"   id="contact-phone"    placeholder="Telefono" required>
+      <input type="text"  id="contact-location" placeholder="Località" required>
+      <input type="email" id="contact-email"    placeholder="Email" required>
+      <textarea id="contact-message" rows="4" placeholder="Messaggio" required></textarea>
+      <button id="btnContactSend" class="btn">Invia</button>
+      <button id="close-contact" class="btn cancel-form">Chiudi</button>
+    </div>
   </div>
 </body>
 </html>
