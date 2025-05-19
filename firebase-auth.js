@@ -1,31 +1,28 @@
 // firebase-auth.js
-// Assicurati di includere questo *dopo* firebase-init.js
+// (includi questo DOPO firebase-init.js nel tuo index.html)
 
-// Riferimento a Firebase Auth
-const auth = firebase.auth();
+// Prendo l’istanza precedentemente esposta
+const auth = window.auth;
 
-// Al caricamento del DOM, collego i listener se gli elementi esistono
+// Collegamento dei listener solo se il DOM è pronto
 document.addEventListener('DOMContentLoaded', () => {
   const registerForm = document.getElementById('register-form');
   if (registerForm) {
     registerForm.addEventListener('submit', e => {
       e.preventDefault();
       const email = registerForm['register-email'].value;
-      const password = registerForm['register-password'].value;
-      const errorBox = document.getElementById('register-error');
-      if (errorBox) errorBox.textContent = '';
+      const pwd   = registerForm['register-password'].value;
+      const errBx = document.getElementById('register-error');
+      if (errBx) errBx.textContent = '';
 
-      auth.createUserWithEmailAndPassword(email, password)
+      auth.createUserWithEmailAndPassword(email, pwd)
         .then(cred => cred.user.sendEmailVerification())
         .then(() => {
           registerForm.reset();
-          alert('Registrazione completata! Controlla la tua email per verificare l\'account.');
-          const closeBtn = document.getElementById('close-auth');
-          if (closeBtn) closeBtn.click();
+          alert('Registrazione completata! Controlla la tua email.');
+          document.getElementById('close-auth')?.click();
         })
-        .catch(err => {
-          if (errorBox) errorBox.textContent = err.message;
-        });
+        .catch(err => { if (errBx) errBx.textContent = err.message; });
     });
   }
 
@@ -34,41 +31,33 @@ document.addEventListener('DOMContentLoaded', () => {
     loginForm.addEventListener('submit', e => {
       e.preventDefault();
       const email = loginForm['login-email'].value;
-      const password = loginForm['login-password'].value;
-      const errorBox = document.getElementById('login-error');
-      if (errorBox) errorBox.textContent = '';
+      const pwd   = loginForm['login-password'].value;
+      const errBx = document.getElementById('login-error');
+      if (errBx) errBx.textContent = '';
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          loginForm.reset();
-        })
-        .catch(err => {
-          if (errorBox) errorBox.textContent = err.message;
-        });
+      auth.signInWithEmailAndPassword(email, pwd)
+        .then(() => loginForm.reset())
+        .catch(err => { if (errBx) errBx.textContent = err.message; });
     });
   }
 
-  const logoutBtn = document.getElementById('logout-button');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => auth.signOut());
-  }
+  // logout
+  document.getElementById('logout-button')?.addEventListener('click', () => auth.signOut());
 });
 
-// Listener di stato utente
+// Stato utente
 auth.onAuthStateChanged(user => {
-  const loginBtn     = document.getElementById('login-button');
-  const registerBtn  = document.getElementById('register-button');
-  const logoutBtn    = document.getElementById('logout-button');
+  const loginBtn    = document.getElementById('login-button');
+  const registerBtn = document.getElementById('register-button');
+  const logoutBtn   = document.getElementById('logout-button');
 
   if (user) {
-    document.body.classList.add('user-logged-in');
-    if (loginBtn)    loginBtn.style.display = 'none';
-    if (registerBtn) registerBtn.style.display = 'none';
-    if (logoutBtn)   logoutBtn.style.display = 'inline-block';
+    loginBtn?.style.setProperty('display','none');
+    registerBtn?.style.setProperty('display','none');
+    logoutBtn?.style.setProperty('display','inline-block');
   } else {
-    document.body.classList.remove('user-logged-in');
-    if (loginBtn)    loginBtn.style.display = 'inline-block';
-    if (registerBtn) registerBtn.style.display = 'inline-block';
-    if (logoutBtn)   logoutBtn.style.display = 'none';
+    loginBtn?.style.setProperty('display','inline-block');
+    registerBtn?.style.setProperty('display','inline-block');
+    logoutBtn?.style.setProperty('display','none');
   }
 });
