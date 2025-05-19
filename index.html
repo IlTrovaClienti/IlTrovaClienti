@@ -1,22 +1,12 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>IlTrovaClienti</title>
-
-  <!-- Favicon -->
   <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-
-  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
-
-  <!-- Tabletop per Google Sheet -->
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js"></script>
-  <!-- Firebase SDK v8 -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
 </head>
 <body>
 
@@ -24,9 +14,7 @@
   <header class="header">
     <img src="assets/logo.jpg" alt="Logo IlTrovaClienti" class="logo-img">
     <div class="header-right">
-      <div class="credit-display">
-        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
-      </div>
+      <div class="credit-display">Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)</div>
       <button id="checkout-small" class="btn checkout-small">Checkout</button>
       <a href="ricarica.html" class="btn ricarica-btn">Ricarica</a>
       <button id="login-button" class="btn">Accedi</button>
@@ -75,12 +63,26 @@
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay">
-    <div class="modal">
-      <div class="modal-tabs">
-        <button id="show-login" class="btn active">Accedi</button>
-        <button id="show-register" class="btn">Registrati</button>
-      </div>
-      <form id="login-form" class="active">
-        <input type="email" id="login-email" placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <label>Quanto fa 2+3? <input type="text" id="login-captcha" required></label>
+    <!-- ... tuo markup completo ... -->
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div id="payment-modal" class="modal-overlay">
+    <!-- ... tuo markup ... -->
+  </div>
+
+  <!-- CONTACT MODAL -->
+  <div id="contact-modal" class="modal-overlay">
+    <!-- ... tuo markup ... -->
+  </div>
+
+  <!-- FIREBASE -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
+  <script src="firebase-init.js" defer></script>
+  <script src="firebase-auth.js" defer></script>
+
+  <!-- IL TUO SCRIPT PRINCIPALE -->
+  <script src="script.js" defer></script>
+</body>
+</html>
