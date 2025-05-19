@@ -4,11 +4,78 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="assets/favicon.ico">
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
 </head>
 <body>
-  <!-- Header -->
+
+  <!-- HEADER -->
+  <header class="header">
+    <img src="assets/logo.jpg" alt="Logo IlTrovaClienti" class="logo-img">
+    <div class="header-right">
+      <div class="credit-display">
+        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
+      </div>
+      <button id="checkout-small" class="btn checkout-small">Checkout</button>
+      <a href="ricarica.html" class="btn ricarica-btn">Ricarica</a>
+      <button id="login-button" class="btn">Accedi</button>
+      <button id="register-button" class="btn">Registrati</button>
+      <button id="logout-button" class="btn" style="display:none;">Logout</button>
+    </div>
+  </header>
+
+  <!-- NAV -->
+  <nav class="section-buttons">
+    <button id="btnLeads" class="btn selected">Lead</button>
+    <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
+    <button id="btnContratti" class="btn">Contratti</button>
+  </nav>
+
+  <!-- FILTRI -->
+  <section class="filters">
+    <div class="filter-group">
+      <label>Regione
+        <select id="filter-region"><option value="">Tutti</option></select>
+      </label>
+    </div>
+    <div class="filter-group">
+      <label>Città
+        <select id="filter-city"><option value="">Tutti</option></select>
+      </label>
+    </div>
+    <div class="filter-group">
+      <label>Categoria
+        <select id="filter-category"><option value="">Tutte</option></select>
+      </label>
+    </div>
+    <div class="filter-group">
+      <label>Tipo
+        <select id="filter-type"><option value="">Tutti</option></select>
+      </label>
+    </div>
+    <button id="clear-filters" class="btn">Pulisci</button>
+  </section>
+
+  <!-- CARRELLO -->
+  <section class="carrello">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0</div>
+  </section>
+
+  <!-- CONTENITORE CLIENTI -->
+  <main id="clienti"></main>
+
+  <!-- Qui vanno i tuoi modali: auth-modal, payment-modal, contact-modal -->
+
+  <!-- FIREBASE & SCRIPTS -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
+  <script src="firebase-init.js" defer></script>
+  <script src="firebase-auth.js" defer></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
