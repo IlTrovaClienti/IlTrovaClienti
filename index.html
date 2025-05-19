@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
+  <base href="/IlTrovaClienti/">
 
-  <!-- I tuoi CSS -->
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
 
@@ -15,53 +16,83 @@
 </head>
 <body>
 
-  <!-- HEADER con autenticazione -->
-  <header>
-    <h1>IlTrovaClienti</h1>
-    <button id="login-button" class="btn">Accedi</button>
-    <button id="register-button" class="btn">Registrati</button>
-    <button id="logout-button" class="btn" style="display:none;">Logout</button>
+  <!-- HEADER -->
+  <header class="header">
+    <img src="assets/logo.jpg" alt="Logo" class="logo-img">
+    <div class="header-right">
+      <div class="credit-display">Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)</div>
+      <button id="checkout-small" class="btn checkout-small">Checkout</button>
+      <a href="ricarica.html" class="btn ricarica-btn">Ricarica</a>
+      <button id="login-button" class="btn">Accedi</button>
+      <button id="register-button" class="btn">Registrati</button>
+      <button id="logout-button" class="btn" style="display:none;">Logout</button>
+    </div>
   </header>
 
+  <!-- NAV -->
+  <nav class="section-buttons">
+    <button id="btnLeads" class="btn selected">Lead</button>
+    <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
+    <button id="btnContratti" class="btn">Contratti</button>
+  </nav>
+
   <!-- FILTRI -->
-  <section id="filters" class="filter-group">
-    <label>Regione:
-      <select id="filter-region">
-        <option value="">Tutte</option>
-      </select>
-    </label>
-    <label>Città:
-      <select id="filter-city">
-        <option value="">Tutte</option>
-      </select>
-    </label>
-    <label>Categoria:
-      <select id="filter-category">
-        <option value="">Tutte</option>
-      </select>
-    </label>
-    <label>Tipo:
-      <select id="filter-type">
-        <option value="">Tutti</option>
-      </select>
-    </label>
-    <button id="clear-filters" class="btn">Pulisci Filtri</button>
+  <section class="filters">
+    <select id="filter-region"><option value="">Tutte Regioni</option></select>
+    <select id="filter-city"><option value="">Tutte Città</option></select>
+    <select id="filter-category"><option value="">Tutte Categorie</option></select>
+    <select id="filter-type"><option value="">Tutti Tipi</option></select>
+    <button id="clear-filters" class="btn">Pulisci</button>
   </section>
 
-  <!-- CONTAINER LEAD -->
-  <main id="leads-container" class="cards-grid"></main>
+  <!-- CARRELLO -->
+  <section class="carrello">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0</div>
+  </section>
 
-  <!-- CHECKOUT MODAL -->
-  <div id="checkout-modal" class="modal-overlay">
-    <div class="modal-content">
-      <h2>Scegli Metodo di Pagamento</h2>
-      <label><input type="radio" name="payment" value="paypal"> PayPal</label><br>
-      <label><input type="radio" name="payment" value="card"> Carta di Credito</label><br>
-      <label><input type="radio" name="payment" value="bank"> Bonifico Bancario</label>
-      <div class="buttons">
-        <button id="pay-now" class="btn">Paga Ora</button>
-        <button id="close-checkout" class="btn">Chiudi</button>
+  <!-- CONTENITORE CLIENTI -->
+  <main id="clienti"></main>
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login" class="btn active">Accedi</button>
+        <button id="show-register" class="btn">Registrati</button>
       </div>
+      <form id="login-form" class="active">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" required></label>
+        <div id="login-error" class="error"></div>
+        <button type="submit" class="btn">Entra</button>
+      </form>
+      <form id="register-form">
+        <input type="text" id="register-name" placeholder="Nome" required>
+        <input type="text" id="register-surname" placeholder="Cognome" required>
+        <input type="email" id="register-email" placeholder="Email" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" required></label>
+        <div id="register-error" class="error"></div>
+        <button type="submit" class="btn">Registrati</button>
+      </form>
+      <button id="close-auth" class="btn cancel-form">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Scegli Pagamento</h3>
+      <div class="option-container">
+        <div class="option"><img src="assets/paypal.png" class="pay-logo"><button id="pay-paypal" class="btn">PayPal</button></div>
+        <div class="option"><img src="assets/credit-card.png" class="pay-logo"><button id="pay-card" class="btn">Carta</button></div>
+        <div class="option"><img src="assets/bank.png" class="pay-logo"><button id="pay-bank" class="btn">Bonifico</button></div>
+      </div>
+      <button id="close-payment" class="btn cancel-form">Chiudi</button>
     </div>
   </div>
 
@@ -69,24 +100,21 @@
   <div id="contact-modal" class="modal-overlay">
     <div class="modal-content">
       <h2>Richiesta Contatto</h2>
-      <form id="contact-form">
-        <input type="text" name="nome" placeholder="Nome" required>
-        <input type="text" name="cognome" placeholder="Cognome" required>
-        <input type="tel" name="telefono" placeholder="Telefono" required>
-        <input type="text" name="localita" placeholder="Località" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <textarea name="messaggio" placeholder="Messaggio" rows="4" required></textarea>
-        <div class="buttons">
-          <button type="submit" class="btn">Invia</button>
-          <button type="button" class="btn" id="close-contact-modal">Chiudi</button>
-        </div>
-      </form>
+      <input type="text" id="contact-name" placeholder="Nome" required>
+      <input type="text" id="contact-surname" placeholder="Cognome" required>
+      <input type="tel" id="contact-phone" placeholder="Telefono" required>
+      <input type="text" id="contact-location" placeholder="Località" required>
+      <input type="email" id="contact-email" placeholder="Email" required>
+      <textarea id="contact-message" rows="4" placeholder="Messaggio" required></textarea>
+      <button id="btnContactSend" class="btn">Invia</button>
+      <button id="close-contact" class="btn cancel-form">Chiudi</button>
     </div>
   </div>
 
-  <!-- I tuoi script -->
+  <!-- Firebase init & auth handlers -->
   <script src="firebase-init.js" defer></script>
   <script src="firebase-auth.js" defer></script>
+  <!-- Main app logic -->
   <script src="script.js" defer></script>
 </body>
 </html>
