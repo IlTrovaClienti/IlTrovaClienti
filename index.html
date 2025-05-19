@@ -11,6 +11,12 @@
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
+
+  <!-- Tabletop per Google Sheet -->
+  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js"></script>
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
 </head>
 <body>
 
@@ -67,19 +73,14 @@
   <!-- CONTENITORE CLIENTI -->
   <main id="clienti"></main>
 
-  <!-- MODALI (completi) -->
-  <div id="auth-modal" class="modal-overlay">…</div>
-  <div id="payment-modal" class="modal-overlay">…</div>
-  <div id="contact-modal" class="modal-overlay">…</div>
-
-  <!-- LIB di terze parti -->
-  <script src="https://cdn.jsdelivr.net/npm/tabletop@1.5.4/src/tabletop.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
-
-  <!-- I tuoi script -->
-  <script src="firebase-init.js" defer></script>
-  <script src="firebase-auth.js" defer></script>
-  <script src="script.js" defer></script>
-</body>
-</html>
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login" class="btn active">Accedi</button>
+        <button id="show-register" class="btn">Registrati</button>
+      </div>
+      <form id="login-form" class="active">
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" required></label>
