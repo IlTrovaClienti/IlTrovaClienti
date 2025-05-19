@@ -34,6 +34,7 @@ const elems = {
 };
 
 let leads = [], sectionFilter = 'lead', cart = [];
+let filters = { regione: '', citta: '', categoria: '', tipo: '' };
 
 // Toggle tab buttons
 function toggleButton(btn) {
@@ -43,10 +44,77 @@ function toggleButton(btn) {
   btn.classList.add('selected');
 }
 
+// Rende il mapping tollerante a spazi, accenti e case
+function normalizeColName(name) {
+  return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toLowerCase();
+}
+function colIdx(map, keys) {
+  for (let k of keys) {
+    k = normalizeColName(k);
+    for (let col in map) {
+      if (normalizeColName(col) === k) return map[col];
+    }
+  }
+  return -1;
+}
+
+// POPOLA FILTRI DINAMICI DIPENDENTI
+function populateFilters() {
+  // Subset di leads filtrati progressivamente
+  let subset = leads.filter(l =>
+    (!filters.regione   || l.regione   === filters.regione) &&
+    (!filters.citta     || l.citta     === filters.citta) &&
+    (!filters.categoria || l.categoria === filters.categoria) &&
+    (!filters.tipo      || l.tipo      === filters.tipo)
+  );
+
+  // Opzioni disponibili (dinamiche)
+  const uniqueOptions = (field, fromLeads) => [...new Set(fromLeads.map(l => l[field]).filter(Boolean))].sort();
+
+  // REGIONE
+  const regioni = uniqueOptions('regione', leads);
+  elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
+    regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
+
+  // CITTA dipende da Regione
+  const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
+  elems.citta.innerHTML = `<option value="">Tutte le Città</option>` +
+    cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
+
+  // CATEGORIA dipende da Regione+Città
+  const catList = uniqueOptions('categoria', leads.filter(l =>
+    (!filters.regione || l.regione === filters.regione) &&
+    (!filters.citta || l.citta === filters.citta)
+  ));
+  elems.categoria.innerHTML = `<option value="">Tutte le Categorie</option>` +
+    catList.map(c=>`<option value="${c}" ${filters.categoria===c?'selected':''}>${c}</option>`).join('');
+
+  // TIPO dipende da tutti i precedenti
+  const tipoList = uniqueOptions('tipo', leads.filter(l =>
+    (!filters.regione || l.regione === filters.regione) &&
+    (!filters.citta || l.citta === filters.citta) &&
+    (!filters.categoria || l.categoria === filters.categoria)
+  ));
+  const tipoLabels = {lead:'Lead da chiamare', appuntamento:'Appuntamenti fissati', contratto:'Contratti riservati'};
+  elems.tipo.innerHTML = `<option value="">Tutti i Tipi</option>` +
+    tipoList.map(t=>`<option value="${t}" ${filters.tipo===t?'selected':''}>${tipoLabels[t]||t}</option>`).join('');
+}
+
+// Applica i filtri correnti
+function filterLeads() {
+  return leads.filter(l =>
+    (!filters.regione   || l.regione   === filters.regione) &&
+    (!filters.citta     || l.citta     === filters.citta) &&
+    (!filters.categoria || l.categoria === filters.categoria) &&
+    (!filters.tipo      || l.tipo      === filters.tipo) &&
+    (sectionFilter === 'tutti' || l.tipo === sectionFilter)
+  );
+}
+
 // Render cards & cart
 function render() {
+  const filtered = filterLeads();
   elems.clienti.innerHTML = '';
-  const filtered = leads.filter(l => sectionFilter === 'tutti' || l.tipo === sectionFilter);
   filtered.forEach(l => {
     const card = document.createElement('div');
     card.className = 'cliente-card ' + l.tipo;
@@ -73,31 +141,27 @@ function render() {
   elems.totale.textContent = `Totale: €${sum}`;
   elems.creditiDisp.textContent = cart.length>0?cart.reduce((s,i)=>s+(i.tipo==='lead'?1:2),0):0;
   elems.euroDisp.textContent = `€${(cart.length>0?cart.reduce((s,i)=>s+(i.tipo==='lead'?1:2),0)*40:0)}`;
+  populateFilters();
 }
+
+// Aggiorna filtri e renderizza
+['regione','citta','categoria','tipo'].forEach(fld=>{
+  elems[fld].onchange = ()=>{
+    filters[fld] = elems[fld].value;
+    // Svuota i filtri più a valle se il campo cambia
+    if (fld === 'regione') { filters.citta = ''; filters.categoria = ''; filters.tipo = ''; }
+    else if (fld === 'citta') { filters.categoria = ''; filters.tipo = ''; }
+    else if (fld === 'categoria') { filters.tipo = ''; }
+    render();
+  };
+});
 
 // Tabs
 elems.btnLeads.onclick = ()=>{ sectionFilter='lead'; toggleButton(elems.btnLeads); render(); };
 elems.btnAppuntamenti.onclick = ()=>{ sectionFilter='appuntamento'; toggleButton(elems.btnAppuntamenti); render(); };
 elems.btnContratti.onclick = ()=>{ sectionFilter='contratto'; toggleButton(elems.btnContratti); render(); };
 
-// Mapping colonne TOLLERANTE a accenti, spazi, maiuscole, tutto!
-function normalizeColName(name) {
-  return name.normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // rimuovi accenti
-    .replace(/\s+/g, '') // rimuovi spazi
-    .toLowerCase();
-}
-function colIdx(map, keys) {
-  for(let k of keys) {
-    k = normalizeColName(k);
-    for(let col in map) {
-      if (normalizeColName(col) === k) return map[col];
-    }
-  }
-  return -1;
-}
-
-// Fetch TSV + parser super robusto
+// FETCH dati
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
   const lines = txt.trim().split('\n');
   const headers = lines.shift().split('\t');
