@@ -1,85 +1,10 @@
 /* contact-modal.css */
-
-/* ---- Backdrop e container ---- */
-#contact-modal {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.5);
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-#contact-modal.visible {
-  display: flex;
-}
-
-/* ---- Finestra del form ---- */
-#contact-modal .modal-content {
-  background: #fff;
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  width: 90%;
-  max-width: 480px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-}
-
-/* Titolo */
-#contact-modal .modal-content h2 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #111827;
-}
-
-/* Inputs */
-#contact-modal .modal-content input,
-#contact-modal .modal-content textarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  margin-bottom: 1rem;
-  border: 1px solid #D1D5DB;
-  border-radius: 0.75rem;
-  font-size: 1rem;
-  font-family: inherit;
-  resize: vertical;
-}
-
-/* Pulsanti colorati, tondeggianti e più grandi */
-#contact-modal .modal-content .btn {
-  display: inline-block;
-  background-color: #FBBF24;
-  color: #111827;
-  border: none;
-  border-radius: 1rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  margin-right: 0.75rem;
-}
-#contact-modal .modal-content .btn:last-child {
-  margin-right: 0;
-}
-#contact-modal .modal-content .btn:hover {
-  background-color: #F59E0B;
-  transform: translateY(-1px);
-}
-#contact-modal .modal-content .btn:active {
-  transform: translateY(1px);
-}
-#contact-modal .modal-content .btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(251,191,36,0.5);
-}
-
-/* Responsive: sui piccoli schermi i btn diventano full-width */
-@media (max-width: 480px) {
-  #contact-modal .modal-content .btn {
-    width: 100%;
-    margin-bottom: 0.75rem;
-  }
-}
+#contact-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items:center; justify-content:center; }
+#contact-modal.visible { display: flex; }
+#contact-modal .modal-content { background:#fff;border-radius:1.5rem;padding:1.5rem;width:90%;max-width:480px;box-shadow:0 8px 24px rgba(0,0,0,0.15); }
+#contact-modal .modal-content h2 { margin:0 0 1rem;font-size:1.5rem;color:#111; }
+#contact-modal .modal-content input, textarea { width:100%;padding:.75rem 1rem;margin-bottom:1rem;border:1px solid #D1D5DB;border-radius:.75rem; }
+#contact-modal .modal-content .btn { background:#FBBF24;color:#111;border:none;border-radius:1rem;padding:.75rem 1.5rem;font-size:1.1rem;margin-right:.75rem;cursor:pointer;transition:.2s; }
+#contact-modal .modal-content .btn:last-child { margin-right:0; }
+#contact-modal .modal-content .btn:hover { background:#F59E0B;transform:translateY(-1px); }
+#contact-modal .modal-content .btn:active { transform:translateY(1px); }
