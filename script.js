@@ -1,86 +1,164 @@
 // script.js
-const SHEET_TSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
-let leads = [], section='lead', cart=[];
 
+const SHEET_TSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
+
+let leads = [];
+let sectionFilter = 'lead';
+let cart = [];
+
+// Inizializza UI e dati
 document.addEventListener('DOMContentLoaded', () => {
-  initUI();
-  fetch(SHEET_TSV).then(r=>r.text()).then(parseData).catch(console.error);
+  setupUI();
+  fetch(SHEET_TSV)
+    .then(r => r.text())
+    .then(parseTSV)
+    .then(() => {
+      populateFilters();
+      render();
+    })
+    .catch(console.error);
 });
 
-function initUI(){
-  document.getElementById('btnLeads').onclick = ()=>setSection('lead');
-  document.getElementById('btnAppuntamenti').onclick = ()=>setSection('appuntamento');
-  document.getElementById('btnContratti').onclick = ()=>setSection('contratto');
+function setupUI() {
+  // Sezioni
+  document.getElementById('btnLeads')
+    .addEventListener('click', () => setSection('lead'));
+  document.getElementById('btnAppuntamenti')
+    .addEventListener('click', () => setSection('appuntamento'));
+  document.getElementById('btnContratti')
+    .addEventListener('click', () => setSection('contratto'));
+
+  // Filtri
   ['filter-region','filter-city','filter-category','filter-type']
-    .forEach(id=>document.getElementById(id).addEventListener('change', render));
-  document.getElementById('clear-filters').onclick = ()=>{ initFilters(); render(); };
-  document.getElementById('btnContactSend').onclick = ()=>{ alert('Richiesta inviata'); close('contact-modal'); };
-  document.getElementById('close-contact').onclick = ()=> close('contact-modal');
-  document.getElementById('pay-paypal').onclick = ()=> window.open('https://www.paypal.com','_blank');
-  document.getElementById('pay-card').onclick   = ()=> window.open('https://checkout.revolut.com','_blank');
-  document.getElementById('pay-bank').onclick   = ()=> window.location='ricarica.html';
-  document.getElementById('close-payment').onclick = ()=> close('payment-modal');
+    .forEach(id => document.getElementById(id)
+      .addEventListener('change', render));
+
+  document.getElementById('clear-filters')
+    .addEventListener('click', () => {
+      ['filter-region','filter-city','filter-category','filter-type']
+        .forEach(id => document.getElementById(id).value = '');
+      render();
+    });
+
+  // Modal Contatto
+  document.getElementById('close-contact')
+    .addEventListener('click', () => toggleModal('contact-modal', false));
+  document.getElementById('btnContactSend')
+    .addEventListener('click', () => {
+      alert('Richiesta inviata!');
+      toggleModal('contact-modal', false);
+    });
+
+  // Modal Payment
+  document.getElementById('close-payment')
+    .addEventListener('click', () => toggleModal('payment-modal', false));
 }
 
-function parseData(txt){
-  const rows = txt.trim().split('\n');
-  const hdrs = rows.shift().split('\t').map(h=>h.trim());
-  leads = rows.map((r,i)=>{
-    const cells = r.split('\t');
-    let o={}; hdrs.forEach((h,idx)=>o[h]=cells[idx]||'');
-    o.Tipo=o.Tipo.toLowerCase(); o.id=i;
-    return o;
+function parseTSV(txt) {
+  const lines = txt.trim().split('\n');
+  const headers = lines.shift().split('\t').map(h => h.trim().toLowerCase());
+  leads = lines.map((line, idx) => {
+    const cols = line.split('\t');
+    const obj = { id: idx+1 };
+    headers.forEach((h, i) => {
+      let key = h.replace(/ *\(.+\)/, ''); // rimuove "(€)" ecc.
+      obj[key] = cols[i]?.trim() || '';
+    });
+    // Normalizza types (lead|appuntamento|contratto)
+    obj.tipo = obj.tipo.toLowerCase();
+    // budget come numero
+    obj.budget = parseFloat(obj.budget) || 0;
+    return obj;
   });
-  initFilters(); render();
 }
 
-function initFilters(){
-  const map = {'Regione':'filter-region','Città':'filter-city','Categoria':'filter-category','Tipo':'filter-type'};
-  for(let key in map){
-    const sel = document.getElementById(map[key]);
-    sel.innerHTML='<option value="">Tutti</option>';
-    [...new Set(leads.map(l=>l[key]))].sort().forEach(v=>sel.add(new Option(v,v)));
-  }
+function populateFilters() {
+  const fields = [
+    ['regione','filter-region'],
+    ['città','filter-city'],
+    ['categoria','filter-category'],
+    ['tipo','filter-type']
+  ];
+  fields.forEach(([field, selId]) => {
+    const sel = document.getElementById(selId);
+    // pratichi i valori unici
+    const vals = [...new Set(leads.map(l => l[field]))].sort();
+    vals.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v;
+      opt.textContent = v.charAt(0).toUpperCase() + v.slice(1);
+      sel.appendChild(opt);
+    });
+  });
 }
 
-function setSection(s){
-  section=s;
-  ['btnLeads','btnAppuntamenti','btnContratti'].forEach(id=>document.getElementById(id).classList.remove('selected'));
-  document.getElementById({lead:'btnLeads',appuntamento:'btnAppuntamenti',contratto:'btnContratti'}[s]).classList.add('selected');
+function setSection(sec) {
+  sectionFilter = sec;
+  document.querySelectorAll('.section-buttons .btn')
+    .forEach(b => b.classList.remove('selected'));
+  const idMap = { lead: 'btnLeads', appuntamento: 'btnAppuntamenti', contratto: 'btnContratti' };
+  document.getElementById(idMap[sec]).classList.add('selected');
   render();
 }
 
-function render(){
-  const f = ['filter-region','filter-city','filter-category','filter-type'].map(id=>document.getElementById(id).value);
-  const cont = document.getElementById('clienti'); cont.innerHTML='';
-  leads.filter(l=>l.Tipo===section && (!f[0]||l.Regione===f[0]) && (!f[1]||l.Città===f[1]) && (!f[2]||l.Categoria===f[2]) && (!f[3]||l.Tipo===f[3]))
-    .forEach(l=>{
-      const card = document.createElement('div');
-      card.className=`cliente-card ${l.Tipo}`;
-      card.innerHTML=`
-        <span class="badge ${l.Tipo}">${l.Tipo==='lead'?'Lead':'Appunt.'}</span>
-        <h3>${l.Regione} – ${l.Città}</h3>
-        <p>${l.Descrizione}</p>
-        <p>Budget: €${l['Budget (€)']}</p>
-        <div class="actions">
-          <button class="${l.Tipo==='contratto'?'riserva':'acquisisci'} btn">${l.Tipo==='contratto'?'Riserva':'Acquisisci'}</button>
-        </div>`;
-      card.querySelector('.acquisisci')?.addEventListener('click', ()=>addToCart(l));
-      card.querySelector('.riserva')?.addEventListener('click', ()=>open('contact-modal'));
-      cont.append(card);
+function render() {
+  const [r, c, cat, t] = ['filter-region','filter-city','filter-category','filter-type']
+    .map(id => document.getElementById(id).value);
+  const container = document.getElementById('clienti');
+  container.innerHTML = '';
+
+  // filtra
+  const filtered = leads.filter(l =>
+    l.tipo === sectionFilter &&
+    (!r || l.regione === r) &&
+    (!c || l.città === c) &&
+    (!cat || l.categoria === cat) &&
+    (!t || l.tipo === t)
+  );
+
+  // crea card
+  filtered.forEach(l => {
+    const card = document.createElement('div');
+    card.className = `cliente-card ${l.tipo}`;
+    card.innerHTML = `
+      <span class="badge ${l.tipo}">
+        ${l.tipo==='lead'?'Lead da chiamare':l.tipo==='appuntamento'?'Appuntamenti':'Contratti'}
+      </span>
+      <h3>${l.regione} – ${l.città}</h3>
+      <div class="desc">${l.descrizione}</div>
+      <div class="budget">Budget: €${l.budget}</div>
+      <div class="commission">
+        Commissione: €${(l.budget/40).toFixed(2)} (${(l.budget/40).toFixed(0)} crediti)
+      </div>
+      <div class="actions">
+        <button class="${l.tipo==='contratto'?'riserva':'acquisisci'} btn">
+          ${l.tipo==='contratto'?'Riserva':'Acquisisci'}
+        </button>
+      </div>`;
+    // eventi
+    card.querySelector('.acquisisci')?.addEventListener('click', () => {
+      cart.push(l);
+      updateCart();
+      toggleModal('payment-modal', true);
     });
+    card.querySelector('.riserva')?.addEventListener('click', () => {
+      toggleModal('contact-modal', true);
+    });
+    container.appendChild(card);
+  });
+
   updateCart();
 }
 
-function addToCart(item){ cart.push(item); open('payment-modal'); updateCart(); }
-function updateCart(){
+function updateCart() {
   const list = document.getElementById('carrello');
-  list.innerHTML=cart.map(i=>`<li>${i.Descrizione} – €${i['Budget (€)']}</li>`).join('');
-  const sum = cart.reduce((s,i)=>s+parseFloat(i['Budget (€)']||0),0);
-  document.getElementById('totale').textContent=`Totale: €${sum}`;
-  document.getElementById('crediti').textContent=cart.length;
-  document.getElementById('euro').textContent=`€${cart.length*40}`;
+  list.innerHTML = cart.map(i => `<li>${i.descrizione} – €${i.budget}</li>`).join('');
+  const sum = cart.reduce((s,i) => s + i.budget, 0);
+  document.getElementById('totale').textContent = `Totale: €${sum}`;
+  document.getElementById('crediti').textContent = cart.length;
+  document.getElementById('euro').textContent = `€${(cart.length*40)}`;
 }
 
-function open(id){ document.getElementById(id).classList.add('visible'); }
-function close(id){ document.getElementById(id).classList.remove('visible'); }
+function toggleModal(id, show) {
+  document.getElementById(id).classList.toggle('visible', show);
+}
