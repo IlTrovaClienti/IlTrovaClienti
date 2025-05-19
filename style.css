@@ -1,85 +1,88 @@
-/* Reset base e font */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: Arial, sans-serif;
-  background: #f0f2f5;
-  padding: 10px;
-  color: #333;
-}
-
-/* HEADER */
+/* === HEADER === */
+/* Manteniamo flex ma centriamo logo e spingiamo i pulsanti a destra */
 .header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #fff;
   padding: 12px;
+  background: #fff;
   border-radius: 24px;
   margin-bottom: 12px;
 }
-.logo-img { max-height: 60px; }
+/* Logo a sinistra, ma con flex-grow per occupare spazio e centrare */
+.header .logo-img {
+  max-height: 60px;
+  flex-grow: 1;
+  display: block;
+  margin: 0 auto;
+}
+/* Pulsanti a destra */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Non cresce: mantiene i pulsanti sulla destra */
+  flex-grow: 0;
+}
 
-/* NAV SEZIONI */
+/* === NAV SEZIONI === */
 .section-buttons {
   display: flex;
   gap: 6px;
   margin-bottom: 12px;
 }
+/* Colori personalizzati per ogni bottone */
+#btnLeads {
+  background: #007BFF;  /* blu */
+  color: #fff;
+}
+#btnAppuntamenti {
+  background: #FF00FF;  /* fucsia */
+  color: #fff;
+}
+#btnContratti {
+  background: #FFD700;  /* giallo */
+  color: #000;
+}
+/* Bordo arrotondato pieno e testo centrato */
 .section-buttons .btn {
   flex: 1;
   padding: 10px;
   border: none;
   border-radius: 24px;
-  color: #fff;
-  background: #007BFF;
+  font-weight: bold;
+  text-align: center;
   cursor: pointer;
 }
-.section-buttons .btn.selected { opacity: 0.8; }
-
-/* FILTRI */
-.filters {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 12px;
-}
-.filter-group { flex: 1; }
-.filter-group label { font-size: .9em; }
-.filters select {
-  width: 100%;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 24px;
+.section-buttons .btn.selected {
+  opacity: 0.85;
 }
 
-/* GENERICO */
-.btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 24px;
-  cursor: pointer;
-}
-
-/* CARRELLO */
-.carrello {
-  background: #fff;
-  padding: 10px;
-  border-radius: 24px;
-  margin-bottom: 12px;
-}
-
-/* CARDS */
+/* === CARDS === */
 #clienti {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
   gap: 8px;
 }
+/* Card generica */
 .cliente-card {
   background: #fff;
   padding: 16px;
   border-radius: 24px;
   position: relative;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  /* Bordi colorati su sinistra e destra */
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+/* Badge e bordo in base al tipo */
+.cliente-card.lead {
+  border-color: #007BFF;
+}
+.cliente-card.appuntamento {
+  border-color: #FF00FF;
+}
+.cliente-card.contratto {
+  border-color: #FFD700;
 }
 .badge {
   position: absolute;
@@ -88,8 +91,31 @@ body {
   padding: 4px 8px;
   border-radius: 12px;
   font-size: .75em;
-  background: #007BFF;
   color: #fff;
 }
-.actions { margin-top: 12px; text-align: center; }
-.actions .btn { background: #28a745; color: #fff; }
+.badge.lead {
+  background: #007BFF;
+}
+.badge.appuntamento {
+  background: #FF00FF;
+}
+.badge.contratto {
+  background: #FFD700;
+}
+
+/* === GENERALE === */
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  padding: 10px;
+  color: #333;
+}
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+/* === FILTRI, CARRELLO, MODALI === */
+/* (mantieni le regole che già avevi per questi elementi) */
