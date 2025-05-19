@@ -109,7 +109,7 @@ function populateFilters() {
   elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
     regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
 
-  // CITTA — **QUI LA LABEL CORRETTA**
+  // CITTA — **LABEL SENZA ACCENTO**
   const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
   elems.citta.innerHTML = `<option value="">Tutte le Citta</option>` +
     cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
