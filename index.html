@@ -20,7 +20,7 @@
 </head>
 <body>
 
-  <!-- Reset modal aperti -->
+  <!-- Reset di eventuali modal aperti -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       ['auth-modal','payment-modal','contact-modal'].forEach(id => {
@@ -53,10 +53,30 @@
 
   <!-- FILTRI -->
   <section class="filters">
-    <select id="filter-region"><option value="">Tutte Regioni</option></select>
-    <select id="filter-city"><option value="">Tutte Città</option></select>
-    <select id="filter-category"><option value="">Tutte Categorie</option></select>
-    <select id="filter-type"><option value="">Tutti Tipi</option></select>
+    <div class="filter-group">
+      <label for="filter-region">Regione</label>
+      <select id="filter-region">
+        <option value="">Tutte Regioni</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-city">Città</label>
+      <select id="filter-city">
+        <option value="">Tutte Città</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-category">Categoria</label>
+      <select id="filter-category">
+        <option value="">Tutte Categorie</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-type">Tipo</label>
+      <select id="filter-type">
+        <option value="">Tutti Tipi</option>
+      </select>
+    </div>
     <button id="clear-filters" class="btn">Pulisci</button>
   </section>
 
@@ -67,7 +87,7 @@
     <div id="totale">Totale: €0</div>
   </section>
 
-  <!-- CLIENTI -->
+  <!-- CONTENITORE CLIENTI -->
   <main id="clienti"></main>
 
   <!-- AUTH MODAL -->
@@ -77,7 +97,6 @@
         <button id="show-login" class="btn active">Accedi</button>
         <button id="show-register" class="btn">Registrati</button>
       </div>
-      <!-- LOGIN FORM -->
       <form id="login-form" class="active">
         <input type="email" id="login-email" placeholder="Email" required>
         <input type="password" id="login-password" placeholder="Password" required>
@@ -85,7 +104,6 @@
         <div id="login-error" class="error"></div>
         <button type="submit" class="btn">Entra</button>
       </form>
-      <!-- REGISTER FORM -->
       <form id="register-form">
         <input type="text" id="register-name" placeholder="Nome" required>
         <input type="text" id="register-surname" placeholder="Cognome" required>
