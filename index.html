@@ -6,6 +6,10 @@
   <title>IlTrovaClienti</title>
   <base href="/IlTrovaClienti/">
 
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+
   <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
@@ -15,9 +19,12 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
 </head>
 <body>
+
   <!-- HEADER -->
   <header class="header">
-    <div class="logo"><!-- logo qui --></div>
+    <div class="logo">
+      <img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti">
+    </div>
     <div class="header-right">
       <div class="credit-display">
         Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
@@ -99,9 +106,18 @@
     <div class="modal-content">
       <h3>Scegli metodo di pagamento</h3>
       <div class="option-container">
-        <div class="option"><img class="pay-logo" src="assets/paypal.png"><button id="pay-paypal">PayPal</button></div>
-        <div class="option"><img class="pay-logo" src="assets/credit-card.png"><button id="pay-card">Carta</button></div>
-        <div class="option"><img class="pay-logo" src="assets/bank.png"><button id="pay-bank">Bonifico</button></div>
+        <div class="option">
+          <img class="pay-logo" src="assets/paypal.png" alt="PayPal">
+          <button id="pay-paypal">PayPal</button>
+        </div>
+        <div class="option">
+          <img class="pay-logo" src="assets/credit-card.png" alt="Carta">
+          <button id="pay-card">Carta</button>
+        </div>
+        <div class="option">
+          <img class="pay-logo" src="assets/bank.png" alt="Bonifico">
+          <button id="pay-bank">Bonifico</button>
+        </div>
       </div>
       <button id="close-payment" class="cancel-form btn">Chiudi</button>
     </div>
@@ -122,7 +138,7 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- SCRIPT -->
   <script src="firebase-init.js" defer></script>
   <script src="firebase-auth.js" defer></script>
   <script src="script.js" defer></script>
