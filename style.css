@@ -21,6 +21,12 @@ button, .option button { background:#007BFF; color:#fff; }
 .ricarica-btn{background:#004080;color:#fff;text-decoration:none;padding:8px 16px}
 .checkout-small{background:#28a745;color:#fff;padding:8px 16px}
 button:hover, .option button:hover, .ricarica-btn:hover, .checkout-small:hover{opacity:.9}
+.ricarica-action.btn-card,
+.ricarica-action.btn-paylink {
+  padding: 10px 0 !important;
+  font-size: 1.05em !important;
+  margin-bottom: 8px;
+}
 
 /* NAV */
 .section-buttons{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
