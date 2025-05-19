@@ -80,28 +80,37 @@ elems.btnLeads.onclick = ()=>{ sectionFilter='lead'; toggleButton(elems.btnLeads
 elems.btnAppuntamenti.onclick = ()=>{ sectionFilter='appuntamento'; toggleButton(elems.btnAppuntamenti); render(); };
 elems.btnContratti.onclick = ()=>{ sectionFilter='contratto'; toggleButton(elems.btnContratti); render(); };
 
-// Funzione per trovare la colonna giusta ignorando accenti/maiuscole
+// Mapping colonne TOLLERANTE a accenti, spazi, maiuscole, tutto!
+function normalizeColName(name) {
+  return name.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // rimuovi accenti
+    .replace(/\s+/g, '') // rimuovi spazi
+    .toLowerCase();
+}
 function colIdx(map, keys) {
   for(let k of keys) {
-    if (k in map) return map[k];
+    k = normalizeColName(k);
+    for(let col in map) {
+      if (normalizeColName(col) === k) return map[col];
+    }
   }
   return -1;
 }
 
-// Fetch TSV + parser robusto
+// Fetch TSV + parser super robusto
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
   const lines = txt.trim().split('\n');
-  const headers = lines.shift().split('\t').map(h=>h.trim().toLowerCase());
+  const headers = lines.shift().split('\t');
   const map = {};
-  headers.forEach((h,i)=>map[h.replace('à','a')] = i); // rimpiazza à -> a per la citta
+  headers.forEach((h,i)=>map[h]=i);
 
-  const idxRegione = colIdx(map, ['regione']);
-  const idxCitta = colIdx(map, ['città','citta']);
-  const idxCategoria = colIdx(map, ['categoria']);
-  const idxTipo = colIdx(map, ['tipo']);
+  const idxRegione     = colIdx(map, ['regione']);
+  const idxCitta       = colIdx(map, ['città','citta']);
+  const idxCategoria   = colIdx(map, ['categoria']);
+  const idxTipo        = colIdx(map, ['tipo']);
   const idxDescrizione = colIdx(map, ['descrizione']);
-  const idxTelefono = colIdx(map, ['telefono']);
-  const idxBudget = colIdx(map, ['budget (€)','budget']);
+  const idxTelefono    = colIdx(map, ['telefono']);
+  const idxBudget      = colIdx(map, ['budget (€)','budget']);
 
   leads = lines.map((l,i)=>{
     const cols = l.split('\t');
