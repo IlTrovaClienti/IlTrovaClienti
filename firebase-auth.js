@@ -23,9 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(() => {
           registerForm.reset();
-          // Mostra messaggio di successo
           alert('Registrazione completata! Controlla la tua email per verificare l\'account.');
-          // Qui puoi chiudere il modal se usi un plugin/modal custom
         })
         .catch(err => {
           errorBox.textContent = err.message;
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
       auth.signInWithEmailAndPassword(email, password)
         .then(() => {
           loginForm.reset();
-          // Chiudi il modal di login
+          // Chiudi il modal di login se necessario
         })
         .catch(err => {
           errorBox.textContent = err.message;
@@ -65,19 +63,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // LISTENER STATO UTENTE
 auth.onAuthStateChanged(user => {
-  const loginBtn = document.getElementById('login-button');
+  const loginBtn    = document.getElementById('login-button');
   const registerBtn = document.getElementById('register-button');
-  const logoutBtn = document.getElementById('logout-button');
+  const logoutBtn   = document.getElementById('logout-button');
 
   if (user) {
     document.body.classList.add('user-logged-in');
-    if (loginBtn) loginBtn.style.display = 'none';
+    if (loginBtn)    loginBtn.style.display    = 'none';
     if (registerBtn) registerBtn.style.display = 'none';
-    if (logoutBtn) logoutBtn.style.display = 'inline-block';
+    if (logoutBtn)   logoutBtn.style.display   = 'inline-block';
   } else {
     document.body.classList.remove('user-logged-in');
-    if (loginBtn) loginBtn.style.display = 'inline-block';
+    if (loginBtn)    loginBtn.style.display    = 'inline-block';
     if (registerBtn) registerBtn.style.display = 'inline-block';
-    if (logoutBtn) logoutBtn.style.display = 'none';
+    if (logoutBtn)   logoutBtn.style.display   = 'none';
   }
 });
