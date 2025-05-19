@@ -62,18 +62,20 @@ function showRicaricaModal() {
         <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d"
            target="_blank"
            class="ricarica-action btn-card"
-           style="display:block;width:100%;padding:10px 0;margin:8px 0 16px 0;border-radius:24px;font-size:1.05em;">Paga ora con carta</a>
+           style="display:block;width:100%;padding:7px 0;margin:8px 0 16px 0;border-radius:24px;font-size:.99em;">Paga ora con carta</a>
         <h3><img src="assets/paypal.png" style="width:26px;vertical-align:middle;margin-right:4px;"> Paga con PayPal</h3>
         <p>1 credito = 40 €</p>
         <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y"
            target="_blank"
            class="ricarica-action btn-paylink"
-           style="display:block;width:100%;padding:10px 0;margin:8px 0;border-radius:24px;font-size:1.05em;">Paga ora con PayPal</a>
-        <button id="close-ricarica" class="cancel-form" style="margin-top:16px;">Chiudi</button>
+           style="display:block;width:100%;padding:7px 0;margin:8px 0;border-radius:24px;font-size:.99em;">Paga ora con PayPal</a>
+        <button id="close-ricarica" class="cancel-form"
+          style="margin-top:16px;min-width:110px;padding:13px 0;font-size:1.1em;border-radius:24px;">
+          Chiudi
+        </button>
       </div>`;
     document.body.appendChild(modal);
     document.getElementById('close-ricarica').onclick = () => { modal.remove(); };
-    // Chiudi anche con ESC/click fuori
     modal.onclick = e => { if(e.target === modal) modal.remove(); };
     document.addEventListener('keydown', function handler(ev){
       if(ev.key==="Escape"){ modal.remove(); document.removeEventListener('keydown', handler);}
