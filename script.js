@@ -44,7 +44,7 @@ function toggleButton(btn) {
   btn.classList.add('selected');
 }
 
-// Rende il mapping tollerante a spazi, accenti e case
+// Tolleranza mapping colonne
 function normalizeColName(name) {
   return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toLowerCase();
 }
@@ -60,7 +60,6 @@ function colIdx(map, keys) {
 
 // POPOLA FILTRI DINAMICI DIPENDENTI
 function populateFilters() {
-  // Subset di leads filtrati progressivamente
   let subset = leads.filter(l =>
     (!filters.regione   || l.regione   === filters.regione) &&
     (!filters.citta     || l.citta     === filters.citta) &&
@@ -76,12 +75,12 @@ function populateFilters() {
   elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
     regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
 
-  // CITTA dipende da Regione
+  // CITTA dipende da Regione (ATTENZIONE: "Citta" senza accento)
   const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
-  elems.citta.innerHTML = `<option value="">Tutte le Città</option>` +
+  elems.citta.innerHTML = `<option value="">Tutte le Citta</option>` +
     cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
 
-  // CATEGORIA dipende da Regione+Città
+  // CATEGORIA dipende da Regione+Citta
   const catList = uniqueOptions('categoria', leads.filter(l =>
     (!filters.regione || l.regione === filters.regione) &&
     (!filters.citta || l.citta === filters.citta)
@@ -169,7 +168,7 @@ fetch(sheetURL).then(r=>r.text()).then(txt=>{
   headers.forEach((h,i)=>map[h]=i);
 
   const idxRegione     = colIdx(map, ['regione']);
-  const idxCitta       = colIdx(map, ['città','citta']);
+  const idxCitta       = colIdx(map, ['citta']); // <-- SOLO "citta" senza accento!
   const idxCategoria   = colIdx(map, ['categoria']);
   const idxTipo        = colIdx(map, ['tipo']);
   const idxDescrizione = colIdx(map, ['descrizione']);
