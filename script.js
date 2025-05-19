@@ -287,3 +287,41 @@ elems.btnRegister.onclick = ()=>{
 elems.closeAuth.onclick      = ()=> elems.authModal.style.display='none';
 elems.closeContact.onclick   = ()=> elems.contactModal.style.display='none';
 elems.btnContact.onclick     = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
+function showCheckoutModal() {
+  if (!document.getElementById('modal-checkout')) {
+    const modal = document.createElement('div');
+    modal.id = 'modal-checkout';
+    modal.className = 'modal-overlay';
+    modal.style.display = 'flex';
+
+    let html = '';
+    if (cart.length === 0) {
+      html = `<div class="modal">
+        <h2>Checkout</h2>
+        <p>Devi aggiungere almeno un cliente al carrello.</p>
+        <button id="close-checkout" class="cancel-form" style="margin-top:16px;">Chiudi</button>
+      </div>`;
+    } else {
+      // Calcolo riepilogo
+      const totale = cart.reduce((s,i)=>s+(i.tipo==='lead'?40:(i.tipo==='appuntamento'?80:0)),0);
+      html = `<div class="modal">
+        <h2>Checkout</h2>
+        <ul style="text-align:left;padding-left:20px;margin:8px 0 12px 0;">
+          ${cart.map(item => `<li><b>${item.descrizione}</b> – <span>${item.tipo==='lead'?'1 credito (40 €)':item.tipo==='appuntamento'?'2 crediti (80 €)':'Trattativa riservata'}</span></li>`).join('')}
+        </ul>
+        <div style="margin:8px 0;font-weight:bold">Totale da pagare: €${totale}</div>
+        <div style="margin-bottom:10px;font-size:.9em;">Dopo il pagamento i dati verranno sbloccati.<br>Paga ora:</div>
+        <div style="display:flex;gap:10px;justify-content:center;">
+          <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d" target="_blank" class="ricarica-action btn-card" style="font-size:1em;padding:8px 20px;">Carta</a>
+          <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y" target="_blank" class="ricarica-action btn-paylink" style="font-size:1em;padding:8px 20px;">PayPal</a>
+        </div>
+        <button id="close-checkout" class="cancel-form" style="margin-top:18px;">Chiudi</button>
+      </div>`;
+    }
+    modal.innerHTML = html;
+    document.body.appendChild(modal);
+    document.getElementById('close-checkout').onclick = () => { modal.remove(); };
+  } else {
+    document.getElementById('modal-checkout').style.display = 'flex';
+  }
+}
