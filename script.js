@@ -44,7 +44,7 @@ function toggleButton(btn) {
   btn.classList.add('selected');
 }
 
-// Tolleranza mapping colonne
+// Mapping colonne ultra-tollerante
 function normalizeColName(name) {
   return name.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '').toLowerCase();
 }
@@ -58,7 +58,7 @@ function colIdx(map, keys) {
   return -1;
 }
 
-// POPOLA FILTRI DINAMICI DIPENDENTI
+// FILTRI DIPENDENTI
 function populateFilters() {
   let subset = leads.filter(l =>
     (!filters.regione   || l.regione   === filters.regione) &&
@@ -67,7 +67,6 @@ function populateFilters() {
     (!filters.tipo      || l.tipo      === filters.tipo)
   );
 
-  // Opzioni disponibili (dinamiche)
   const uniqueOptions = (field, fromLeads) => [...new Set(fromLeads.map(l => l[field]).filter(Boolean))].sort();
 
   // REGIONE
@@ -75,12 +74,12 @@ function populateFilters() {
   elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
     regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
 
-  // CITTA dipende da Regione (ATTENZIONE: "Citta" senza accento)
+  // CITTA (auto rileva "Citta", "Città", "citta", "città")
   const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
-  elems.citta.innerHTML = `<option value="">Tutte le Citta</option>` +
+  elems.citta.innerHTML = `<option value="">Tutte le Città</option>` +
     cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
 
-  // CATEGORIA dipende da Regione+Citta
+  // CATEGORIA
   const catList = uniqueOptions('categoria', leads.filter(l =>
     (!filters.regione || l.regione === filters.regione) &&
     (!filters.citta || l.citta === filters.citta)
@@ -88,7 +87,7 @@ function populateFilters() {
   elems.categoria.innerHTML = `<option value="">Tutte le Categorie</option>` +
     catList.map(c=>`<option value="${c}" ${filters.categoria===c?'selected':''}>${c}</option>`).join('');
 
-  // TIPO dipende da tutti i precedenti
+  // TIPO
   const tipoList = uniqueOptions('tipo', leads.filter(l =>
     (!filters.regione || l.regione === filters.regione) &&
     (!filters.citta || l.citta === filters.citta) &&
@@ -99,7 +98,7 @@ function populateFilters() {
     tipoList.map(t=>`<option value="${t}" ${filters.tipo===t?'selected':''}>${tipoLabels[t]||t}</option>`).join('');
 }
 
-// Applica i filtri correnti
+// Applica filtri
 function filterLeads() {
   return leads.filter(l =>
     (!filters.regione   || l.regione   === filters.regione) &&
@@ -147,7 +146,6 @@ function render() {
 ['regione','citta','categoria','tipo'].forEach(fld=>{
   elems[fld].onchange = ()=>{
     filters[fld] = elems[fld].value;
-    // Svuota i filtri più a valle se il campo cambia
     if (fld === 'regione') { filters.citta = ''; filters.categoria = ''; filters.tipo = ''; }
     else if (fld === 'citta') { filters.categoria = ''; filters.tipo = ''; }
     else if (fld === 'categoria') { filters.tipo = ''; }
@@ -160,15 +158,16 @@ elems.btnLeads.onclick = ()=>{ sectionFilter='lead'; toggleButton(elems.btnLeads
 elems.btnAppuntamenti.onclick = ()=>{ sectionFilter='appuntamento'; toggleButton(elems.btnAppuntamenti); render(); };
 elems.btnContratti.onclick = ()=>{ sectionFilter='contratto'; toggleButton(elems.btnContratti); render(); };
 
-// FETCH dati
+// FETCH dati (mapping universale "Citta" e "Città")
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
   const lines = txt.trim().split('\n');
   const headers = lines.shift().split('\t');
   const map = {};
   headers.forEach((h,i)=>map[h]=i);
 
+  // Mappa con priorità: Citta > città > citta > Città
   const idxRegione     = colIdx(map, ['regione']);
-  const idxCitta       = colIdx(map, ['citta']); // <-- SOLO "citta" senza accento!
+  const idxCitta       = colIdx(map, ['citta','città']);
   const idxCategoria   = colIdx(map, ['categoria']);
   const idxTipo        = colIdx(map, ['tipo']);
   const idxDescrizione = colIdx(map, ['descrizione']);
