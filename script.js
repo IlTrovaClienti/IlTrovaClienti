@@ -27,7 +27,6 @@ const elems = {
   closePayment: document.getElementById('close-payment'),
   payPaypal:    document.getElementById('pay-paypal'),
   payCard:      document.getElementById('pay-card'),
-  payBank:      document.getElementById('pay-bank'),
   contactModal: document.getElementById('contact-modal'),
   closeContact: document.getElementById('close-contact'),
   btnContact:   document.getElementById('btnContactSend'),
@@ -37,7 +36,7 @@ const elems = {
 let leads = [], sectionFilter = 'lead', cart = [];
 let filters = { regione: '', citta: '', categoria: '', tipo: '' };
 
-// Trova indice colonna ignorando accenti/maiuscole/spazi
+// Utility trova indice colonna ignorando accenti/maiuscole/spazi
 function findCol(map, alternatives) {
   const norm = x => x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').toLowerCase();
   for (const alt of alternatives) {
@@ -48,7 +47,7 @@ function findCol(map, alternatives) {
   return -1;
 }
 
-// MODALE RICARICA
+// MODALE RICARICA (pulsanti più piccoli e con icone)
 function showRicaricaModal() {
   if (!document.getElementById('modal-ricarica')) {
     const modal = document.createElement('div');
@@ -56,24 +55,35 @@ function showRicaricaModal() {
     modal.className = 'modal-overlay';
     modal.style.display = 'flex';
     modal.innerHTML = `
-      <div class="modal">
+      <div class="modal" style="min-width:270px;max-width:340px;">
         <h2>Ricarica crediti</h2>
-        <h3>💳 Paga con carta</h3>
+        <h3><img src="assets/credit-card.png" style="width:26px;vertical-align:middle;margin-right:4px;"> Paga con carta</h3>
         <p>1 credito = 40 €</p>
-        <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d" target="_blank" class="ricarica-action btn-card">Paga ora con carta</a>
-        <h3>🅿️ Paga con PayPal</h3>
+        <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d"
+           target="_blank"
+           class="ricarica-action btn-card"
+           style="display:block;width:100%;padding:10px 0;margin:8px 0 16px 0;border-radius:24px;font-size:1.05em;">Paga ora con carta</a>
+        <h3><img src="assets/paypal.png" style="width:26px;vertical-align:middle;margin-right:4px;"> Paga con PayPal</h3>
         <p>1 credito = 40 €</p>
-        <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y" target="_blank" class="ricarica-action btn-paylink">Paga ora con PayPal</a>
+        <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y"
+           target="_blank"
+           class="ricarica-action btn-paylink"
+           style="display:block;width:100%;padding:10px 0;margin:8px 0;border-radius:24px;font-size:1.05em;">Paga ora con PayPal</a>
         <button id="close-ricarica" class="cancel-form" style="margin-top:16px;">Chiudi</button>
       </div>`;
     document.body.appendChild(modal);
     document.getElementById('close-ricarica').onclick = () => { modal.remove(); };
+    // Chiudi anche con ESC/click fuori
+    modal.onclick = e => { if(e.target === modal) modal.remove(); };
+    document.addEventListener('keydown', function handler(ev){
+      if(ev.key==="Escape"){ modal.remove(); document.removeEventListener('keydown', handler);}
+    });
   } else {
     document.getElementById('modal-ricarica').style.display = 'flex';
   }
 }
 
-// MODALE CHECKOUT (FUNZIONANTE!)
+// MODALE CHECKOUT
 function showCheckoutModal() {
   if (!document.getElementById('modal-checkout')) {
     const modal = document.createElement('div');
@@ -108,12 +118,42 @@ function showCheckoutModal() {
     modal.innerHTML = html;
     document.body.appendChild(modal);
     document.getElementById('close-checkout').onclick = () => { modal.remove(); };
+    // Chiudi anche con ESC/click fuori
+    modal.onclick = e => { if(e.target === modal) modal.remove(); };
+    document.addEventListener('keydown', function handler(ev){
+      if(ev.key==="Escape"){ modal.remove(); document.removeEventListener('keydown', handler);}
+    });
   } else {
     document.getElementById('modal-checkout').style.display = 'flex';
   }
 }
 
-// POPOLA FILTRI DINAMICI DIPENDENTI
+// --- GESTIONE EVENTI “ACQUISISCI”/“RISERVA” CON LOGIN CHECK ---
+document.body.addEventListener('click', function(e) {
+  // Acquisisci
+  if(e.target.classList.contains('acquisisci')) {
+    if (!auth.currentUser) {
+      elems.authModal.style.display = 'flex';
+      return;
+    }
+    const id = +e.target.dataset.id;
+    const item = leads.find(x=>x.id===id);
+    if (!cart.find(c=>c.id===id)) {
+      cart.push(item);
+    }
+    render();
+  }
+  // Riserva → popup trattativa riservata
+  if(e.target.classList.contains('riserva')) {
+    if (!auth.currentUser) {
+      elems.authModal.style.display = 'flex';
+      return;
+    }
+    elems.contactModal.style.display='flex';
+  }
+});
+
+// Filtri dinamici
 function populateFilters() {
   let subset = leads.filter(l =>
     (!filters.regione   || l.regione   === filters.regione) &&
@@ -129,7 +169,7 @@ function populateFilters() {
   elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
     regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
 
-  // CITTA — **LABEL SENZA ACCENTO**
+  // CITTA — SENZA ACCENTO!
   const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
   elems.citta.innerHTML = `<option value="">Tutte le Citta</option>` +
     cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
@@ -153,7 +193,6 @@ function populateFilters() {
     tipoList.map(t=>`<option value="${t}" ${filters.tipo===t?'selected':''}>${tipoLabels[t]||t}</option>`).join('');
 }
 
-// Applica filtri
 function filterLeads() {
   return leads.filter(l =>
     (!filters.regione   || l.regione   === filters.regione) &&
@@ -164,12 +203,11 @@ function filterLeads() {
   );
 }
 
-// Render cards & cart (AGGIORNATO)
+// Render cards & cart
 function render() {
   const filtered = filterLeads();
   elems.clienti.innerHTML = '';
   filtered.forEach(l => {
-    // Crediti e costi
     let crediti = '';
     let euro = '';
     if (l.tipo === 'lead') { crediti = '1 credito'; euro = '(40 €)'; }
@@ -271,7 +309,7 @@ fetch(sheetURL).then(r=>r.text()).then(txt=>{
 elems.checkoutBtn.onclick = ()=> showCheckoutModal();
 if(elems.ricarica) elems.ricarica.onclick = (e)=>{ e.preventDefault(); showRicaricaModal(); };
 
-// Auth modal controls (resto identico)
+// Auth modal controls
 elems.showLogin.onclick = ()=>{
   elems.showLogin.classList.add('active');
   elems.showRegister.classList.remove('active');
@@ -286,24 +324,4 @@ elems.showRegister.onclick = ()=>{
 };
 elems.btnLogin.onclick = ()=>{
   const email = document.getElementById('login-email').value;
-  const pwd   = document.getElementById('login-password').value;
-  const cap   = document.getElementById('login-captcha').value;
-  if(cap.trim()!=='5') return alert('Captcha errato');
-  auth.signInWithEmailAndPassword(email,pwd)
-    .then(()=>{ elems.authModal.style.display='none'; })
-    .catch(err=>alert(err.message));
-};
-elems.btnRegister.onclick = ()=>{
-  const email = document.getElementById('register-email').value;
-  const pwd   = document.getElementById('register-password').value;
-  const pwd2  = document.getElementById('register-password2').value;
-  const cap   = document.getElementById('register-captcha').value;
-  if(pwd!==pwd2) return alert('Password non corrispondono');
-  if(cap.trim()!=='5') return alert('Captcha errato');
-  auth.createUserWithEmailAndPassword(email,pwd)
-    .then(()=>{ elems.authModal.style.display='none'; })
-    .catch(err=>alert(err.message));
-};
-elems.closeAuth.onclick      = ()=> elems.authModal.style.display='none';
-elems.closeContact.onclick   = ()=> elems.contactModal.style.display='none';
-elems.btnContact.onclick     = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
+  const pwd  
