@@ -61,16 +61,46 @@ function showRicaricaModal() {
         <p>1 credito = 40 €</p>
         <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d"
            target="_blank"
-           class="ricarica-action btn-card"
-           style="display:block;width:100%;padding:7px 0;margin:8px 0 16px 0;border-radius:24px;font-size:.99em;">Paga ora con carta</a>
+           class="ricarica-action btn-card pay-gradient"
+           style="
+             display:block;
+             width:75%;
+             min-width:160px;
+             max-width:260px;
+             margin:12px auto 14px auto;
+             border-radius:24px;
+             font-size:.97em;
+             padding:7px 0;
+             text-align:center;
+             font-weight:500;
+             background:linear-gradient(90deg, #0070BA 0%, #42aaff 100%);
+             color:#fff;
+             box-shadow:0 2px 10px rgba(0,0,0,0.07);
+             transition:background .22s;
+           ">Paga ora con carta</a>
         <h3><img src="assets/paypal.png" style="width:26px;vertical-align:middle;margin-right:4px;"> Paga con PayPal</h3>
         <p>1 credito = 40 €</p>
         <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y"
            target="_blank"
-           class="ricarica-action btn-paylink"
-           style="display:block;width:100%;padding:7px 0;margin:8px 0;border-radius:24px;font-size:.99em;">Paga ora con PayPal</a>
+           class="ricarica-action btn-paylink pay-gradient"
+           style="
+             display:block;
+             width:75%;
+             min-width:160px;
+             max-width:260px;
+             margin:12px auto 0 auto;
+             border-radius:24px;
+             font-size:.97em;
+             padding:7px 0;
+             text-align:center;
+             font-weight:500;
+             background:linear-gradient(90deg, #0070BA 0%, #42aaff 100%);
+             color:#fff;
+             box-shadow:0 2px 10px rgba(0,0,0,0.07);
+             transition:background .22s;
+           ">Paga ora con PayPal</a>
         <button id="close-ricarica" class="cancel-form"
-          style="margin-top:16px;min-width:110px;padding:13px 0;font-size:1.1em;border-radius:24px;">
+          style="margin-top:18px;min-width:110px;padding:13px 0;font-size:1.1em;border-radius:24px;display:block;margin-left:auto;margin-right:auto;">
           Chiudi
         </button>
       </div>`;
@@ -84,6 +114,7 @@ function showRicaricaModal() {
     document.getElementById('modal-ricarica').style.display = 'flex';
   }
 }
+
 
 // MODALE CHECKOUT
 function showCheckoutModal() {
