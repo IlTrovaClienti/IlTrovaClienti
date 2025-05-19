@@ -1,88 +1,14 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="assets/favicon.ico">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
 </head>
 <body>
-
-  <!-- HEADER -->
-  <header class="header">
-    <img src="assets/logo.jpg" alt="Logo IlTrovaClienti" class="logo-img">
-    <div class="header-right">
-      <div class="credit-display">Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)</div>
-      <button id="checkout-small" class="btn checkout-small">Checkout</button>
-      <a href="ricarica.html" class="btn ricarica-btn">Ricarica</a>
-      <button id="login-button" class="btn">Accedi</button>
-      <button id="register-button" class="btn">Registrati</button>
-      <button id="logout-button" class="btn" style="display:none;">Logout</button>
-    </div>
-  </header>
-
-  <!-- NAV SEZIONI -->
-  <nav class="section-buttons">
-    <button id="btnLeads" class="btn selected">Lead</button>
-    <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
-    <button id="btnContratti" class="btn">Contratti</button>
-  </nav>
-
-  <!-- FILTRI -->
-  <section class="filters">
-    <div class="filter-group">
-      <label for="filter-region">Regione</label>
-      <select id="filter-region"><option value="">Tutte Regioni</option></select>
-    </div>
-    <div class="filter-group">
-      <label for="filter-city">Città</label>
-      <select id="filter-city"><option value="">Tutte Città</option></select>
-    </div>
-    <div class="filter-group">
-      <label for="filter-category">Categoria</label>
-      <select id="filter-category"><option value="">Tutte Categorie</option></select>
-    </div>
-    <div class="filter-group">
-      <label for="filter-type">Tipo</label>
-      <select id="filter-type"><option value="">Tutti Tipi</option></select>
-    </div>
-    <button id="clear-filters" class="btn">Pulisci</button>
-  </section>
-
-  <!-- CARRELLO -->
-  <section class="carrello">
-    <h2>Carrello</h2>
-    <ul id="carrello"></ul>
-    <div id="totale">Totale: €0</div>
-  </section>
-
-  <!-- CONTENITORE CLIENTI -->
-  <main id="clienti"></main>
-
-  <!-- AUTH MODAL -->
-  <div id="auth-modal" class="modal-overlay">
-    <!-- ... tuo markup completo ... -->
-  </div>
-
-  <!-- PAYMENT MODAL -->
-  <div id="payment-modal" class="modal-overlay">
-    <!-- ... tuo markup ... -->
-  </div>
-
-  <!-- CONTACT MODAL -->
-  <div id="contact-modal" class="modal-overlay">
-    <!-- ... tuo markup ... -->
-  </div>
-
-  <!-- FIREBASE -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
-  <script src="firebase-init.js" defer></script>
-  <script src="firebase-auth.js" defer></script>
-
-  <!-- IL TUO SCRIPT PRINCIPALE -->
-  <script src="script.js" defer></script>
+  <!-- Header -->
 </body>
 </html>
