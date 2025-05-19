@@ -1,98 +1,68 @@
 // script.js
 
-// URL del TSV pubblicato dal tuo Google Sheet
-const SHEET_TSV = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
+// Chiave del tuo Google Sheet (pubblicato come "pubhtml")
+const SHEET_KEY = '2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy';
 
-let leads = [];
+let allLeads = [];
 let sectionFilter = 'lead';
 let cart = [];
 
-// Al caricamento della pagina
+// Al caricamento DOM inizializza
 document.addEventListener('DOMContentLoaded', () => {
-  initUI();
-  fetch(SHEET_TSV)
-    .then(res => res.text())
-    .then(txt => {
-      parseTSV(txt);
+  setupUI();
+  Tabletop.init({
+    key: SHEET_KEY,
+    simpleSheet: true,
+    callback: data => {
+      allLeads = data.map((row, i) => ({
+        id: i + 1,
+        regione: row.Regione,
+        città: row.Città,
+        categoria: row.Categoria,
+        tipo: row.Tipo.toLowerCase(),
+        descrizione: row.Descrizione,
+        telefono: row.Telefono,
+        budget: parseFloat(row['Budget (€)'] || row.Budget) || 0
+      }));
       populateFilters();
       render();
-    })
-    .catch(err => {
-      console.error('Impossibile caricare i dati:', err);
-      alert('Errore nel caricamento dei dati. Controlla console.');
-    });
+    }
+  });
 });
 
-function initUI() {
-  document.getElementById('btnLeads')
-    .addEventListener('click', () => setSection('lead'));
-  document.getElementById('btnAppuntamenti')
-    .addEventListener('click', () => setSection('appuntamento'));
-  document.getElementById('btnContratti')
-    .addEventListener('click', () => setSection('contratto'));
-
+function setupUI() {
+  document.getElementById('btnLeads').onclick = () => setSection('lead');
+  document.getElementById('btnAppuntamenti').onclick = () => setSection('appuntamento');
+  document.getElementById('btnContratti').onclick = () => setSection('contratto');
   ['filter-region','filter-city','filter-category','filter-type']
-    .forEach(id => {
-      document.getElementById(id)
-        .addEventListener('change', render);
-    });
-
-  document.getElementById('clear-filters')
-    .addEventListener('click', () => {
-      ['filter-region','filter-city','filter-category','filter-type']
-        .forEach(id => document.getElementById(id).value = '');
-      render();
-    });
-
-  document.getElementById('close-contact')
-    .addEventListener('click', () => toggleModal('contact-modal', false));
-  document.getElementById('btnContactSend')
-    .addEventListener('click', () => {
-      alert('Richiesta inviata!');
-      toggleModal('contact-modal', false);
-    });
-
-  document.getElementById('close-payment')
-    .addEventListener('click', () => toggleModal('payment-modal', false));
-}
-
-function parseTSV(txt) {
-  const lines = txt.trim().split('\n');
-  const headers = lines.shift().split('\t').map(h => h.trim().toLowerCase());
-  leads = lines.map((line, idx) => {
-    const cols = line.split('\t');
-    const obj = { id: idx + 1 };
-    headers.forEach((h, i) => {
-      obj[h] = cols[i]?.trim() || '';
-    });
-    // Normalizza
-    obj.tipo = obj.tipo.toLowerCase();
-    obj.budget = parseFloat(obj['budget (€)'] || obj.budget) || 0;
-    return obj;
-  });
-  console.log('Leads caricati:', leads);
+    .forEach(id => document.getElementById(id).onchange = render);
+  document.getElementById('clear-filters').onclick = () => {
+    ['filter-region','filter-city','filter-category','filter-type']
+      .forEach(id => document.getElementById(id).value = '');
+    render();
+  };
+  document.getElementById('close-contact').onclick = () => toggleModal('contact-modal', false);
+  document.getElementById('btnContactSend').onclick = () => {
+    alert('Richiesta inviata!');
+    toggleModal('contact-modal', false);
+  };
+  document.getElementById('close-payment').onclick = () => toggleModal('payment-modal', false);
 }
 
 function populateFilters() {
-  const mapping = {
+  const map = {
     'regione': 'filter-region',
     'città': 'filter-city',
     'categoria': 'filter-category',
     'tipo': 'filter-type'
   };
-
-  Object.entries(mapping).forEach(([field, selId]) => {
-    const select = document.getElementById(selId);
-    // elimina le eventuali opzioni precedenti tranne la prima
-    select.innerHTML = select.options[0].outerHTML;
-    const values = [...new Set(leads.map(l => l[field]))].sort();
-    values.forEach(v => {
-      if (!v) return;
-      const opt = document.createElement('option');
-      opt.value = v;
-      opt.textContent = v;
-      select.appendChild(opt);
-    });
+  Object.entries(map).forEach(([field, selId]) => {
+    const sel = document.getElementById(selId);
+    // reset opzioni
+    sel.innerHTML = `<option value="">Tutti</option>`;
+    // estrai unici
+    const vals = [...new Set(allLeads.map(l => l[field]))].sort();
+    vals.forEach(v => sel.add(new Option(v, v)));
   });
 }
 
@@ -100,66 +70,58 @@ function setSection(sec) {
   sectionFilter = sec;
   document.querySelectorAll('.section-buttons .btn')
     .forEach(b => b.classList.remove('selected'));
-  const idMap = {
-    lead: 'btnLeads',
-    appuntamento: 'btnAppuntamenti',
-    contratto: 'btnContratti'
-  };
+  const idMap = { lead: 'btnLeads', appuntamento: 'btnAppuntamenti', contratto: 'btnContratti' };
   document.getElementById(idMap[sec]).classList.add('selected');
   render();
 }
 
 function render() {
-  const region   = document.getElementById('filter-region').value;
-  const city     = document.getElementById('filter-city').value;
-  const category = document.getElementById('filter-category').value;
-  const tipo     = document.getElementById('filter-type').value;
+  const r = document.getElementById('filter-region').value;
+  const c = document.getElementById('filter-city').value;
+  const cat = document.getElementById('filter-category').value;
+  const t = document.getElementById('filter-type').value;
 
-  const container = document.getElementById('clienti');
-  container.innerHTML = '';
+  const cont = document.getElementById('clienti');
+  cont.innerHTML = '';
 
-  const filtered = leads.filter(l =>
+  const filtered = allLeads.filter(l =>
     l.tipo === sectionFilter &&
-    (!region   || l.regione === region) &&
-    (!city     || l.città === city) &&
-    (!category || l.categoria === category) &&
-    (!tipo     || l.tipo === tipo)
+    (!r || l.regione === r) &&
+    (!c || l.città === c) &&
+    (!cat || l.categoria === cat) &&
+    (!t || l.tipo === t)
   );
 
-  if (filtered.length === 0) {
-    container.innerHTML = '<p>Nessun risultato</p>';
+  if (!filtered.length) {
+    cont.innerHTML = '<p>Nessun risultato</p>';
+    return;
   }
 
   filtered.forEach(l => {
     const card = document.createElement('div');
-    card.className = 'cliente-card ' + l.tipo;
+    card.className = `cliente-card ${l.tipo}`;
     card.innerHTML = `
       <span class="badge ${l.tipo}">
-        ${l.tipo === 'lead' ? 'Lead da chiamare' :
-          l.tipo === 'appuntamento' ? 'Appuntamenti fissati' :
-          'Contratti riservati'}
+        ${ l.tipo==='lead'? 'Lead da chiamare' :
+           l.tipo==='appuntamento'? 'Appuntamenti fissati' :
+           'Contratti riservati' }
       </span>
       <h3>${l.regione} – ${l.città}</h3>
       <div class="desc">${l.descrizione}</div>
       <div class="budget">Budget: €${l.budget}</div>
-      <div class="commission">
-        Commissione: €${(l.budget/40).toFixed(2)} (${Math.round(l.budget/40)} crediti)
-      </div>
+      <div class="commission">Commissione: €${(l.budget/40).toFixed(2)} (${Math.round(l.budget/40)} crediti)</div>
       <div class="actions">
         <button class="${l.tipo==='contratto'?'riserva':'acquisisci'} btn">
           ${l.tipo==='contratto'?'Riserva':'Acquisisci'}
         </button>
-      </div>
-    `;
-    card.querySelector('.acquisisci')?.addEventListener('click', () => {
+      </div>`;
+    card.querySelector('.acquisisci')?.onclick = () => {
       cart.push(l);
       updateCart();
       toggleModal('payment-modal', true);
-    });
-    card.querySelector('.riserva')?.addEventListener('click', () => {
-      toggleModal('contact-modal', true);
-    });
-    container.appendChild(card);
+    };
+    card.querySelector('.riserva')?.onclick = () => toggleModal('contact-modal', true);
+    cont.appendChild(card);
   });
 
   updateCart();
