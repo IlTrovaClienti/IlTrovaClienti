@@ -80,25 +80,40 @@ elems.btnLeads.onclick = ()=>{ sectionFilter='lead'; toggleButton(elems.btnLeads
 elems.btnAppuntamenti.onclick = ()=>{ sectionFilter='appuntamento'; toggleButton(elems.btnAppuntamenti); render(); };
 elems.btnContratti.onclick = ()=>{ sectionFilter='contratto'; toggleButton(elems.btnContratti); render(); };
 
+// Funzione per trovare la colonna giusta ignorando accenti/maiuscole
+function colIdx(map, keys) {
+  for(let k of keys) {
+    if (k in map) return map[k];
+  }
+  return -1;
+}
+
 // Fetch TSV + parser robusto
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
   const lines = txt.trim().split('\n');
   const headers = lines.shift().split('\t').map(h=>h.trim().toLowerCase());
-  // mapping colonne flessibile
   const map = {};
-  headers.forEach((h,i)=>map[h]=i);
+  headers.forEach((h,i)=>map[h.replace('à','a')] = i); // rimpiazza à -> a per la citta
+
+  const idxRegione = colIdx(map, ['regione']);
+  const idxCitta = colIdx(map, ['città','citta']);
+  const idxCategoria = colIdx(map, ['categoria']);
+  const idxTipo = colIdx(map, ['tipo']);
+  const idxDescrizione = colIdx(map, ['descrizione']);
+  const idxTelefono = colIdx(map, ['telefono']);
+  const idxBudget = colIdx(map, ['budget (€)','budget']);
 
   leads = lines.map((l,i)=>{
     const cols = l.split('\t');
     return {
       id: i+1,
-      regione: cols[map['regione']] || '',
-      citta: cols[map['città']] || cols[map['citta']] || '',
-      categoria: cols[map['categoria']] || '',
-      tipo: cols[map['tipo']] || '',
-      descrizione: cols[map['descrizione']] || '',
-      telefono: cols[map['telefono']] || '',
-      budget: parseFloat(cols[map['budget (€)']] || cols[map['budget']]) || 0
+      regione: cols[idxRegione] || '',
+      citta: cols[idxCitta] || '',
+      categoria: cols[idxCategoria] || '',
+      tipo: (cols[idxTipo] || '').toLowerCase().replace(/\s.*$/,''),
+      descrizione: cols[idxDescrizione] || '',
+      telefono: cols[idxTelefono] || '',
+      budget: parseFloat(cols[idxBudget]) || 0
     };
   });
   render();
