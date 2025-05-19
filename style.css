@@ -1,1 +1,95 @@
-body{background:#f0f2f5;}
+/* Reset base e font */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  padding: 10px;
+  color: #333;
+}
+
+/* HEADER */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 12px;
+  border-radius: 24px;
+  margin-bottom: 12px;
+}
+.logo-img { max-height: 60px; }
+
+/* NAV SEZIONI */
+.section-buttons {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.section-buttons .btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 24px;
+  color: #fff;
+  background: #007BFF;
+  cursor: pointer;
+}
+.section-buttons .btn.selected { opacity: 0.8; }
+
+/* FILTRI */
+.filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.filter-group { flex: 1; }
+.filter-group label { font-size: .9em; }
+.filters select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 24px;
+}
+
+/* GENERICO */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+}
+
+/* CARRELLO */
+.carrello {
+  background: #fff;
+  padding: 10px;
+  border-radius: 24px;
+  margin-bottom: 12px;
+}
+
+/* CARDS */
+#clienti {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px,1fr));
+  gap: 8px;
+}
+.cliente-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 24px;
+  position: relative;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: .75em;
+  background: #007BFF;
+  color: #fff;
+}
+.actions { margin-top: 12px; text-align: center; }
+.actions .btn { background: #28a745; color: #fff; }
