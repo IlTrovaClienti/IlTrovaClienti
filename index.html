@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
   <base href="/IlTrovaClienti/">
-  <!-- Stili -->
+
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="contact-modal.css">
+
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -71,18 +76,18 @@
         <button id="show-register">Registrati</button>
       </div>
       <form id="login-form" class="active">
-        <input type="email" id="login-email" placeholder="Email">
-        <input type="password" id="login-password" placeholder="Password">
-        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta"></label>
+        <input type="email" id="login-email" placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta" required></label>
         <button type="button" id="btnLogin">Accedi</button>
       </form>
       <form id="register-form">
-        <input type="text" id="register-name" placeholder="Nome">
-        <input type="text" id="register-surname" placeholder="Cognome">
-        <input type="email" id="register-email" placeholder="Email">
-        <input type="password" id="register-password" placeholder="Password">
-        <input type="password" id="register-password2" placeholder="Ripeti Password">
-        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta"></label>
+        <input type="text" id="register-name" placeholder="Nome" required>
+        <input type="text" id="register-surname" placeholder="Cognome" required>
+        <input type="email" id="register-email" placeholder="Email" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta" required></label>
         <button type="button" id="btnRegister">Registrati</button>
       </form>
       <button id="close-auth" class="cancel-form btn">Chiudi</button>
@@ -106,18 +111,18 @@
   <div id="contact-modal" class="modal-overlay">
     <div class="modal-content">
       <h3>Richiesta Contatto</h3>
-      <input type="text" id="contact-name" placeholder="Nome">
-      <input type="text" id="contact-surname" placeholder="Cognome">
-      <input type="tel" id="contact-phone" placeholder="Telefono">
-      <input type="text" id="contact-location" placeholder="Località">
-      <input type="email" id="contact-email" placeholder="Email">
-      <textarea id="contact-message" rows="4" placeholder="Messaggio"></textarea>
+      <input type="text" id="contact-name" placeholder="Nome" required>
+      <input type="text" id="contact-surname" placeholder="Cognome" required>
+      <input type="tel" id="contact-phone" placeholder="Telefono" required>
+      <input type="text" id="contact-location" placeholder="Località" required>
+      <input type="email" id="contact-email" placeholder="Email" required>
+      <textarea id="contact-message" rows="4" placeholder="Messaggio" required></textarea>
       <button id="btnContactSend" class="ricarica-action btn-paylink">Invia</button>
-      <button id="close-contact" class="cancel-form">Chiudi</button>
+      <button id="close-contact" class="cancel-form btn">Chiudi</button>
     </div>
   </div>
 
-  <!-- Script -->
+  <!-- Scripts -->
   <script src="firebase-init.js" defer></script>
   <script src="firebase-auth.js" defer></script>
   <script src="script.js" defer></script>
