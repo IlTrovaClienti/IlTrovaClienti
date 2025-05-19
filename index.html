@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="assets/favicon.ico">
+  <base href="/IlTrovaClienti/">
   <link rel="stylesheet" href="style.css">
   <!-- Firebase SDK v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
@@ -13,81 +13,92 @@
   <script src="script.js" defer></script>
 </head>
 <body>
-  <!-- HEADER -->
   <header class="header">
-    <div class="logo"><img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti"></div>
+    <div class="logo">
+      <img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti">
+    </div>
     <div class="header-right">
-      <div class="credit-display">Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)</div>
+      <div class="credit-display">
+        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
+      </div>
       <button id="checkout-small" class="checkout-small">Checkout</button>
       <a id="ricarica" class="ricarica-btn" href="ricarica.html">Ricarica</a>
-      <button id="login-button" class="btn">Accedi</button>
-      <button id="register-button" class="btn">Registrati</button>
-      <button id="logout-button" class="btn" style="display:none;">Logout</button>
     </div>
   </header>
 
-  <!-- NAV -->
   <nav class="section-buttons">
-    <button id="btnLeads" class="btn selected">Lead</button>
-    <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
-    <button id="btnContratti" class="btn">Contratti</button>
+    <button id="btnLeads" class="selected">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
   </nav>
 
-  <!-- FILTRI -->
   <section class="filters">
-    <select id="regione"><option value="">Tutte Regioni</option></select>
-    <select id="citta"><option value="">Tutte Città</option></select>
-    <select id="categoria"><option value="">Tutte Categorie</option></select>
-    <select id="tipo"><option value="">Tutti Tipi</option></select>
-    <button id="clear-filters" class="btn">Pulisci</button>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="regione">Regione</label>
+        <select id="regione"></select>
+      </div>
+      <div class="filter-group">
+        <label for="citta">Città</label>
+        <select id="citta"></select>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria"></select>
+      </div>
+      <div class="filter-group">
+        <label for="tipo">Tipo</label>
+        <select id="tipo"></select>
+      </div>
+    </div>
   </section>
 
-  <!-- CARRELLO -->
   <section class="carrello">
     <h2>Carrello</h2>
     <ul id="carrello"></ul>
     <div id="totale">Totale: €0</div>
   </section>
 
-  <!-- CONTENITORE CLIENTI -->
   <main id="clienti"></main>
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal">
       <div class="modal-tabs">
-        <button id="show-login" class="btn active">Accedi</button>
-        <button id="show-register" class="btn">Registrati</button>
+        <button id="show-login" class="active">Accedi</button>
+        <button id="show-register">Registrati</button>
       </div>
       <form id="login-form" class="active">
-        <input type="email"    id="login-email"    placeholder="Email" required>
-        <input type="password" id="login-password" placeholder="Password" required>
-        <label>Quanto fa 2+3? <input type="text" id="login-captcha" required></label>
-        <button type="button" id="btnLogin" class="btn">Entra</button>
+        <input type="email"    id="login-email"    placeholder="Email">
+        <input type="password" id="login-password" placeholder="Password">
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta"></label>
+        <button type="button" id="btnLogin">Accedi</button>
       </form>
       <form id="register-form">
-        <input type="text"     id="register-name"    placeholder="Nome" required>
-        <input type="text"     id="register-surname" placeholder="Cognome" required>
-        <input type="email"    id="register-email"   placeholder="Email" required>
-        <input type="password" id="register-password" placeholder="Password" required>
-        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
-        <label>Quanto fa 2+3? <input type="text" id="register-captcha" required></label>
-        <button type="button" id="btnRegister" class="btn">Registrati</button>
+        <input type="text"     id="register-name"      placeholder="Nome">
+        <input type="text"     id="register-surname"   placeholder="Cognome">
+        <input type="email"    id="register-email"     placeholder="Email">
+        <input type="password" id="register-password"  placeholder="Password">
+        <input type="password" id="register-password2" placeholder="Ripeti Password">
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta"></label>
+        <button type="button" id="btnRegister">Registrati</button>
       </form>
-      <button id="close-auth" class="btn cancel-form">Chiudi</button>
+      <button id="close-auth" class="cancel-form">Chiudi</button>
     </div>
   </div>
 
   <!-- PAYMENT MODAL -->
   <div id="payment-modal" class="modal-overlay">
     <div class="modal">
-      <h3>Scegli Pagamento</h3>
+      <h3>Scegli metodo di pagamento</h3>
       <div class="option-container">
-        <div class="option"><img src="assets/paypal.png" class="pay-logo"><button id="pay-paypal" class="btn">PayPal</button></div>
-        <div class="option"><img src="assets/credit-card.png" class="pay-logo"><button id="pay-card" class="btn">Carta</button></div>
-        <div class="option"><img src="assets/bank.png" class="pay-logo"><button id="pay-bank" class="btn">Bonifico</button></div>
+        <div class="option"><img class="pay-logo" src="assets/paypal.png"><button id="pay-paypal">PayPal</button></div>
+        <div class="option"><img class="pay-logo" src="assets/credit-card.png"><button id="pay-card">Carta</button></div>
+        <div class="option"><img class="pay-logo" src="assets/bank.png"><button id="pay-bank">Bonifico</button></div>
       </div>
-      <button id="close-payment" class="btn cancel-form">Chiudi</button>
+      <button id="close-payment" class="cancel-form">Chiudi</button>
     </div>
   </div>
 
@@ -95,14 +106,14 @@
   <div id="contact-modal" class="modal-overlay">
     <div class="modal">
       <h3>Richiesta Contatto</h3>
-      <input type="text"  id="contact-name"     placeholder="Nome" required>
-      <input type="text"  id="contact-surname"  placeholder="Cognome" required>
-      <input type="tel"   id="contact-phone"    placeholder="Telefono" required>
-      <input type="text"  id="contact-location" placeholder="Località" required>
-      <input type="email" id="contact-email"    placeholder="Email" required>
-      <textarea id="contact-message" rows="4" placeholder="Messaggio" required></textarea>
-      <button id="btnContactSend" class="btn">Invia</button>
-      <button id="close-contact" class="btn cancel-form">Chiudi</button>
+      <input type="text"  id="contact-name"     placeholder="Nome">
+      <input type="text"  id="contact-surname"  placeholder="Cognome">
+      <input type="tel"   id="contact-phone"    placeholder="Telefono">
+      <input type="text"  id="contact-location" placeholder="Località">
+      <input type="email" id="contact-email"    placeholder="Email">
+      <textarea id="contact-message" rows="4" placeholder="Messaggio"></textarea>
+      <button id="btnContactSend" class="ricarica-action btn-paylink">Invia</button>
+      <button id="close-contact" class="cancel-form">Chiudi</button>
     </div>
   </div>
 </body>
