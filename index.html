@@ -4,80 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-
-  <!-- CSS -->
+  <!-- rimossa la riga <base> -->
   <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="contact-modal.css">
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="firebase-init.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
-
-  <!-- HEADER -->
   <header class="header">
-    <img src="assets/logo.jpg" alt="Logo IlTrovaClienti" class="logo-img">
+    <div class="logo"><img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti"></div>
     <div class="header-right">
-      <div class="credit-display">
-        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
-      </div>
-      <button id="checkout-small" class="btn checkout-small">Checkout</button>
-      <a href="ricarica.html" class="btn ricarica-btn">Ricarica</a>
+      <div class="credit-display">Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)</div>
+      <button id="checkout-small" class="checkout-small">Checkout</button>
+      <a id="ricarica" class="ricarica-btn" href="ricarica.html">Ricarica</a>
       <button id="login-button" class="btn">Accedi</button>
       <button id="register-button" class="btn">Registrati</button>
       <button id="logout-button" class="btn" style="display:none;">Logout</button>
     </div>
   </header>
 
-  <!-- NAV SEZIONI -->
   <nav class="section-buttons">
     <button id="btnLeads" class="btn selected">Lead</button>
     <button id="btnAppuntamenti" class="btn">Appuntamenti</button>
     <button id="btnContratti" class="btn">Contratti</button>
   </nav>
 
-  <!-- FILTRI -->
   <section class="filters">
-    <div class="filter-group">
-      <label>Regione
-        <select id="filter-region"><option value="">Tutti</option></select>
-      </label>
-    </div>
-    <div class="filter-group">
-      <label>Città
-        <select id="filter-city"><option value="">Tutti</option></select>
-      </label>
-    </div>
-    <div class="filter-group">
-      <label>Categoria
-        <select id="filter-category"><option value="">Tutte</option></select>
-      </label>
-    </div>
-    <div class="filter-group">
-      <label>Tipo
-        <select id="filter-type"><option value="">Tutti</option></select>
-      </label>
-    </div>
+    <select id="regione"><option value="">Tutte Regioni</option></select>
+    <select id="citta"><option value="">Tutte Città</option></select>
+    <select id="categoria"><option value="">Tutte Categorie</option></select>
+    <select id="tipo"><option value="">Tutti Tipi</option></select>
     <button id="clear-filters" class="btn">Pulisci</button>
   </section>
 
-  <!-- CARRELLO -->
   <section class="carrello">
     <h2>Carrello</h2>
     <ul id="carrello"></ul>
     <div id="totale">Totale: €0</div>
   </section>
 
-  <!-- CONTAINER CLIENTI -->
   <main id="clienti"></main>
 
-  <!-- MODALI (AUTH, PAYMENT, CONTACT) -->
-  <!-- qui inserisci i markup completi dei tuoi modali come li avevi nel canvas -->
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="modal-overlay">
+    <!-- markup completo come prima -->
+    …  
+  </div>
 
-  <!-- FIREBASE E SCRIPT -->
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js" defer></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js" defer></script>
-  <script src="firebase-init.js" defer></script>
-  <script src="firebase-auth.js" defer></script>
-  <script src="script.js" defer></script>
+  <!-- PAYMENT MODAL -->
+  <div id="payment-modal" class="modal-overlay">
+    …  
+  </div>
+
+  <!-- CONTACT MODAL -->
+  <div id="contact-modal" class="modal-overlay">
+    …  
+  </div>
 </body>
 </html>
-<!-- bump -->
