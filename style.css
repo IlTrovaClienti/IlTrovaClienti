@@ -1,126 +1,227 @@
+/* ==== RESET & BASE ==== */
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:#f0f2f5;padding:10px}
+body {
+  font-family: 'Montserrat', 'Nunito', Arial, sans-serif;
+  background: linear-gradient(180deg, #e7f1fa 0%, #b9d6ee 100%);
+  min-height: 100vh;
+  color: #2a2d34;
+  padding: 0 0 50px 0;
+}
 
-/* HEADER */
+/* ==== HEADER ==== */
 .header {
   display:flex; flex-direction:column; align-items:center;
-  background:#fff; padding:12px; border-radius:24px; margin-bottom:12px;
+  background: rgba(255,255,255,0.8);
+  padding: 12px 0 6px 0;
+  border-radius: 0 0 32px 32px;
+  box-shadow: 0 2px 8px rgba(0,80,160,0.07);
 }
-.logo-img{max-height:140px;width:auto;margin-bottom:8px}
-.header-right{display:flex;align-items:center;gap:8px}
-.credit-display{font-size:.9em}
-
-/* pulsanti generici */
-button, .ricarica-btn, .checkout-small, .option button, .ricarica-action, select {
-  border:1px solid rgba(0,0,0,0.1);
-  border-radius:24px;
-  cursor:pointer;
-  font-size:.9em;
-  touch-action: manipulation;
+.logo-img{
+  max-height:88px;
+  width:auto;
+  margin-bottom:4px;
+  margin-top:6px;
+  border-radius:22px;
+  box-shadow:0 2px 8px rgba(0,60,140,0.08);
 }
-button, .option button { background:#007BFF; color:#fff; }
-.ricarica-btn{background:#004080;color:#fff;text-decoration:none;padding:8px 16px}
-.checkout-small{background:#28a745;color:#fff;padding:8px 16px}
-button:hover, .option button:hover, .ricarica-btn:hover, .checkout-small:hover{opacity:.9}
-.ricarica-action.btn-card,
-.ricarica-action.btn-paylink,
-.pay-gradient {
-  padding: 7px 0 !important;
-  font-size: .99em !important;
-  margin-bottom: 8px;
-  display:block;
-  width:75%;
-  min-width:160px;
-  max-width:260px;
-  margin-left:auto;margin-right:auto;
-  border-radius:24px;
-  text-align:center;
-  font-weight:500;
-  background:linear-gradient(90deg, #0070BA 0%, #42aaff 100%);
-  color:#fff;
-  box-shadow:0 2px 10px rgba(0,0,0,0.07);
-  transition:background .22s, filter .15s;
-}
-.pay-gradient:hover {
-  filter: brightness(0.93);
+.header-credits {
+  margin-top:3px;
+  font-size:1.05em;
+  background: #e7f1fa;
+  border-radius: 18px;
+  padding: 4px 14px;
+  color:#00365c;
 }
 
-/* NAV */
-.section-buttons{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.section-buttons button{flex:1 1 30%;padding:10px;font-weight:bold;text-align:center}
-#btnLeads{background:#007BFF;color:#fff}
-#btnAppuntamenti{background:#FF00FF;color:#fff}
-#btnContratti{background:#FFD700;color:#000}
+/* ==== NAV BUTTONS ==== */
+.section-buttons {
+  display:flex;
+  justify-content:space-between;
+  gap: 4px;
+  margin: 6px 0 10px 0;
+  padding: 0 6px;
+}
+.section-buttons button {
+  flex: 1 1 30%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 18px;
+  font-size: 1em;
+  font-weight: bold;
+  margin-right: 2px;
+  box-shadow: 0 2px 8px rgba(0,50,100,0.04);
+  transition: transform 0.09s, box-shadow 0.13s;
+  letter-spacing: .01em;
+}
+.btn-blue { background: #2595fd; color:#fff; }
+.btn-fuchsia { background: #f01997; color:#fff; }
+.btn-yellow { background: #ffd600; color:#2a2d34; }
+.btn-reset { background: #fff; color:#2595fd; border:1px solid #b9d6ee; min-width:68px;}
+.section-buttons button.selected, .section-buttons button:active {
+  transform: scale(1.07);
+  box-shadow: 0 3px 13px rgba(0,50,100,0.09);
+}
 
-/* FILTRI */
-.filters{margin-bottom:12px}
-.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.filter-group{flex:1 1 48%;display:flex;flex-direction:column}
-.filter-group label{font-size:.85em;margin-bottom:4px}
-.filters select{padding:6px 8px;width:100%;}
+/* ==== FILTERS ==== */
+.filters {
+  margin: 4px 0 14px 0;
+  background: rgba(255,255,255,0.82);
+  border-radius: 20px;
+  padding: 10px 6px 5px 6px;
+  box-shadow: 0 1px 6px rgba(60,120,180,0.03);
+}
+.filter-row {
+  display:flex; gap:10px; flex-wrap:wrap;
+  margin-bottom:2px;
+}
+.filter-group { flex:1; display:flex; flex-direction:column; }
+.filter-group label { font-size:0.95em; margin-bottom:2px; color:#1e547c;}
+.filters select {
+  padding: 8px 8px;
+  font-size: 1.05em;
+  border-radius: 14px;
+  border: 1px solid #b9d6ee;
+  background: #f8fbfd;
+  color: #225278;
+  margin-bottom: 7px;
+}
+#btnReset { margin-left:5px; min-width:80px; font-size:.98em; padding:9px 2px;}
 
-/* CARRELLO */
-.carrello{background:#fff;padding:10px;border-radius:24px;margin-bottom:12px}
-.carrello h2{font-size:1em;margin-bottom:6px}
-#totale{margin-top:6px;font-weight:bold;font-size:.9em}
-.carrello ul{list-style:none}
+/* ==== CARDS ==== */
+#clienti {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 6px 16px 6px;
+}
+.cliente-card {
+  background: rgba(255,255,255,0.96);
+  border-radius: 24px;
+  box-shadow: 0 4px 18px rgba(22,74,145,0.08);
+  padding: 17px 16px 16px 16px;
+  position: relative;
+  min-height: 98px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  overflow: hidden;
+}
+.card-row {
+  display:flex; align-items: center; margin-bottom: 6px;
+}
+.card-icon {
+  width: 46px; height: 46px; margin-right:12px; border-radius:15px;
+  box-shadow: 0 1px 8px rgba(0,60,160,0.13);
+  background: #e5f5fc;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2em;
+}
+.badge-lead { background: #2595fd; color: #fff; border-radius:13px; font-size:.93em; font-weight:600; padding:2px 10px; margin-right:6px;}
+.badge-appuntamento { background: #f01997; color: #fff; border-radius:13px; font-size:.93em; font-weight:600; padding:2px 10px; margin-right:6px;}
+.badge-contratto { background: #ffd600; color: #2a2d34; border-radius:13px; font-size:.93em; font-weight:600; padding:2px 10px; margin-right:6px;}
+.card-description {
+  font-family: 'Nunito', Arial, sans-serif;
+  font-size: 1.10em;
+  font-weight: 700;
+  color: #19497a;
+  margin-bottom: 3px;
+}
+.card-budget, .card-commission {
+  font-size: 1.02em;
+  font-weight: bold;
+  color: #084a7c;
+  margin-bottom: 1px;
+}
+.card-commission {
+  font-size: 1.01em;
+  color: #38872a;
+}
+.card-phone-locked {
+  display:flex; align-items: center; font-size: .96em; color: #9da6b7;
+  font-style: italic; margin-top:2px;
+}
+.card-phone-locked .icon-lock {
+  font-size:1.11em; margin-right: 5px;
+}
+.card-actions {
+  margin-top: 10px;
+}
+.card-actions button {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 14px;
+  font-size: 1.06em;
+  font-weight: bold;
+  background: linear-gradient(90deg,#ffd600 40%,#fff180 100%);
+  color: #444;
+  box-shadow: 0 1px 7px rgba(226,191,44,0.09);
+  transition: filter 0.09s;
+  letter-spacing: 0.01em;
+}
+.card-actions button:active { filter: brightness(0.96);}
+.card-actions button.acquisisci-contratto {
+  background: linear-gradient(90deg,#ffe060 40%,#ffc700 100%);
+  color: #222;
+}
 
-/* CARDS */
-#clienti{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
-.cliente-card{background:#fff;padding:16px;position:relative;border-left:4px solid;border-right:4px solid;border-radius:24px}
-.badge{display:inline-block;padding:4px 8px;border-radius:24px;font-size:.8em;margin-bottom:8px}
-.cliente-card.lead{border-color:#007BFF}.badge.lead{background:#007BFF;color:#fff}
-.cliente-card.appuntamento{border-color:#FF00FF}.badge.appuntamento{background:#FF00FF;color:#fff}
-.cliente-card.contratto{border-color:#FFD700}.badge.contratto{background:#FFD700;color:#000}
-.cliente-card h3{margin:8px 0;font-size:1em}
-.tipo{font-weight:bold;font-size:1.05em;margin-bottom:2px;}
-.desc{font-weight:bold;font-style:italic;font-size:.95em;margin-bottom:8px}
-.budget, .commission{margin-bottom:8px;font-size:.95em}
-.budget b{font-weight:bold;}
-.actions{position:absolute;top:12px;right:12px;display:flex;gap:8px}
-.actions button{padding:8px 12px}
+/* ==== CARRELLO (mobile style, opzionale) ==== */
+.carrello {
+  display:none; /* Puoi abilitarlo se vuoi anche in mobile */
+}
 
-/* MODALI */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;justify-content:center;align-items:center;padding:16px;overflow-y:auto;z-index:1000}
-.modal{background:#fff;padding:16px;border-radius:24px;width:100%;max-width:360px;max-height:90vh;overflow-y:auto}
-
-/* AUTH TABS COLORATI! */
-.modal-tabs{display:flex;gap:8px;margin-bottom:12px}
-.modal-tabs button{flex:1;padding:10px;border:1px solid rgba(0,0,0,0.1);border-radius:24px;background:#15508d;color:#fff;}
-.modal-tabs button.active{background:#004080;color:#fff;}
-.modal-tabs button:not(.active){background:#15508d;color:#fff;opacity:0.8;}
+/* ==== MODALS ==== */
+.modal-overlay{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:rgba(0,0,0,0.45);display:none;justify-content:center;align-items:center;
+  padding:8px;z-index:1000;
+}
+.modal{
+  background:#fff;padding:22px 10px 16px 10px;border-radius:18px;width:100%;max-width:355px;
+  box-shadow:0 7px 32px rgba(50,72,80,0.16);
+  max-height:98vh;overflow-y:auto;
+}
+.modal-tabs{display:flex;gap:8px;margin-bottom:9px}
+.modal-tabs button{flex:1;padding:9px;border-radius:18px;background:#d8e7fa;color:#2a2d34;font-weight:bold;}
+.modal-tabs button.active{background:#2595fd;color:#fff;}
+.modal-tabs button:not(.active){background:#e2e9ee;color:#1970ba;opacity:0.84;}
 .modal form{display:none}
 .modal form.active{display:block}
-.modal input, .modal textarea{width:100%;padding:8px;margin-bottom:12px;border:1px solid #ccc;border-radius:24px;font-size:.9em}
+.modal input, .modal textarea{width:100%;padding:8px;margin-bottom:12px;border:1px solid #b9d6ee;border-radius:16px;font-size:.97em}
+#btnLogin, #btnRegister, #close-auth {
+  display:inline-block;padding:11px 18px;font-size:1em;border-radius:18px;color:#fff;margin-top:9px;
+}
+#btnLogin, #btnRegister {background:#28a745;}
+#close-auth            {background:#2595fd;}
+#btnLogin:hover, #btnRegister:hover, #close-auth:hover{opacity:.92;}
+.cancel-form{background:#2595fd;color:#fff;padding:8px 18px;border-radius:18px;margin-top:7px;font-weight:bold;}
+/* Contact modal */
+#contact-modal input, #contact-modal textarea {margin-bottom:8px;}
 
-/* popup auth buttons */
-#close-auth {
-  display:block;
-  width:80%;
-  min-width:130px;
-  margin:18px auto 0 auto;
-  padding:13px 0;
-  font-size:1.1em;
-  border-radius:24px;
-  color:#fff;
-  background:#004080;
-  text-align:center;
+@media (min-width:700px){
+  body {padding:0 10vw 70px 10vw;}
+  .header, .filters, #clienti {max-width: 480px;margin:0 auto;}
 }
 
-/* PAYMENT & CONTACT */
-.option-container{margin-bottom:8px}
-.option{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.pay-logo{width:28px;height:28px}
-.option button{flex:1;padding:8px 12px}
-#contact-message{resize:vertical}
-
-/* MODALI RICARICA & CHECKOUT */
-#modal-ricarica .modal, #modal-checkout .modal {
-  background:#fff;
-  border-radius:24px;
-  padding:24px 16px;
-  box-shadow:0 4px 24px rgba(0,0,0,0.09);
-  text-align:center;
+@media (max-width:600px){
+  .header {padding: 7px 0 3px 0;}
+  .section-buttons button {font-size:.98em;padding:10px 0;}
+  .cliente-card {padding:12px 8px;}
+  .modal {max-width:97vw;}
 }
-/* FORZA colore popup (in caso cache) */
-#close-auth  {background:#004080!important;}
+
+/* ==== SFONDO ICONE/SAGOME ==== */
+body::before {
+  content:"";
+  position:fixed;
+  top:0;left:0;right:0;bottom:0;
+  z-index:-1;
+  opacity:0.19;
+  background:
+    url('/assets/bg-edil-icon-1.png') 14vw 12vh/72px 72px no-repeat,
+    url('/assets/bg-edil-icon-2.png') 60vw 18vh/54px 54px no-repeat,
+    url('/assets/bg-edil-icon-3.png') 80vw 70vh/50px 50px no-repeat,
+    url('/assets/bg-edil-icon-4.png') 33vw 60vh/48px 48px no-repeat;
+}
+
+/* Sostituisci i percorsi con icone PNG/SVG a tema lavorazioni */
