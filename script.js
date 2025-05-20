@@ -1,344 +1,190 @@
-// URL Google Sheet pubblicato TSV
+// === CONFIG ===
+// Google Sheet TSV pubblicato
 const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlDD1kWHOYg9amAZmDBCQCi3o-eT4HramTOY-PLelbGPCrEMcKd4I6PWu4L_BFGIhREy/pub?output=tsv';
 
 const elems = {
   regione:      document.getElementById('regione'),
   citta:        document.getElementById('citta'),
-  categoria:    document.getElementById('categoria'),
-  tipo:         document.getElementById('tipo'),
   btnLeads:     document.getElementById('btnLeads'),
   btnAppuntamenti: document.getElementById('btnAppuntamenti'),
   btnContratti:    document.getElementById('btnContratti'),
+  btnReset:    document.getElementById('btnReset'),
   clienti:      document.getElementById('clienti'),
-  carrello:     document.getElementById('carrello'),
-  totale:       document.getElementById('totale'),
-  creditiDisp:  document.getElementById('crediti'),
-  euroDisp:     document.getElementById('euro'),
   authModal:    document.getElementById('auth-modal'),
   showLogin:    document.getElementById('show-login'),
   showRegister: document.getElementById('show-register'),
   loginForm:    document.getElementById('login-form'),
   registerForm: document.getElementById('register-form'),
+  btnLogin:     document.getElementById('btnLogin'),
+  btnRegister:  document.getElementById('btnRegister'),
   closeAuth:    document.getElementById('close-auth'),
-  checkoutBtn:  document.getElementById('checkout-small'),
-  paymentModal: document.getElementById('payment-modal'),
-  closePayment: document.getElementById('close-payment'),
-  payPaypal:    document.getElementById('pay-paypal'),
-  payCard:      document.getElementById('pay-card'),
   contactModal: document.getElementById('contact-modal'),
   closeContact: document.getElementById('close-contact'),
   btnContact:   document.getElementById('btnContactSend'),
-  ricarica:     document.querySelector('.ricarica-btn')
+  creditiDisp:  document.getElementById('crediti'),
+  euroDisp:     document.getElementById('euro')
 };
 
-let leads = [], sectionFilter = 'lead', cart = [];
-let filters = { regione: '', citta: '', categoria: '', tipo: '' };
+let leads = [], sectionFilter = 'lead', filters = { regione: '', citta: '' };
 
-// Utility trova indice colonna ignorando accenti/maiuscole/spazi
-function findCol(map, alternatives) {
-  const norm = x => x.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,'').toLowerCase();
-  for (const alt of alternatives) {
-    for (const col in map) {
-      if (norm(col) === norm(alt)) return map[col];
-    }
-  }
-  return -1;
-}
+// === UTILS ===
+function normalize(str) { return (str||'').toLowerCase().trim().replace(/[àá]/gi, 'a').replace(/[èé]/gi, 'e').replace(/[ìí]/gi, 'i').replace(/[òó]/gi, 'o').replace(/[ùú]/gi, 'u'); }
+function onlyUnique(arr) { return [...new Set(arr.filter(x=>x&&x.length>0))]; }
 
-// MODALE RICARICA
-function showRicaricaModal() {
-  if (!document.getElementById('modal-ricarica')) {
-    const modal = document.createElement('div');
-    modal.id = 'modal-ricarica';
-    modal.className = 'modal-overlay';
-    modal.style.display = 'flex';
-    modal.innerHTML = `
-      <div class="modal" style="min-width:270px;max-width:340px;">
-        <h2>Ricarica crediti</h2>
-        <h3><img src="assets/credit-card.png" style="width:26px;vertical-align:middle;margin-right:4px;"> Paga con carta</h3>
-        <p>1 credito = 40 €</p>
-        <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d"
-           target="_blank"
-           class="ricarica-action btn-card pay-gradient"
-           style="
-             display:block;
-             width:75%;
-             min-width:160px;
-             max-width:260px;
-             margin:12px auto 14px auto;
-             border-radius:24px;
-             font-size:.97em;
-             padding:7px 0;
-             text-align:center;
-             font-weight:500;
-             background:linear-gradient(90deg, #0070BA 0%, #42aaff 100%);
-             color:#fff;
-             box-shadow:0 2px 10px rgba(0,0,0,0.07);
-             transition:background .22s;
-           ">Paga ora con carta</a>
-        <h3><img src="assets/paypal.png" style="width:26px;vertical-align:middle;margin-right:4px;"> Paga con PayPal</h3>
-        <p>1 credito = 40 €</p>
-        <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y"
-           target="_blank"
-           class="ricarica-action btn-paylink pay-gradient"
-           style="
-             display:block;
-             width:75%;
-             min-width:160px;
-             max-width:260px;
-             margin:12px auto 0 auto;
-             border-radius:24px;
-             font-size:.97em;
-             padding:7px 0;
-             text-align:center;
-             font-weight:500;
-             background:linear-gradient(90deg, #0070BA 0%, #42aaff 100%);
-             color:#fff;
-             box-shadow:0 2px 10px rgba(0,0,0,0.07);
-             transition:background .22s;
-           ">Paga ora con PayPal</a>
-        <button id="close-ricarica" class="cancel-form"
-          style="margin-top:18px;min-width:110px;padding:13px 0;font-size:1.1em;border-radius:24px;display:block;margin-left:auto;margin-right:auto;">
-          Chiudi
-        </button>
-      </div>`;
-    document.body.appendChild(modal);
-    document.getElementById('close-ricarica').onclick = () => { modal.remove(); };
-    modal.onclick = e => { if(e.target === modal) modal.remove(); };
-    document.addEventListener('keydown', function handler(ev){
-      if(ev.key==="Escape"){ modal.remove(); document.removeEventListener('keydown', handler);}
-    });
-  } else {
-    document.getElementById('modal-ricarica').style.display = 'flex';
-  }
-}
-
-// MODALE CHECKOUT
-function showCheckoutModal() {
-  if (!document.getElementById('modal-checkout')) {
-    const modal = document.createElement('div');
-    modal.id = 'modal-checkout';
-    modal.className = 'modal-overlay';
-    modal.style.display = 'flex';
-
-    let html = '';
-    if (cart.length === 0) {
-      html = `<div class="modal">
-        <h2>Checkout</h2>
-        <p>Devi aggiungere almeno un cliente al carrello.</p>
-        <button id="close-checkout" class="cancel-form" style="margin-top:16px;">Chiudi</button>
-      </div>`;
-    } else {
-      // Calcolo riepilogo
-      const totale = cart.reduce((s,i)=>s+(i.tipo==='lead'?40:(i.tipo==='appuntamento'?80:0)),0);
-      html = `<div class="modal">
-        <h2>Checkout</h2>
-        <ul style="text-align:left;padding-left:20px;margin:8px 0 12px 0;">
-          ${cart.map(item => `<li><b>${item.descrizione}</b> – <span>${item.tipo==='lead'?'1 credito (40 €)':item.tipo==='appuntamento'?'2 crediti (80 €)':'Trattativa riservata'}</span></li>`).join('')}
-        </ul>
-        <div style="margin:8px 0;font-weight:bold">Totale da pagare: €${totale}</div>
-        <div style="margin-bottom:10px;font-size:.9em;">Dopo il pagamento i dati verranno sbloccati.<br>Paga ora:</div>
-        <div style="display:flex;gap:10px;justify-content:center;">
-          <a href="https://checkout.revolut.com/pay/c1577ed9-ee74-4268-ac53-234f2c52a43d" target="_blank" class="ricarica-action btn-card pay-gradient" style="font-size:1em;padding:8px 20px;min-width:140px;">Carta</a>
-          <a href="https://www.paypal.com/ncp/payment/Y6Y4SS52MZC4Y" target="_blank" class="ricarica-action btn-paylink pay-gradient" style="font-size:1em;padding:8px 20px;min-width:140px;">PayPal</a>
-        </div>
-        <button id="close-checkout" class="cancel-form" style="margin-top:18px;">Chiudi</button>
-      </div>`;
-    }
-    modal.innerHTML = html;
-    document.body.appendChild(modal);
-    document.getElementById('close-checkout').onclick = () => { modal.remove(); };
-    modal.onclick = e => { if(e.target === modal) modal.remove(); };
-    document.addEventListener('keydown', function handler(ev){
-      if(ev.key==="Escape"){ modal.remove(); document.removeEventListener('keydown', handler);}
-    });
-  } else {
-    document.getElementById('modal-checkout').style.display = 'flex';
-  }
-}
-
-// --- GESTIONE EVENTI “ACQUISISCI”/“RISERVA” CON LOGIN CHECK ---
-document.body.addEventListener('click', function(e) {
-  // Acquisisci
-  if(e.target.classList.contains('acquisisci')) {
-    if (!auth.currentUser) {
-      elems.authModal.style.display = 'flex';
-      return;
-    }
-    const id = +e.target.dataset.id;
-    const item = leads.find(x=>x.id===id);
-    if (!cart.find(c=>c.id===id)) {
-      cart.push(item);
-    }
-    render();
-  }
-  // Riserva → popup trattativa riservata
-  if(e.target.classList.contains('riserva')) {
-    if (!auth.currentUser) {
-      elems.authModal.style.display = 'flex';
-      return;
-    }
-    elems.contactModal.style.display='flex';
-  }
-});
-
-// Filtri dinamici
-function populateFilters() {
-  let subset = leads.filter(l =>
-    (!filters.regione   || l.regione   === filters.regione) &&
-    (!filters.citta     || l.citta     === filters.citta) &&
-    (!filters.categoria || l.categoria === filters.categoria) &&
-    (!filters.tipo      || l.tipo      === filters.tipo)
-  );
-
-  const uniqueOptions = (field, fromLeads) => [...new Set(fromLeads.map(l => l[field]).filter(Boolean))].sort();
-
-  // REGIONE
-  const regioni = uniqueOptions('regione', leads);
-  elems.regione.innerHTML = `<option value="">Tutte le Regioni</option>` +
-    regioni.map(r=>`<option value="${r}" ${filters.regione===r?'selected':''}>${r}</option>`).join('');
-
-  // CITTA — SENZA ACCENTO!
-  const cittaList = uniqueOptions('citta', leads.filter(l => !filters.regione || l.regione === filters.regione));
-  elems.citta.innerHTML = `<option value="">Tutte le Citta</option>` +
-    cittaList.map(c=>`<option value="${c}" ${filters.citta===c?'selected':''}>${c}</option>`).join('');
-
-  // CATEGORIA
-  const catList = uniqueOptions('categoria', leads.filter(l =>
-    (!filters.regione || l.regione === filters.regione) &&
-    (!filters.citta || l.citta === filters.citta)
-  ));
-  elems.categoria.innerHTML = `<option value="">Tutte le Categorie</option>` +
-    catList.map(c=>`<option value="${c}" ${filters.categoria===c?'selected':''}>${c}</option>`).join('');
-
-  // TIPO
-  const tipoList = uniqueOptions('tipo', leads.filter(l =>
-    (!filters.regione || l.regione === filters.regione) &&
-    (!filters.citta || l.citta === filters.citta) &&
-    (!filters.categoria || l.categoria === filters.categoria)
-  ));
-  const tipoLabels = {lead:'Lead da chiamare', appuntamento:'Appuntamenti fissati', contratto:'Contratti riservati'};
-  elems.tipo.innerHTML = `<option value="">Tutti i Tipi</option>` +
-    tipoList.map(t=>`<option value="${t}" ${filters.tipo===t?'selected':''}>${tipoLabels[t]||t}</option>`).join('');
-}
-
-function filterLeads() {
-  return leads.filter(l =>
-    (!filters.regione   || l.regione   === filters.regione) &&
-    (!filters.citta     || l.citta     === filters.citta) &&
-    (!filters.categoria || l.categoria === filters.categoria) &&
-    (!filters.tipo      || l.tipo      === filters.tipo) &&
-    (sectionFilter === 'tutti' || l.tipo === sectionFilter)
-  );
-}
-
-// Render cards & cart
-function render() {
-  const filtered = filterLeads();
-  elems.clienti.innerHTML = '';
-  filtered.forEach(l => {
-    let crediti = '';
-    let euro = '';
-    if (l.tipo === 'lead') { crediti = '1 credito'; euro = '(40 €)'; }
-    else if (l.tipo === 'appuntamento') { crediti = '2 crediti'; euro = '(80 €)'; }
-    else if (l.tipo === 'contratto') { crediti = 'Riservato'; euro = ''; }
-
-    let telefono = `<div class="telefono" style="font-style:italic;color:#999">Visibile dopo acquisizione</div>`;
-
-    const card = document.createElement('div');
-    card.className = 'cliente-card ' + l.tipo;
-    card.innerHTML = `
-      <span class="badge ${l.tipo}">${{
-        lead: 'Lead da chiamare',
-        appuntamento: 'Appuntamenti fissati',
-        contratto: 'Contratti riservati'
-      }[l.tipo]}</span>
-      <div class="tipo" style="margin-bottom:2px">${l.categoria || 'Intervento'}</div>
-      <div class="desc">${l.descrizione}</div>
-      <div class="budget">Budget: <b>€${l.budget}</b></div>
-      <div class="commission">Commissione: ${crediti} ${euro}</div>
-      ${telefono}
-      <div class="actions">
-        <button class="${l.tipo==='contratto'?'riserva':'acquisisci'}" data-id="${l.id}">
-          ${l.tipo==='contratto'?'Riserva':'Acquisisci'}
-        </button>
-      </div>`;
-    elems.clienti.appendChild(card);
-  });
-  // Carrello
-  elems.carrello.innerHTML = cart.map(i=>`<li>${i.descrizione} – €${i.budget}</li>`).join('');
-  const sum = cart.reduce((s,i)=>s+i.budget,0);
-  elems.totale.textContent = `Totale: €${sum}`;
-  elems.creditiDisp.textContent = cart.length>0?cart.reduce((s,i)=>s+(i.tipo==='lead'?1:2),0):0;
-  elems.euroDisp.textContent = `€${(cart.length>0?cart.reduce((s,i)=>s+(i.tipo==='lead'?1:2),0)*40:0)}`;
-  populateFilters();
-}
-
-// Aggiorna filtri e renderizza
-['regione','citta','categoria','tipo'].forEach(fld=>{
-  elems[fld].onchange = ()=>{
-    filters[fld] = elems[fld].value;
-    if (fld === 'regione') { filters.citta = ''; filters.categoria = ''; filters.tipo = ''; }
-    else if (fld === 'citta') { filters.categoria = ''; filters.tipo = ''; }
-    else if (fld === 'categoria') { filters.tipo = ''; }
-    render();
-  };
-});
-
-// Tabs
-function toggleButton(btn) {
-  elems.btnLeads.classList.remove('selected');
+// === RESET ===
+function resetFiltersAndTab() {
+  filters = { regione:'', citta:'' };
+  sectionFilter = 'lead';
+  elems.btnLeads.classList.add('selected');
   elems.btnAppuntamenti.classList.remove('selected');
   elems.btnContratti.classList.remove('selected');
-  btn.classList.add('selected');
+  render();
 }
-elems.btnLeads.onclick = ()=>{ sectionFilter='lead'; toggleButton(elems.btnLeads); render(); };
-elems.btnAppuntamenti.onclick = ()=>{ sectionFilter='appuntamento'; toggleButton(elems.btnAppuntamenti); render(); };
-elems.btnContratti.onclick = ()=>{ sectionFilter='contratto'; toggleButton(elems.btnContratti); render(); };
 
-// FETCH dati
+// === RENDER FILTERS ===
+function renderFilters() {
+  // Regione
+  const regioni = onlyUnique(leads.map(x=>x.regione));
+  elems.regione.innerHTML = `<option value="">Tutte le regioni</option>` + regioni.map(r=>
+    `<option value="${r}">${r}</option>`
+  ).join('');
+  elems.regione.value = filters.regione;
+
+  // Citta
+  const citta = onlyUnique(leads.filter(l=>!filters.regione||l.regione===filters.regione).map(x=>x.citta));
+  elems.citta.innerHTML = `<option value="">Tutte le citta</option>` + citta.map(c=>
+    `<option value="${c}">${c}</option>`
+  ).join('');
+  elems.citta.value = filters.citta;
+}
+
+// === ICON MAPPING ===
+function getIconByCategoria(cat) {
+  // Normalizza categoria e trova icona
+  cat = normalize(cat);
+  if(cat.includes('fotovoltaico') || cat.includes('solare')) return 'solar-panel.png';
+  if(cat.includes('bagno')) return 'toilet.png';
+  if(cat.includes('cucina')) return 'kitchen.png';
+  if(cat.includes('elettric') || cat.includes('impianto elettrico')) return 'bolt.png';
+  if(cat.includes('idraulic') || cat.includes('acqua')) return 'water-tap.png';
+  if(cat.includes('pittura') || cat.includes('tinteggia')) return 'paint-roller.png';
+  if(cat.includes('cartongesso')) return 'drywall.png';
+  if(cat.includes('infissi') || cat.includes('finestr')) return 'window.png';
+  if(cat.includes('piastrell') || cat.includes('pavimento')) return 'tile.png';
+  if(cat.includes('cappotto') || cat.includes('isolamento')) return 'insulation.png';
+  if(cat.includes('portone') || cat.includes('cancello')) return 'gate.png';
+  if(cat.includes('manutenzione') || cat.includes('riparazione')) return 'wrench.png';
+  if(cat.includes('tetto')) return 'roof.png';
+  // Default
+  return 'worker.png';
+}
+
+// === RENDER CARDS ===
+function render() {
+  // Filtra leads in base a tab e filtri
+  let filtered = leads.filter(l =>
+    (sectionFilter === 'lead' ? l.tipo === 'lead'
+    : sectionFilter === 'appuntamento' ? l.tipo === 'appuntamento'
+    : l.tipo === 'contratto')
+    && (!filters.regione || l.regione === filters.regione)
+    && (!filters.citta || l.citta === filters.citta)
+  );
+  elems.clienti.innerHTML = filtered.map(l=>{
+    let badgeClass = l.tipo === 'lead' ? 'badge-lead' : l.tipo === 'appuntamento' ? 'badge-appuntamento' : 'badge-contratto';
+    let badgeLabel = l.tipo === 'lead' ? 'Lead da chiamare' : l.tipo === 'appuntamento' ? 'Appuntamento fissato' : 'Contratto riservato';
+    let icona = getIconByCategoria(l.categoria);
+    let crediti = l.tipo === 'lead' ? 1 : l.tipo === 'appuntamento' ? 2 : 0;
+    let budget = Number(l.budget)||0;
+    let btnLabel = l.tipo === 'contratto' ? 'Acquisisci contratto'
+      : `Acquisisci con ${crediti} credito${crediti>1?'i':''}`;
+    return `
+      <div class="cliente-card">
+        <div class="card-row">
+          <div class="card-icon"><img src="assets/${icona}" alt="" width="36" height="36"></div>
+          <div>
+            <span class="${badgeClass}">${badgeLabel}</span>
+          </div>
+        </div>
+        <div class="card-description">${l.descrizione}</div>
+        <div class="card-budget"><b>${crediti > 0 ? crediti + ' credito' + (crediti>1?'i':'') : 'Riservato'} – €${budget.toLocaleString('it-IT')}</b></div>
+        ${crediti>0 ? `<div class="card-commission">Budget totale: <b>€${budget.toLocaleString('it-IT')}</b></div>` : ''}
+        <div class="card-phone-locked"><span class="icon-lock">🔒</span>Disponibile solo dopo acquisizione</div>
+        <div class="card-actions">
+          <button class="${l.tipo==='contratto'?'acquisisci-contratto':'acquisisci'}" data-id="${l.id}">${btnLabel}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+  // Crediti fittizi demo
+  elems.creditiDisp.textContent = "0";
+  elems.euroDisp.textContent = "€0";
+  // Filtri e tab
+  renderFilters();
+}
+
+// === EVENTI ===
+elems.btnLeads.onclick = ()=>{
+  sectionFilter='lead';
+  elems.btnLeads.classList.add('selected');
+  elems.btnAppuntamenti.classList.remove('selected');
+  elems.btnContratti.classList.remove('selected');
+  render();
+};
+elems.btnAppuntamenti.onclick = ()=>{
+  sectionFilter='appuntamento';
+  elems.btnLeads.classList.remove('selected');
+  elems.btnAppuntamenti.classList.add('selected');
+  elems.btnContratti.classList.remove('selected');
+  render();
+};
+elems.btnContratti.onclick = ()=>{
+  sectionFilter='contratto';
+  elems.btnLeads.classList.remove('selected');
+  elems.btnAppuntamenti.classList.remove('selected');
+  elems.btnContratti.classList.add('selected');
+  render();
+};
+elems.btnReset.onclick = resetFiltersAndTab;
+elems.regione.onchange = e=>{
+  filters.regione = e.target.value;
+  filters.citta = ''; // reset città
+  render();
+};
+elems.citta.onchange = e=>{
+  filters.citta = e.target.value;
+  render();
+};
+
+// === FETCH LEADS ===
 fetch(sheetURL).then(r=>r.text()).then(txt=>{
   const lines = txt.trim().split('\n');
-  const headers = lines.shift().split('\t');
-  const map = {};
-  headers.forEach((h,i)=>map[h]=i);
-
-  const idxRegione     = findCol(map, ['regione']);
-  const idxCitta       = findCol(map, ['citta','città']);
-  const idxCategoria   = findCol(map, ['categoria']);
-  const idxTipo        = findCol(map, ['tipo']);
-  const idxDescrizione = findCol(map, ['descrizione']);
-  const idxTelefono    = findCol(map, ['telefono']);
-  const idxBudget      = findCol(map, ['budget (€)','budget']);
-
-  if ([idxRegione, idxCitta, idxCategoria, idxTipo, idxDescrizione, idxBudget].includes(-1)) {
-    elems.clienti.innerHTML = '<div style="color:red;font-weight:bold">ERRORE: Colonne mancanti!</div>';
-    return;
-  }
-
+  const headers = lines.shift().split('\t').map(h=>normalize(h));
   leads = lines.map((l,i)=>{
     const cols = l.split('\t');
     return {
       id: i+1,
-      regione: cols[idxRegione] || '',
-      citta: cols[idxCitta] || '',
-      categoria: cols[idxCategoria] || '',
-      tipo: (cols[idxTipo] || '').toLowerCase().replace(/\s.*$/,''),
-      descrizione: cols[idxDescrizione] || '',
-      telefono: cols[idxTelefono] || '',
-      budget: parseFloat(cols[idxBudget]) || 0
+      regione: cols[headers.indexOf('regione')],
+      citta:   cols[headers.indexOf('citta')],
+      categoria: cols[headers.indexOf('categoria')],
+      tipo:    cols[headers.indexOf('tipo')],   // 'lead' | 'appuntamento' | 'contratto'
+      descrizione: cols[headers.indexOf('descrizione')],
+      telefono: cols[headers.indexOf('telefono')],
+      budget:  parseFloat(cols[headers.indexOf('budget (€)')])
     };
   });
   render();
-}).catch(err=>{
-  elems.clienti.innerHTML = '<div style="color:red">Errore caricamento dati!</div>';
 });
 
-// Modali
-elems.checkoutBtn.onclick = ()=> showCheckoutModal();
-if(elems.ricarica) elems.ricarica.onclick = (e)=>{ e.preventDefault(); showRicaricaModal(); };
-
-// Auth modal controls
+// === MODALI E LOGIN (resta uguale, login/registrazione, popup contatto, ecc) ===
+document.body.addEventListener('click', function(e) {
+  if(e.target.classList.contains('acquisisci') || e.target.classList.contains('acquisisci-contratto')) {
+    if (!auth.currentUser) {
+      elems.authModal.style.display = 'flex';
+      return;
+    }
+    alert('Demo: Acquisizione non attiva!');
+  }
+});
 elems.showLogin.onclick = ()=>{
   elems.showLogin.classList.add('active');
   elems.showRegister.classList.remove('active');
@@ -351,8 +197,7 @@ elems.showRegister.onclick = ()=>{
   elems.loginForm.classList.remove('active');
   elems.registerForm.classList.add('active');
 };
-// Login con INVIO
-elems.loginForm.onsubmit = function(e) {
+elems.btnLogin.onclick = (e)=>{
   e.preventDefault();
   const email = document.getElementById('login-email').value;
   const pwd   = document.getElementById('login-password').value;
@@ -362,8 +207,7 @@ elems.loginForm.onsubmit = function(e) {
     .then(()=>{ elems.authModal.style.display='none'; })
     .catch(err=>alert(err.message));
 };
-// Register con INVIO
-elems.registerForm.onsubmit = function(e) {
+elems.btnRegister.onclick = (e)=>{
   e.preventDefault();
   const email = document.getElementById('register-email').value;
   const pwd   = document.getElementById('register-password').value;
@@ -375,6 +219,8 @@ elems.registerForm.onsubmit = function(e) {
     .then(()=>{ elems.authModal.style.display='none'; })
     .catch(err=>alert(err.message));
 };
-elems.closeAuth.onclick    = ()=> elems.authModal.style.display='none';
-elems.closeContact.onclick = ()=> elems.contactModal.style.display='none';
-elems.btnContact.onclick   = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
+elems.closeAuth.onclick      = ()=> elems.authModal.style.display='none';
+elems.closeContact.onclick   = ()=> elems.contactModal.style.display='none';
+elems.btnContact.onclick     = ()=> { alert('Richiesta inviata'); elems.contactModal.style.display='none'; };
+
+// Fine file
