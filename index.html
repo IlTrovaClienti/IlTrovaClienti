@@ -1,31 +1,126 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>IlTrovaClienti</title>
-  <link rel="icon" href="favicon.ico" />
-  <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" />
+  
+  <link rel="stylesheet" href="style.css">
+  <!-- Firebase SDK v8 -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script src="firebase-init.js" defer></script>
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <header>
-    <!-- header, logo, bottoni tipo lead/appuntamenti/contratti... -->
+  <header class="header">
+    <div class="logo">
+      <img src="assets/logo.jpg" class="logo-img" alt="Logo IlTrovaClienti">
+    </div>
+    <div class="header-right">
+      <div class="credit-display">
+        Crediti: <span id="crediti">0</span> (<span id="euro">€0</span>)
+      </div>
+      <button id="checkout-small" class="checkout-small">Checkout</button>
+      <a id="ricarica" class="ricarica-btn" href="ricarica.html">Ricarica</a>
+    </div>
   </header>
 
-  <section class="filtri">
-    <select id="regione"></select>
-    <select id="citta"></select>
-    <select id="categoria"></select>
-    <!-- NB: rimosso il <select id="tipo"> -->
+  <nav class="section-buttons">
+    <button id="btnLeads" class="selected">Lead da chiamare</button>
+    <button id="btnAppuntamenti">Appuntamenti fissati</button>
+    <button id="btnContratti">Contratti riservati</button>
+  </nav>
+
+  <section class="filters">
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="regione">Regione</label>
+        <select id="regione"></select>
+      </div>
+      <div class="filter-group">
+        <label for="citta">Citta</label>
+        <select id="citta"></select>
+      </div>
+    </div>
+    <div class="filter-row">
+      <div class="filter-group">
+        <label for="categoria">Categoria</label>
+        <select id="categoria"></select>
+      </div>
+      <div class="filter-group">
+        <label for="tipo">Tipo</label>
+        </div>
+    </div>
   </section>
 
-  <div id="clienti" class="cards-container"></div>
-  <div id="carrello"></div>
-  <div id="totale"></div>
-  <div id="crediti"></div>
-  <div id="euro"></div>
+  <section class="carrello">
+    <h2>Carrello</h2>
+    <ul id="carrello"></ul>
+    <div id="totale">Totale: €0</div>
+  </section>
 
+  <main id="clienti"></main>
+
+  <!-- AUTH MODAL -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-tabs">
+        <button id="show-login" class="active">Accedi</button>
+        <button id="show-register">Registrati</button>
+      </div>
+      <form id="login-form" class="active" autocomplete="on">
+        <input type="email"    id="login-email"    placeholder="Email" required>
+        <input type="password" id="login-password" placeholder="Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="login-captcha" placeholder="Risposta" required></label>
+        <button type="submit" style="display:none"></button>
+      </form>
+      <form id="register-form" autocomplete="on">
+        <input type="text"     id="register-name"      placeholder="Nome" required>
+        <input type="text"     id="register-surname"   placeholder="Cognome" required>
+        <input type="email"    id="register-email"     placeholder="Email" required>
+        <input type="password" id="register-password"  placeholder="Password" required>
+        <input type="password" id="register-password2" placeholder="Ripeti Password" required>
+        <label>Quanto fa 2+3? <input type="text" id="register-captcha" placeholder="Risposta" required></label>
+        <button type="submit" style="display:none"></button>
+      </form>
+      <button id="close-auth" class="cancel-form">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- PAYMENT MODAL (opzionale) -->
+  <div id="payment-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Scegli metodo di pagamento</h3>
+      <div class="option-container">
+        <div class="option"><img class="pay-logo" src="assets/paypal.png"><button id="pay-paypal">PayPal</button></div>
+        <div class="option"><img class="pay-logo" src="assets/credit-card.png"><button id="pay-card">Carta</button></div>
+      </div>
+      <button id="close-payment" class="cancel-form">Chiudi</button>
+    </div>
+  </div>
+
+  <!-- CONTACT MODAL -->
+  <div id="contact-modal" class="modal-overlay">
+    <div class="modal">
+      <h3>Richiesta Contatto</h3>
+      <input type="text"  id="contact-name"     placeholder="Nome">
+      <input type="text"  id="contact-surname"  placeholder="Cognome">
+      <input type="tel"   id="contact-phone"    placeholder="Telefono">
+      <input type="text"  id="contact-location" placeholder="Località">
+      <input type="email" id="contact-email"    placeholder="Email">
+      <textarea id="contact-message" rows="4" placeholder="Messaggio"></textarea>
+      <button id="btnContactSend" class="ricarica-action btn-paylink">Invia</button>
+      <button id="close-contact" class="cancel-form">Chiudi</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
   <script defer src="firebase-init.js"></script>
   <script defer src="script.js"></script>
+
 </body>
 </html>
