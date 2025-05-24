@@ -3,27 +3,27 @@ const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSkDKqQuhfgBlD
 
 // Elementi DOM
 const elems = {
-  regione:   document.getElementById('regione'),
-  citta:     document.getElementById('citta'),
-  categoria: document.getElementById('categoria'),
-  btnLeads:       document.getElementById('btnLeads'),
-  btnAppuntamenti:document.getElementById('btnAppuntamenti'),
-  btnContratti:   document.getElementById('btnContratti'),
-  clienti:   document.getElementById('clienti'),
-  carrello:  document.getElementById('carrello'),
-  totale:    document.getElementById('totale'),
-  crediti:   document.getElementById('crediti'),
-  euro:      document.getElementById('euro'),
-  btnCheckout:  document.getElementById('btnCheckout'),
-  btnRicarica:  document.getElementById('btnRicarica'),
+  regione:         document.getElementById('regione'),
+  citta:           document.getElementById('citta'),
+  categoria:       document.getElementById('categoria'),
+  btnLeads:        document.getElementById('btnLeads'),
+  btnAppuntamenti: document.getElementById('btnAppuntamenti'),
+  btnContratti:    document.getElementById('btnContratti'),
+  clienti:         document.getElementById('clienti'),
+  carrello:        document.getElementById('carrello'),
+  totale:          document.getElementById('totale'),
+  crediti:         document.getElementById('crediti'),
+  euro:            document.getElementById('euro'),
+  btnCheckout:     document.getElementById('btnCheckout'),
+  btnRicarica:     document.getElementById('btnRicarica'),
 };
 
 // Dati e stato
 let leads = [];
 let filters = { regione:'', citta:'', categoria:'' };
-let sectionFilter = 'lead';  // valorauno di 'lead','appuntamento','contratto'
+let sectionFilter = 'lead';  // 'lead' | 'appuntamento' | 'contratto'
 
-// Carica il TSV e parsalo in oggetti con chiavi normalizzate
+// 1) Carica e parsifica il TSV
 fetch(sheetURL)
   .then(res => {
     if (!res.ok) throw new Error('Sheet non trovato: ' + res.status);
@@ -31,33 +31,27 @@ fetch(sheetURL)
   })
   .then(tsv => {
     const lines = tsv.trim().split('\n');
-    // Acchiappa intestazioni raw
     const rawHeaders = lines.shift().split('\t');
-    // Normalizza: minuscolo, rimuove accenti, toglie parentesi e spazi
-    const headers = rawHeaders.map(h => 
-      h
-        .toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-        .replace(/ *\([^)]*\) */g,'')
-        .replace(/\s+/g,'')
+    // normalizza intestazioni: minuscolo, senza accenti, senza spazi/parentesi
+    const headers = rawHeaders.map(h =>
+      h.toLowerCase()
+       .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+       .replace(/\s+/g,'').replace(/\(.*?\)/g,'')
     );
-    // Costruisci array di oggetti
     leads = lines.map(line => {
       const cols = line.split('\t');
       const obj = {};
-      headers.forEach((key, i) => {
-        obj[key] = cols[i];
-      });
+      headers.forEach((key,i) => obj[key] = cols[i]);
       return obj;
     });
     setup();
   })
   .catch(err => {
     console.error(err);
-    elems.clienti.innerHTML = `<div style="color:red">Errore caricamento: ${err.message}</div>`;
+    elems.clienti.innerHTML = `<div style="color:red">Errore caricamento dati: ${err.message}</div>`;
   });
 
-// Mappatura icone categoria
+// 2) Mappe icone
 function getIconName(cat) {
   cat = (cat||'').toLowerCase();
   if (cat.includes('fotovoltaico')||cat.includes('solare')) return 'fotovoltaico.png';
@@ -75,8 +69,6 @@ function getIconName(cat) {
   if (cat.includes('giardinaggio')) return 'giardinaggio.png';
   return 'ristrutturazione.png';
 }
-
-// Mappatura icone tipo
 function getTypeIcon(tipo) {
   tipo = (tipo||'').toLowerCase();
   if (tipo.includes('lead')) return 'lead-icon.png';
@@ -85,7 +77,7 @@ function getTypeIcon(tipo) {
   return 'lead-icon.png';
 }
 
-// Setup: bottoni tab e filtri
+// 3) Setup: bottoni e filtri
 function setup() {
   elems.btnLeads.onclick        = () => { sectionFilter='lead'; render(); };
   elems.btnAppuntamenti.onclick = () => { sectionFilter='appuntamento'; render(); };
@@ -101,27 +93,23 @@ function setup() {
 
   render();
 }
-
-// Popola un select ignorando undefined/null/empty
 function populateFilter(sel, field) {
   const vals = Array.from(new Set(
-    leads.map(l=>l[field] || '').filter(v=>v.trim()!=='')
+    leads.map(l=>l[field]||'').filter(v=>v.trim()!=='')
   )).sort();
   sel.innerHTML = `<option value="">Tutti</option>` +
     vals.map(v=>`<option value="${v}">${v}</option>`).join('');
 }
 
-// Filtra solo su regione, citta, categoria e sectionFilter
+// 4) Filtra e rendi le card
 function filterLeads() {
   return leads.filter(l=>
     (!filters.regione   || l.regione   === filters.regione) &&
     (!filters.citta     || l.citta     === filters.citta) &&
     (!filters.categoria || l.categoria === filters.categoria) &&
-    ( (l.tipo||'').toLowerCase() === sectionFilter )
+    ((l.tipo||'').toLowerCase() === sectionFilter)
   );
 }
-
-// Render delle cards
 function render() {
   const list = filterLeads();
   elems.clienti.innerHTML = '';
